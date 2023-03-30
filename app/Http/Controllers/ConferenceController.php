@@ -14,7 +14,8 @@ class ConferenceController extends Controller
     public function index()
     {
         return Inertia::render('Conferences/Index', [
-            'conf' => Conference::paginate(15)
+            'upcoming' => Conference::where('status', 'upcoming')->paginate(15),
+            'finished' => Conference::where('status', 'finished')->paginate(15),
         ]);
     }
 
@@ -23,7 +24,7 @@ class ConferenceController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Conferences/Create');
     }
 
     /**
@@ -31,7 +32,12 @@ class ConferenceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'attachments' => 'required|mimes:pds|max:10000'
+        ]);
+
+        Conference::create($request->all());
     }
 
     /**

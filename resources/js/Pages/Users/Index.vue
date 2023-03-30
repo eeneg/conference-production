@@ -5,7 +5,6 @@ import Pagination from '@/Components/Pagination.vue'
 import NavLink from '@/Components/NavLink.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 const props = defineProps({users: Object})
 

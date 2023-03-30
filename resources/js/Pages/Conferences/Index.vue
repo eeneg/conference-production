@@ -2,12 +2,13 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue'
-import NavLink from '@/Components/NavLink.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { PlusCircleIcon } from '@heroicons/vue/20/solid'
+import { router } from '@inertiajs/vue3'
 
-const props = defineProps({conf: Object})
+const props = defineProps({upcoming: Object, finished: Object})
 
 const form = useForm({
     search: ''
@@ -16,6 +17,12 @@ const form = useForm({
 const search = () => {
 
 }
+
+const conferenceForm = () => {
+    router.get(route('conferences.create'))
+}
+
+
 
 </script>
 
@@ -31,6 +38,24 @@ const search = () => {
         <div class="py-5">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="flex flex-row">
+                        <div class="pr-6 pl-6 mt-3 grow">
+                            <header>
+                                <h2 class="text-lg font-medium text-gray-900">Upcoming Conferences</h2>
+
+                                <p class="mt-1 text-sm text-gray-600">
+                                    List of upcoming conferences.
+                                </p>
+                            </header>
+                        </div>
+                        <div class="pr-6 pl-6 mt-3">
+                            <PrimaryButton @click="conferenceForm()">
+                                Add
+                                <PlusCircleIcon class="h-5 w-5" aria-hidden="true" />
+                            </PrimaryButton>
+                        </div>
+                    </div>
+
                     <div class="pr-6 pl-6 mt-3">
                         <table class="w-full">
                             <thead>
@@ -42,7 +67,7 @@ const search = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="conf in conf.data">
+                                <tr v-for="conf in props.upcoming.data">
                                     <td>{{conf}}</td>
                                     <td>{{conf}}</td>
                                     <td>{{conf}}</td>
@@ -52,7 +77,61 @@ const search = () => {
                         </table>
                     </div>
                     <div class="p-6">
-                        <Pagination :data="props.conf"></Pagination>
+                        <Pagination :data="props.upcoming"></Pagination>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="py-5">
+            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                    <div class="pr-6 pl-6 mt-3">
+                        <header>
+                            <h2 class="text-lg font-medium text-gray-900">Finished Conferences</h2>
+
+                            <p class="mt-1 text-sm text-gray-600">
+                                List of finished conferences.
+                            </p>
+                        </header>
+                    </div>
+                    <form @submit.prevent="search" class="mt-1 space-y-6 flex flex-row">
+                        <div class="p-6 grow">
+
+                            <InputLabel for="search" value="Search"/>
+
+                            <TextInput
+                                id="search"
+                                type="search"
+                                v-model="form.search"
+                                class="mt-1 block w-full"
+                            >
+                            </TextInput>
+
+                        </div>
+                    </form>
+                    <div class="pr-6 pl-6 mt-3">
+                        <table class="w-full">
+                            <thead>
+                                <tr>
+                                    <th><p class="float-left">Title</p></th>
+                                    <th><p class="float-left">Date</p></th>
+                                    <th><p class="float-left">Status</p></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="conf in props.finished.data">
+                                    <td>{{conf}}</td>
+                                    <td>{{conf}}</td>
+                                    <td>{{conf}}</td>
+                                    <td>{{conf}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="p-6">
+                        <Pagination :data="props.finished"></Pagination>
                     </div>
                 </div>
             </div>
