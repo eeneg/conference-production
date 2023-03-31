@@ -11,4 +11,8 @@ class Conference extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $casts = ['attachments' => 'array'];
+
+    protected $fillable = ['title', 'agenda', 'date', 'attachments'];
+
 }

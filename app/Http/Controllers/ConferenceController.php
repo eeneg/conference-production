@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Conference;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class ConferenceController extends Controller
@@ -34,10 +35,29 @@ class ConferenceController extends Controller
     {
         $request->validate([
             'title' => 'required',
-            'attachments' => 'required|mimes:pds|max:10000'
+            // 'attachments' => 'required|mimes:pdf|max:10000'
         ]);
 
-        Conference::create($request->all());
+        $ar = [];
+
+        foreach($request->file('attachments') as $file)
+        {
+            $name = $file->getClientOriginalName();
+
+            array_push($ar, ['fileName' => $name, 'path' => $request->title]);
+
+            Storage::putFileAs('public/' . $request->title , $file, $name);
+        }
+
+        // dd($request->all());
+
+        Conference::create([
+            'title' => $request->title,
+            'agenda' => $request->agenda,
+            'date' => $request->date,
+            'attachments' => $ar,
+            'status' => ;
+        ]);
     }
 
     /**
