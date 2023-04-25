@@ -19,7 +19,7 @@
     "dependencies": {
         "@heroicons/vue": "^2.0.16",
         "@inertiajs/vue3": "^1.0.2",
-        "@tinymce/tinymce-vue": "^5.0.1",
-        "tinymce": "^6.4.1"
+        "@vueup/vue-quill": "^1.1.1",
+        "vuedraggable": "^4.1.0"
     }
 }
