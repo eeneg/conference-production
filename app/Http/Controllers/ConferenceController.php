@@ -35,13 +35,14 @@ class ConferenceController extends Controller
     {
         $request->validate([
             'title' => 'required',
-            // 'attachments' => 'required|mimes:pdf|max:10000'
+            'date' => 'required|date',
+            'agenda' => 'required'
         ]);
 
         $ar = [];
 
-        foreach($request->file('attachments') as $file)
-        {
+        foreach($request->file('attachments') as $file){
+
             $name = $file->getClientOriginalName();
 
             array_push($ar, ['fileName' => $name, 'path' => $request->title]);
@@ -56,7 +57,7 @@ class ConferenceController extends Controller
             'agenda' => $request->agenda,
             'date' => $request->date,
             'attachments' => $ar,
-            'status' => ;
+            'status' => $request->status
         ]);
     }
 
