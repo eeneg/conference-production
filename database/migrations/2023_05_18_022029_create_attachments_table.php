@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('conferences', function (Blueprint $table) {
+        Schema::create('attachments', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->string('title');
-            $table->longText('agenda');
-            $table->date('date');
-            $table->string('status');
+            $table->uuid('conference_id');
+            $table->foreign('conference_id')
+                ->references('id')
+                ->on('conferences');
+            $table->json('files');
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('conferences');
+        Schema::dropIfExists('attachments');
     }
 };

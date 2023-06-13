@@ -49,18 +49,18 @@ const search = () => {
                         <table class="w-full table-auto">
                             <thead>
                                 <tr>
-                                    <th><p class="float-left">Name</p></th>
-                                    <th><p class="float-left">Email</p></th>
-                                    <th><p class="float-left">Role</p></th>
-                                    <th></th>
+                                    <th style="width: 30%;">Name</th>
+                                    <th style="width: 30%;">Email</th>
+                                    <th style="width: 20%;">Role</th>
+                                    <th style="width: 20%;"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="user in props.users.data">
-                                    <td>{{ user.name }}</td>
-                                    <td>{{ user.email }}</td>
-                                    <td>{{ user.role }}</td>
-                                    <td><NavLink :href="route('users.edit', user.id)">Action</NavLink></td>
+                                    <td class="text-center">{{ user.name }}</td>
+                                    <td class="text-center">{{ user.email }}</td>
+                                    <td class="text-center">{{ user.role }}</td>
+                                    <td class="text-center"><NavLink :href="route('users.edit', user.id)">Action</NavLink></td>
                                 </tr>
                             </tbody>
                         </table>

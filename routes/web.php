@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\ConferenceController;
+use App\Http\Controllers\MinutesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Models\Minutes;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -38,6 +40,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class);
     Route::patch('/update-password', [UserController::class, 'updatePassword'])->name('user.update-password');
     Route::resource('conferences', ConferenceController::class);
+    Route::resource('minutes', MinutesController::class);
 });
 
 

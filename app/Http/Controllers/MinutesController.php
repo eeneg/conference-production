@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Conference;
+use App\Models\Minutes;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class MinutesController extends Controller
 {
@@ -17,9 +20,15 @@ class MinutesController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $conf = Conference::find($request->id);
+
+        $min = $conf->minute;
+
+
+        return Inertia::render('Minutes/Create', ['id' => $request->id, 'content' => $min->content ?? null, 'conf_title' => $conf->title]);
+
     }
 
     /**
@@ -27,7 +36,14 @@ class MinutesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'content' => 'required'
+        ]);
+
+        Minutes::updateOrCreate(['conference_id' => $request->id],[
+            'conference_id' => $request->id,
+            'content' => $request->content
+        ]);
     }
 
     /**
@@ -35,7 +51,7 @@ class MinutesController extends Controller
      */
     public function show(string $id)
     {
-        //
+
     }
 
     /**
@@ -51,7 +67,7 @@ class MinutesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
     }
 
     /**

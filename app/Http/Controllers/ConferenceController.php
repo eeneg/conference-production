@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attachment;
 use App\Models\Conference;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Throwable;
 
 class ConferenceController extends Controller
 {
@@ -15,8 +17,8 @@ class ConferenceController extends Controller
     public function index()
     {
         return Inertia::render('Conferences/Index', [
-            'upcoming' => Conference::where('status', 'upcoming')->paginate(15),
-            'finished' => Conference::where('status', 'finished')->paginate(15),
+            'upcoming' => Conference::where('status', 'pending')->paginate(15),
+            'finished' => Conference::where('status', 'completed')->paginate(15),
         ]);
     }
 
@@ -36,28 +38,33 @@ class ConferenceController extends Controller
         $request->validate([
             'title' => 'required',
             'date' => 'required|date',
-            'agenda' => 'required'
+            'agenda' => 'required',
+            'status' => 'required'
         ]);
 
-        $ar = [];
 
-        foreach($request->file('attachments') as $file){
+        try{
 
-            $name = $file->getClientOriginalName();
+            $conf = Conference::create([
+                'title' => $request->title,
+                'agenda' => $request->agenda,
+                'date' => $request->date,
+                'status' => $request->status
+            ]);
 
-            array_push($ar, ['fileName' => $name, 'path' => $request->title]);
+        }catch(Throwable $e){
 
-            Storage::putFileAs('public/' . $request->title , $file, $name);
+            report($e);
+
+            return $e->getMessage();
+
         }
 
-        // dd($request->all());
+        $attachments = Conference::fileHandle($request->attachments, $request->title, $conf->id);
 
-        Conference::create([
-            'title' => $request->title,
-            'agenda' => $request->agenda,
-            'date' => $request->date,
-            'attachments' => $ar,
-            'status' => $request->status
+        $attachments = Attachment::create([
+            'conference_id' => $conf->id,
+            'files' => $attachments
         ]);
     }
 
@@ -66,7 +73,9 @@ class ConferenceController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $conf = Conference::find($id);
+
+        return Inertia::render('Conferences/Show', $conf);
     }
 
     /**

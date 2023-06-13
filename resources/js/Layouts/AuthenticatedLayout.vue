@@ -38,6 +38,9 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('conferences.index')" :active="route().current('conferences.index')">
                                     Conferences
                                 </NavLink>
+                                <NavLink :href="route('conferences.index')" :active="route().current('conferences.index')">
+                                    Find Attachments
+                                </NavLink>
                             </div>
                         </div>
 

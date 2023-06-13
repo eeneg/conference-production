@@ -5,8 +5,9 @@ import Pagination from '@/Components/Pagination.vue'
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { PlusCircleIcon } from '@heroicons/vue/20/solid'
+import { PlusCircleIcon, FolderIcon } from '@heroicons/vue/20/solid'
 import { router } from '@inertiajs/vue3'
+import NavLink from '@/Components/NavLink.vue';
 
 const props = defineProps({upcoming: Object, finished: Object})
 
@@ -60,18 +61,22 @@ const conferenceForm = () => {
                         <table class="w-full">
                             <thead>
                                 <tr>
-                                    <th><p class="float-left">Title</p></th>
-                                    <th><p class="float-left">Date</p></th>
-                                    <th><p class="float-left">Status</p></th>
-                                    <th></th>
+                                    <th style="width: 30%;">Title</th>
+                                    <th style="width: 30%;">Date</th>
+                                    <th style="width: 30%;">Input Minutes</th>
+                                    <th style="width: 30%;"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="conf in props.upcoming.data">
-                                    <td>{{conf}}</td>
-                                    <td>{{conf}}</td>
-                                    <td>{{conf}}</td>
-                                    <td>{{conf}}</td>
+                                    <td class="text-center">{{conf.title}}</td>
+                                    <td class="text-center">{{conf.date}}</td>
+                                    <td class="text-center">
+                                        <NavLink :href="route('minutes.create', {'id' : conf.id})">Minutes</NavLink>
+                                    </td>
+                                    <td class="text-center">
+                                        <NavLink :href="route('conferences.show', {'id' : conf.id})">Action</NavLink>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -114,18 +119,20 @@ const conferenceForm = () => {
                         <table class="w-full">
                             <thead>
                                 <tr>
-                                    <th><p class="float-left">Title</p></th>
-                                    <th><p class="float-left">Date</p></th>
-                                    <th><p class="float-left">Status</p></th>
-                                    <th></th>
+                                    <th style="width: 30%;">Title</th>
+                                    <th style="width: 30%;">Date</th>
+                                    <th style="width: 30%;">Input Minutes</th>
+                                    <th style="width: 30%;"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="conf in props.finished.data">
-                                    <td>{{conf}}</td>
-                                    <td>{{conf}}</td>
-                                    <td>{{conf}}</td>
-                                    <td>{{conf}}</td>
+                                    <td class="text-center">{{conf.title}}</td>
+                                    <td class="text-center">{{conf.date}}</td>
+                                    <td class="text-center">Minutes </td>
+                                    <td class="text-center">
+                                        Action
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>

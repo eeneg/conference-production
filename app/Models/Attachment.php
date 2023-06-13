@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Ramsey\Uuid\Uuid;
 
-class Minutes extends Model
+class Attachment extends Model
 {
-    use HasFactory ,HasUuids;
+    use HasFactory, HasUuids;
 
-    protected $fillable = ['conference_id', 'content'];
+    protected $casts = ['files' => 'array'];
+
+    protected $fillable = ['conference_id', 'files'];
 
     public function conference() : BelongsTo
     {
