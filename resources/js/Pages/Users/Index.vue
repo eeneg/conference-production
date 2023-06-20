@@ -57,10 +57,10 @@ const search = () => {
                             </thead>
                             <tbody>
                                 <tr v-for="user in props.users.data">
-                                    <td class="text-center">{{ user.name }}</td>
-                                    <td class="text-center">{{ user.email }}</td>
-                                    <td class="text-center">{{ user.role }}</td>
-                                    <td class="text-center"><NavLink :href="route('users.edit', user.id)">Action</NavLink></td>
+                                    <td class="text-center p-2 pl-8 border-b border-slate-100">{{ user.name }}</td>
+                                    <td class="text-center p-2 pl-8 border-b border-slate-100">{{ user.email }}</td>
+                                    <td class="text-center p-2 pl-8 border-b border-slate-100">{{ user.role }}</td>
+                                    <td class="text-center p-2 pl-8 border-b border-slate-100"><NavLink :href="route('users.edit', user.id)">Action</NavLink></td>
                                 </tr>
                             </tbody>
                         </table>

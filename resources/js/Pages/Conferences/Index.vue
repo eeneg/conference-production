@@ -1,31 +1,41 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import Pagination from '@/Components/Pagination.vue'
-import TextInput from '@/Components/TextInput.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { PlusCircleIcon, FolderIcon } from '@heroicons/vue/20/solid'
-import { router } from '@inertiajs/vue3'
-import NavLink from '@/Components/NavLink.vue';
+    import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+    import { Head, useForm } from '@inertiajs/vue3';
+    import Pagination from '@/Components/Pagination.vue'
+    import TextInput from '@/Components/TextInput.vue';
+    import InputLabel from '@/Components/InputLabel.vue';
+    import PrimaryButton from '@/Components/PrimaryButton.vue';
+    import { PlusCircleIcon, FolderIcon } from '@heroicons/vue/20/solid'
+    import { router } from '@inertiajs/vue3'
+    import NavLink from '@/Components/NavLink.vue';
+    import moment from 'moment'
 
-const props = defineProps({upcoming: Object, finished: Object})
+    const props = defineProps({upcoming: Object, finished: Object})
 
-const form = useForm({
-    search: ''
-})
+    const form = useForm({
+        search: ''
+    })
 
-const search = () => {
+    const search = () => {
 
-}
+    }
 
-const conferenceForm = () => {
-    router.get(route('conferences.create'))
-}
+    const conferenceForm = () => {
+        router.get(route('conferences.create'))
+    }
+
+    const formatDate = (date) => {
+        return moment(date).format('L')
+    }
 
 
 
 </script>
+
+<style>
+
+
+</style>
 
 <template>
     <Head title="Conferences" />
@@ -61,20 +71,32 @@ const conferenceForm = () => {
                         <table class="w-full">
                             <thead>
                                 <tr>
-                                    <th style="width: 30%;">Title</th>
-                                    <th style="width: 30%;">Date</th>
-                                    <th style="width: 30%;">Input Minutes</th>
-                                    <th style="width: 30%;"></th>
+                                    <th class="" style="width: 30%;">
+                                        Title
+                                    </th>
+                                    <th class="" style="width: 30%;">
+                                        Date
+                                    </th>
+                                    <th class="" style="width: 30%;">
+                                        Input Minutes
+                                    </th>
+                                    <th class="" style="width: 30%;">
+
+                                    </th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="divide-slate-700">
                                 <tr v-for="conf in props.upcoming.data">
-                                    <td class="text-center">{{conf.title}}</td>
-                                    <td class="text-center">{{conf.date}}</td>
-                                    <td class="text-center">
+                                    <td class="text-center p-2 border-b border-slate-100">
+                                        {{conf.title}}
+                                    </td>
+                                    <td class="text-center p-2 border-b border-slate-100">
+                                        {{formatDate(conf.date)}}
+                                    </td>
+                                    <td class="text-center p-2 border-b border-slate-100">
                                         <NavLink :href="route('minutes.create', {'id' : conf.id})">Minutes</NavLink>
                                     </td>
-                                    <td class="text-center">
+                                    <td class="text-center p-2 border-b border-slate-100">
                                         <NavLink :href="route('conferences.show', {'id' : conf.id})">Action</NavLink>
                                     </td>
                                 </tr>
@@ -117,7 +139,7 @@ const conferenceForm = () => {
                     </form>
                     <div class="pr-6 pl-6 mt-3">
                         <table class="w-full">
-                            <thead>
+                            <thead class="divide-slate-700">
                                 <tr>
                                     <th style="width: 30%;">Title</th>
                                     <th style="width: 30%;">Date</th>
@@ -125,12 +147,12 @@ const conferenceForm = () => {
                                     <th style="width: 30%;"></th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="divide-slate-700">
                                 <tr v-for="conf in props.finished.data">
-                                    <td class="text-center">{{conf.title}}</td>
-                                    <td class="text-center">{{conf.date}}</td>
-                                    <td class="text-center">Minutes </td>
-                                    <td class="text-center">
+                                    <td class="text-center p-2 border-b border-slate-100">{{conf.title}}</td>
+                                    <td class="text-center p-2 border-b border-slate-100">{{conf.date}}</td>
+                                    <td class="text-center p-2 border-b border-slate-100">Minutes</td>
+                                    <td class="text-center p-2 border-b border-slate-100">
                                         Action
                                     </td>
                                 </tr>

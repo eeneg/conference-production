@@ -20,6 +20,7 @@
         "@heroicons/vue": "^2.0.16",
         "@inertiajs/vue3": "^1.0.2",
         "@vueup/vue-quill": "^1.1.1",
+        "moment": "^2.29.4",
         "vuedraggable": "^4.1.0"
     }
 }

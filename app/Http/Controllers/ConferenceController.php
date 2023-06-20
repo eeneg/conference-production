@@ -17,8 +17,8 @@ class ConferenceController extends Controller
     public function index()
     {
         return Inertia::render('Conferences/Index', [
-            'upcoming' => Conference::where('status', 'pending')->paginate(15),
-            'finished' => Conference::where('status', 'completed')->paginate(15),
+            'upcoming' => Conference::where('status', 'pending')->paginate(5),
+            'finished' => Conference::where('status', 'completed')->paginate(5),
         ]);
     }
 
