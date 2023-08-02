@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Scout\Attributes\SearchUsingFullText;
+use Laravel\Scout\Searchable;
 
 class Conference extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, Searchable;
 
     protected $fillable = ['title', 'agenda', 'date', 'attachments', 'status'];
 
@@ -53,6 +55,16 @@ class Conference extends Model
     public function attachment() : HasOne
     {
         return $this->hasOne(Attachment::class);
+    }
+
+    #[SearchUsingFullText(['title', 'agenda'])]
+    public function toSearchableArray()
+    {
+        return [
+            'id' => $this->getKey(),
+            'title' => $this->title,
+            'agenda' => $this->agenda,
+        ];
     }
 
 }
