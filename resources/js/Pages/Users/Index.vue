@@ -14,7 +14,6 @@ const form = useForm({
 })
 
 const search = () => {
-    console.log('sdsds')
     form.get(route('users.index'), {
         preserveScroll: true,
         preserveState: true,
