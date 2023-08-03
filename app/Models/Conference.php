@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -57,8 +58,18 @@ class Conference extends Model
         return $this->hasOne(Attachment::class);
     }
 
+    public function scopePending(Builder $query) : void
+    {
+        $query->whereStatus('pending');
+    }
+
+    public function scopeCompleted(Builder $query) : void
+    {
+        $query->whereStatus('completed');
+    }
+
     #[SearchUsingFullText(['title', 'agenda'])]
-    public function toSearchableArray()
+    public function toSearchableArray() : array
     {
         return [
             'id' => $this->getKey(),

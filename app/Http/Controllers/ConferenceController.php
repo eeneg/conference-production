@@ -14,11 +14,14 @@ class ConferenceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         return Inertia::render('Conferences/Index', [
-            'upcoming' => Conference::where('status', 'pending')->paginate(5),
-            'finished' => Conference::where('status', 'completed')->paginate(5),
+            'search' => $request->search,
+            'upcoming' => Conference::pending()->paginate(5),
+            'finished' => Conference::search($request->search)
+                ->query(fn ($q) => $q->completed())
+                ->paginate(5),
         ]);
     }
 
