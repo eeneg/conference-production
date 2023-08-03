@@ -133,6 +133,10 @@ return [
         'host' => env('MEILISEARCH_HOST', 'meilisearch:7700'),
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
+            App\Models\User::class => [
+                'filterableAttributes' => ['id', 'name', 'email'],
+            ],
+
             App\Models\Conference::class => [
                 'filterableAttributes'=> ['id', 'title', 'agenda'],
                 'sortableAttributes' => ['id', 'title'],
