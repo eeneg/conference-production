@@ -6,7 +6,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AttachmentController;
 use App\Models\Minutes;
+use GuzzleHttp\Client;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -43,6 +45,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('conferences', ConferenceController::class);
     Route::resource('attachment', AttachmentController::class);
     Route::resource('minutes', MinutesController::class);
+});
+
+Route::get('/asd', function(){
+//    $res = new Client();
+//    $req = $res->request('GET', "http://172.22.100.143:8000/initdb", ['asd' => 'asd']);
+
+// //    dd($req);
+    set_time_limit(1000);
+    return Http::get('http://172.22.100.143:8000');
 });
 
 

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Scout\Attributes\SearchUsingFullText;
@@ -17,32 +18,33 @@ class Conference extends Model
 
     protected $fillable = ['title', 'agenda', 'date', 'attachments', 'status'];
 
-    protected $with = ['attachment'];
+    public static function fileHandle($files, $title){
 
-    public static function fileHandle($files, $title, $conf_id){
+        $attachments = [];
 
-        $ar = [];
+        foreach($files as $e){
 
-        $attachments = collect($files)->map(function($file, $key) use ($title, $conf_id){
+            $category = $e['category'];
+            $category_order = $e['category_order'];
 
-            $ar[$key] = $file[0];
-
-            return [
-                'category' => $file[0],
-                'files' => array_key_exists(1, $file) ?
-                collect($file[1])->map(function($e) use ($title, $file) {
-
-                    Storage::putFileAs('public/' . $title . '/' . $file[0], $e, $e->getClientOriginalName());
-
-                    if(is_file($e)){
-                        return ['path' => $title . '/' . $file[0], 'fileName' => $e->getClientOriginalName()];
-                    }
-
-                })
-                : []
-            ];
-
-        });
+            foreach($e['files'] as $key => $file){
+                array_push($attachments,
+                    [
+                        'category'          => $category,
+                        'category_order'    => $category_order,
+                        'file_name'         => $file['file']->getClientOriginalName(),
+                        'path'              => $title . '/' . $category,
+                        'details'           => $file['file_details'],
+                        'storage_location'  => $file['storage_location'],
+                        'file_order'        => $file['file_order'],
+                        'storage_location'  => $file['storage_location'],
+                    ]
+                );
+                if(is_file($file['file'])){
+                    Storage::putFileAs('public/' . $title . '/' . $category, $file['file'], $file['file']->getClientOriginalName());
+                }
+            }
+        };
 
         return $attachments;
 
@@ -53,9 +55,9 @@ class Conference extends Model
         return $this->hasOne(Minutes::class);
     }
 
-    public function attachment() : HasOne
+    public function attachment() : HasMany
     {
-        return $this->hasOne(Attachment::class);
+        return $this->hasMany(Attachment::class);
     }
 
     public function scopePending(Builder $query) : void

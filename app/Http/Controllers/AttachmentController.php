@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attachment;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class AttachmentController extends Controller
 {
@@ -12,7 +13,7 @@ class AttachmentController extends Controller
      */
     public function index()
     {
-        //
+        return Inertia::render('Attachments/Index');
     }
 
     /**

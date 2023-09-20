@@ -7,11 +7,11 @@ import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import { nextTick } from 'vue';
 
-const props = defineProps({users: Object})
+    const props = defineProps({users: Object})
 
-const form = useForm({
-    search: ''
-})
+    const form = useForm({
+        search: ''
+    })
 
 const search = () => {
     form.get(route('users.index'), {
@@ -35,7 +35,16 @@ const search = () => {
         <div class="py-5">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                    <form @submit.prevent="search" class="flex flex-row mt-6 space-y-6">
+                    <div class="pl-6 pr-6 mt-3 grow">
+                        <header>
+                            <h2 class="text-lg font-medium text-gray-900">Users</h2>
+
+                            <p class="mt-1 text-sm text-gray-600">
+                                List of all users.
+                            </p>
+                        </header>
+                    </div>
+                    <form @submit.prevent="search" class="flex flex-row mt-1 space-y-6">
                         <div class="p-6 grow">
                             <InputLabel value="Search" for="search" />
                             <div class="relative mt-2 rounded-md shadow-sm">
@@ -55,10 +64,10 @@ const search = () => {
                         <table class="w-full table-auto">
                             <thead>
                                 <tr>
-                                    <th style="width: 30%;">Name</th>
-                                    <th style="width: 30%;">Email</th>
-                                    <th style="width: 20%;">Role</th>
-                                    <th style="width: 20%;"></th>
+                                    <th class="border-b border-slate-300" style="width: 30%;">Name</th>
+                                    <th class="border-b border-slate-300" style="width: 30%;">Email</th>
+                                    <th class="border-b border-slate-300" style="width: 20%;">Role</th>
+                                    <th class="border-b border-slate-300" style="width: 20%;"></th>
                                 </tr>
                             </thead>
                             <tbody>

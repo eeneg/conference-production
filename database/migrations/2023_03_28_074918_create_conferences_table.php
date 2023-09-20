@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('conferences', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->string('title');
+            $table->string('title')->unique();
             $table->longText('agenda');
             $table->date('date');
             $table->string('status');

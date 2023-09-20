@@ -5,7 +5,7 @@ import Pagination from '@/Components/Pagination.vue'
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { PlusCircleIcon, FolderIcon } from '@heroicons/vue/20/solid'
+import { PlusCircleIcon } from '@heroicons/vue/20/solid'
 import { router } from '@inertiajs/vue3'
 import NavLink from '@/Components/NavLink.vue';
 import moment from 'moment'
@@ -31,7 +31,7 @@ const search = () => {
 }
 
 const conferenceForm = () => {
-    router.get(route('conferences.create'))
+    router.get(route('conferences.create', {conf: null, edit: false}))
 }
 
 const formatDate = (date) => {
@@ -72,16 +72,16 @@ const formatDate = (date) => {
                         <table class="w-full">
                             <thead>
                                 <tr>
-                                    <th class="" style="width: 30%;">
+                                    <th class="border-b border-slate-300" style="width: 30%;">
                                         Title
                                     </th>
-                                    <th class="" style="width: 30%;">
+                                    <th class="border-b border-slate-300" style="width: 30%;">
                                         Date
                                     </th>
-                                    <th class="" style="width: 30%;">
+                                    <th class="border-b border-slate-300" style="width: 30%;">
                                         Input Minutes
                                     </th>
-                                    <th class="" style="width: 30%;">
+                                    <th class="border-b border-slate-300" style="width: 30%;">
 
                                     </th>
                                 </tr>
@@ -98,7 +98,7 @@ const formatDate = (date) => {
                                         <NavLink :href="route('minutes.create', {'id' : conf.id})">Minutes</NavLink>
                                     </td>
                                     <td class="p-2 text-center border-b border-slate-100">
-                                        <NavLink :href="route('conferences.show', {'id' : conf.id})">Action</NavLink>
+                                        <NavLink :href="route('conferences.edit', {'id' : conf.id})">Action</NavLink>
                                     </td>
                                 </tr>
                             </tbody>
@@ -143,10 +143,10 @@ const formatDate = (date) => {
                         <table class="w-full">
                             <thead class="divide-slate-700">
                                 <tr>
-                                    <th style="width: 30%;">Title</th>
-                                    <th style="width: 30%;">Date</th>
-                                    <th style="width: 30%;">Input Minutes</th>
-                                    <th style="width: 30%;"></th>
+                                    <th class="border-b border-slate-300" style="width: 30%;">Title</th>
+                                    <th class="border-b border-slate-300" style="width: 30%;">Date</th>
+                                    <th class="border-b border-slate-300" style="width: 30%;">Input Minutes</th>
+                                    <th class="border-b border-slate-300" style="width: 30%;"></th>
                                 </tr>
                             </thead>
                             <tbody class="divide-slate-700">

@@ -6,6 +6,8 @@
     import { ref } from 'vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
 
+    const props = defineProps({conf:Object, edit:Boolean})
+
     var header = ""
     var message = ""
     var success = true
@@ -13,7 +15,8 @@
     const modalShow = ref(false)
 
     const submit = (form) => {
-        form.post(route('conferences.store'), {
+        console.log(form)
+        form.patch(route('conferences.update', {id: form.id}), {
             onSuccess: () => {
                 header = "Success!"
                 success = true
@@ -52,10 +55,10 @@
     <AuthenticatedLayout>
 
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Conference Form</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Conference Edit Form</h2>
         </template>
 
-        <Form @passData ="submit($event)" :conf="null" :edit="false">
+        <Form @passData ="submit($event)" :conf="props.conf" :edit="true">
 
         </Form>
 

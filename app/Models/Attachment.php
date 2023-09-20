@@ -13,7 +13,7 @@ class Attachment extends Model
 
     protected $casts = ['files' => 'array'];
 
-    protected $fillable = ['conference_id', 'files'];
+    protected $fillable = ['conference_id', 'files', 'category', 'file_name', 'path', 'details', 'storage_location', 'category_order', 'file_order'];
 
     public function conference() : BelongsTo
     {

@@ -17,7 +17,13 @@ return new class extends Migration
             $table->foreign('conference_id')
                 ->references('id')
                 ->on('conferences');
-            $table->json('files');
+            $table->string('category');
+            $table->string('category_order');
+            $table->string('file_order');
+            $table->string('file_name');
+            $table->string('path');
+            $table->string('details')->nullable();
+            $table->string('storage_location')->nullable();
             $table->timestamps();
         });
     }
