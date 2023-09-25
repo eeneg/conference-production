@@ -9,13 +9,16 @@
     import { useForm } from '@inertiajs/vue3';
     import { XCircleIcon } from '@heroicons/vue/20/solid';
     import Modal from '@/Components/Modal.vue';
-    import {ref} from 'vue';
+    import {nextTick, ref} from 'vue';
+    import DangerButton from '@/Components/DangerButton.vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
-    import AttachmentForm from './AttachmentForm.vue';
 
     const props = defineProps({conf: Object, edit: Boolean})
 
     const modalShow = ref(false)
+    const confirmingConferenceDeletion = ref(false);
+    const passwordInput = ref(null);
+
 
     var header = ""
     var message = ""
@@ -28,20 +31,35 @@
         attachments: []
     })
 
+    const deleteForm = useForm({
+        id: null,
+        password: null
+    })
+
     if(props.edit){
-        Object.assign(form, props.conf)
-        console.log(form)
+        Object.assign(form, JSON.parse(JSON.stringify(props.conf)))
     }
 
-    const emit = defineEmits(['passData'])
+    const emit = defineEmits(['passData', 'deleteConf'])
 
     var category = ''
 
     var categories = []
 
     const submitData = (e) => {
-        console.log(form)
-        emit('passData', form);
+
+        var checkFile = []
+
+        form.attachments.forEach(function(e){
+            checkFile.push(e.files.length > 0 ? 1 : 0)
+        })
+
+        if(checkFile.includes(0)){
+            alert("Category Files Cannot be Empty")
+        }else{
+            emit('passData', form);
+        }
+
         category = ''
         categories = []
     }
@@ -61,7 +79,7 @@
         let files = $event.target.files
 
         files.forEach(function(e, i){
-            form.attachments[index].files.push({file: e, file_details: null, storage_location: null, file_order: form.attachments[index].files.length})
+            form.attachments[index].files.push({file: e, name: e.name, file_details: null, storage_location: null, file_order: form.attachments[index].files.length})
         })
     }
 
@@ -99,6 +117,24 @@
 
         document.getElementById('fileUpload').value = []
 
+    }
+
+    const confirmConferenceDeletion = () => {
+        confirmingConferenceDeletion.value = true;
+
+        nextTick(() => passwordInput.value.focus());
+    };
+
+    const closeDeleteModal = () => {
+        confirmingConferenceDeletion.value = false;
+
+        deleteForm.reset()
+    };
+
+    const deleteConference = (e) => {
+        deleteForm.id = props.conf.id
+        emit('deleteConf', deleteForm);
+        passwordInput.value.focus()
     }
 </script>
 
@@ -254,6 +290,10 @@
                                     </template>
                                 </draggable>
 
+                                <div class="text-center mt-3" v-if="attachments.files.length == 0">
+                                    <p class="text-red-700">Category Files Cannot be Empty</p>
+                                </div>
+
                                 <PrimaryButton
                                     type="button"
                                     class="mt-4 w-full p-2 place-content-center bg-rose-600"
@@ -278,6 +318,71 @@
                     </PrimaryButton>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<div class="py-5" v-if="edit">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+            <div class="pr-6 pl-6 mt-3">
+                <div class="pr-6 pl-6 flex flex-col mt-3">
+                    <header>
+                        <h2 class="text-lg font-medium text-gray-900">Delete Conference</h2>
+
+                        <p class="mt-1 text-sm text-gray-600">
+                            Once the Conference is deleted, all of its resources and data will be permanently deleted. Before deleting,
+                            please download any data or information that you wish to retain.
+                        </p>
+                    </header>
+
+                </div>
+                <div class="pr-6 pl-6 mt-2">
+                    <DangerButton class="mt-2 mb-4 text-center" @click="confirmConferenceDeletion">Delete Conference</DangerButton>
+                </div>
+            </div>
+
+            <Modal :show="confirmingConferenceDeletion" @close="closeDeleteModal">
+                <div class="p-6">
+                    <h2 class="text-lg font-medium text-gray-900">
+                        Are you sure you want to delete this Conference data?
+                    </h2>
+
+                    <p class="mt-1 text-sm text-gray-600">
+                        Once its deleted, all of its resources and data will be permanently deleted. Please
+                        enter your password to confirm you would like to permanently delete the Conference data.
+                    </p>
+
+                    <div class="mt-6">
+                        <InputLabel for="password" value="Password" class="sr-only" />
+
+                        <TextInput
+                            id="password"
+                            ref="passwordInput"
+                            v-model="deleteForm.password"
+                            type="password"
+                            class="mt-1 block w-3/4"
+                            placeholder="Password"
+                            @keyup.enter="deleteConference"
+                        />
+
+                        <InputError :message="deleteForm.errors.password" class="mt-2" />
+                    </div>
+
+                    <div class="mt-6 flex justify-end">
+                        <SecondaryButton @click="closeDeleteModal"> Cancel </SecondaryButton>
+
+                        <DangerButton
+                            class="ml-3"
+                            :class="{ 'opacity-25': deleteForm.processing }"
+                            :disabled="deleteForm.processing"
+                            @click="deleteConference"
+                        >
+                            Delete Conference
+                        </DangerButton>
+                    </div>
+                </div>
+            </Modal>
         </div>
     </div>
 </div>

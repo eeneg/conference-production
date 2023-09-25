@@ -89,7 +89,10 @@ class ConferenceController extends Controller
     {
         $conf = Conference::find($id);
 
-        $e = Attachment::where('conference_id', $conf->id)->orderBy('category_order', 'ASC')->get()->groupBy('category');
+        $e = Attachment::where('conference_id', $conf->id)->orderBy('category_order', 'ASC')->get()->groupBy('category')
+        ->map(function($e){
+            return collect($e)->sortBy('file_order');
+        });
 
         $attachments = [];
 
@@ -127,7 +130,6 @@ class ConferenceController extends Controller
      */
     public function update(Request $request, string $id)
     {
-
         $request->validate([
             'title' => Rule::unique('conferences')->ignore($id),
             'date' => 'required|date',
@@ -135,20 +137,55 @@ class ConferenceController extends Controller
             'status' => 'required',
         ]);
 
+
         try{
 
             $conf = Conference::find($id);
+
 
             if($conf->title !== $request->title){
                 Storage::move('public/' . $conf->title, 'public/' . $request->title);
             }
 
+            $request_categories = [];
+
             if(count($request->attachments) > 0){
                 foreach($request->attachments as $key => $data){
+
+                    $path = $request->title . '/' . $data['category'];
+
+                    array_push($request_categories, $data['category']);
+
                     foreach($data['files'] as $key => $file){
-                        dd($file);
+                        $file['file_order'] = $key;
+                        $file['path'] = $path;
+                        $file['details'] = $file['file_details'];
+                        if(isset($file['id'])){
+                            Attachment::find($file['id'])->update($file);
+                        }else{
+                            $new_file = [
+                                'category'          => $data['category'],
+                                'category_order'    => $data['category_order'],
+                                'file_name'         => $file['file']->getClientOriginalName(),
+                                'path'              => $request->title . '/' . $data['category'],
+                                'details'           => $file['file_details'],
+                                'storage_location'  => $file['storage_location'],
+                                'file_order'        => $file['file_order'],
+                                'storage_location'  => $file['storage_location'],
+                            ];
+                            $conf->attachment()->create($new_file);
+                            Storage::putFileAs('public/' . $request->title . '/' . $data['category'], $file['file'], $file['file']->getClientOriginalName());
+                        }
                     }
                 }
+            }
+
+            $existing_categories = $conf->attachment->pluck('category')->unique()->values();
+
+            $attachment = Attachment::where('conference_id', $conf->id)->whereNotIn('category', $request_categories)->delete();
+
+            foreach(array_diff($existing_categories->toArray(), $request_categories) as $folders){
+                Storage::deleteDirectory('public/'. $request->title . '/' . $folders);
             }
 
             $conf->update([
@@ -174,8 +211,16 @@ class ConferenceController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Request $request)
     {
-        //
+        $request->validate([
+            'password' => ['required', 'current-password'],
+        ]);
+        $conf = Conference::find($request->id);
+        $attachment = Attachment::where('conference_id', $conf->id)->delete();
+        $files = Storage::deleteDirectory('public/' . $conf->title);
+        $conf->delete();
+
+        return redirect(route('conferences.index'));
     }
 }

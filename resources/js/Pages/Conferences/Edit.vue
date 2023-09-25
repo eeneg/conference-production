@@ -3,6 +3,7 @@
     import Form from '@/Pages/Conferences/Form.vue';
     import { Head } from '@inertiajs/vue3';
     import Modal from '@/Components/Modal.vue';
+    import { useForm } from '@inertiajs/vue3';
     import { ref } from 'vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
 
@@ -13,9 +14,9 @@
     var success = true
 
     const modalShow = ref(false)
+    const confirmingConferenceDeletion = ref(false);
 
     const submit = (form) => {
-        console.log(form)
         form.patch(route('conferences.update', {id: form.id}), {
             onSuccess: () => {
                 header = "Success!"
@@ -32,6 +33,25 @@
                 modalShow.value = true
             }
         })
+    }
+
+    const submitDelete = (deleteForm) => {
+        deleteForm.delete(route('conferences.destroy', {id: deleteForm.id}), {
+            preserveScroll: true,
+            onSuccess: () => {
+                header = "Success!"
+                success = true
+                message = "Confrence Submitted Successfuly"
+                deleteForm.reset()
+            },
+            onError: (e) => {
+                console.log(e)
+                header = "Error!"
+                success = false
+                message = "Something went wrong"
+                deleteForm.value = true
+            }
+        });
     }
 
     const closeModal = () => {
@@ -58,7 +78,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Conference Edit Form</h2>
         </template>
 
-        <Form @passData ="submit($event)" :conf="props.conf" :edit="true">
+        <Form @passData ="submit($event)" @deleteConf ="submitDelete($event)" :conf="props.conf" :edit="true">
 
         </Form>
 

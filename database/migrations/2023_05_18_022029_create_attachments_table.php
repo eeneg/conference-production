@@ -18,8 +18,8 @@ return new class extends Migration
                 ->references('id')
                 ->on('conferences');
             $table->string('category');
-            $table->string('category_order');
-            $table->string('file_order');
+            $table->integer('category_order');
+            $table->integer('file_order');
             $table->string('file_name');
             $table->string('path');
             $table->string('details')->nullable();
