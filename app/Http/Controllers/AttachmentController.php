@@ -13,7 +13,7 @@ class AttachmentController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Attachments/Index');
+        return Inertia::render('Attachments/Index', ['files' => Attachment::paginate(10)]);
     }
 
     /**

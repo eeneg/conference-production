@@ -4,6 +4,9 @@ import { Head } from '@inertiajs/vue3';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import { DocumentIcon } from '@heroicons/vue/20/solid';
+import Pagination from '@/Components/Pagination.vue';
+
+const props = defineProps({files: Object})
 
 </script>
 <template>
@@ -47,7 +50,7 @@ import { DocumentIcon } from '@heroicons/vue/20/solid';
                         </form>
                     </div>
                     <div class="grow pl-5 pr-5 pb-5">
-                        <div class="border rounded p-2 pl-4 mt-2" v-for="n in 5">
+                        <div class="border rounded p-2 pl-4 mt-2" v-for="file in props.files.data">
                             <div class="flex">
                                 <div class="flex items-center justify-center">
                                     <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-300 text-red-900">
@@ -55,15 +58,21 @@ import { DocumentIcon } from '@heroicons/vue/20/solid';
                                     </div>
                                 </div>
                                 <div>
-                                    <div class="flex items-center justify-center ml-2">
-                                        <p class="text-lg">Filename</p>
+                                    <div class="flex ml-2">
+                                        <p class="text-lg float-left">{{ file.file_name }}</p>
                                     </div>
                                     <div class="flex ml-2">
-                                        <p class="text-md">Details</p>
+                                        <p>Details: </p>
+                                        <p class="text-md ml-2">{{ file.details }}</p>
+                                        <p class="text-md ml-3">Storage Location: </p>
+                                        <p class="text-md ml-2">{{ file.storage_location }}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="p-6">
+                        <Pagination :data="props.files"></Pagination>
                     </div>
                 </div>
             </div>
