@@ -1,12 +1,29 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import TextInput from '@/Components/TextInput.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import { DocumentIcon } from '@heroicons/vue/20/solid';
-import Pagination from '@/Components/Pagination.vue';
+    import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+    import { Head, useForm } from '@inertiajs/vue3';
+    import TextInput from '@/Components/TextInput.vue';
+    import InputLabel from '@/Components/InputLabel.vue';
+    import { DocumentIcon, ArrowDownTrayIcon, BookOpenIcon } from '@heroicons/vue/20/solid';
+    import Pagination from '@/Components/Pagination.vue';
+    import Modal from '@/Components/Modal.vue';
+    import SecondaryButton from '@/Components/SecondaryButton.vue';
+    import {nextTick, ref} from 'vue';
+    import { router } from '@inertiajs/vue3'
 
-const props = defineProps({files: Object})
+
+    const props = defineProps({files: Object})
+    var path = null
+    var modalShow = ref(false)
+
+    const closeModal = () => {
+        modalShow.value = false
+    }
+
+    const viewFile = (e, file_name) => {
+        modalShow.value = true
+        path = e + encodeURIComponent(file_name)
+        console.log(path)
+    }
 
 </script>
 <template>
@@ -67,6 +84,21 @@ const props = defineProps({files: Object})
                                         <p class="text-md ml-3">Storage Location: </p>
                                         <p class="text-md ml-2">{{ file.storage_location }}</p>
                                     </div>
+                                    <!-- <p>{{ file }}</p> -->
+                                </div>
+                                <div class="grow mt-2">
+                                    <div class="flex items-center justify-center float-right">
+                                        <a :href="route('attachment.edit',{id: file.id})">
+                                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-green-300 hover:bg-green-400 text-red-900 mr-1">
+                                                    <ArrowDownTrayIcon class="w-5 h-5 stroke-gray-900 fill-black " aria-hidden="true" />
+                                            </div>
+                                        </a>
+                                        <a @click="viewFile('/storage/'+file.path+'/', file.file_name)">
+                                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-300 hover:bg-blue-400 text-red-900">
+                                                <BookOpenIcon class="w-5 h-5 stroke-gray-900 fill-none aria-hidden" aria-hidden="true" />
+                                            </div>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -77,6 +109,19 @@ const props = defineProps({files: Object})
                 </div>
             </div>
         </div>
+
+        <Modal :show="modalShow" @close="closeModal">
+            <div class="p-6">
+
+                <div class="mt-6 h-64" style="height: 50rem;">
+                    <embed :src="path" style="width: 100%; height: 100%;"  type="application/pdf">
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
+                </div>
+            </div>
+        </Modal>
 
     </AuthenticatedLayout>
 

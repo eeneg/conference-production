@@ -32,7 +32,7 @@ class Conference extends Model
                     [
                         'category'          => $category,
                         'category_order'    => $category_order,
-                        'file_name'         => $file['file']->getClientOriginalName(),
+                        'file_name'         => str_replace(' ','',$file['file']->getClientOriginalName()),
                         'path'              => $title . '/' . $category,
                         'details'           => $file['file_details'],
                         'storage_location'  => $file['storage_location'],
@@ -41,7 +41,7 @@ class Conference extends Model
                     ]
                 );
                 if(is_file($file['file'])){
-                    Storage::putFileAs('public/' . $title . '/' . $category, $file['file'], $file['file']->getClientOriginalName());
+                    Storage::putFileAs('public/' . $title . '/' . $category, $file['file'], str_replace(' ','',$file['file']->getClientOriginalName()));
                 }
             }
         };

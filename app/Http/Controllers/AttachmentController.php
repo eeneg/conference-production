@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attachment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class AttachmentController extends Controller
@@ -37,7 +38,7 @@ class AttachmentController extends Controller
      */
     public function show(Attachment $attachment)
     {
-        //
+        return '/storage/' . $attachment->path . '/' . $attachment->file_name;
     }
 
     /**
@@ -45,7 +46,7 @@ class AttachmentController extends Controller
      */
     public function edit(Attachment $attachment)
     {
-        //
+        return Storage::download('public/' . $attachment->path . '/' . $attachment->file_name);
     }
 
     /**
