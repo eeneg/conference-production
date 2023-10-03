@@ -9,6 +9,7 @@ import { PlusCircleIcon } from '@heroicons/vue/20/solid'
 import { router } from '@inertiajs/vue3'
 import NavLink from '@/Components/NavLink.vue';
 import moment from 'moment'
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { nextTick } from 'vue';
 
 const props = defineProps({
@@ -27,6 +28,14 @@ const search = () => {
         preserveState: true,
         onFinish: () => nextTick(() => document.getElementById('search').focus())
 
+    })
+}
+
+const reset = () => {
+    form.search = ""
+    form.get(route('conferences.index'), {
+        preserveScroll: true,
+        preserveState: true,
     })
 }
 
@@ -139,6 +148,11 @@ const formatDate = (date) => {
                             </div>
                         </div>
                     </form>
+                    <div class="flex flex-row-reverse pl-6 pr-6">
+                        <div class="">
+                            <SecondaryButton @click="reset">Reset</SecondaryButton>
+                        </div>
+                    </div>
                     <div class="pl-6 pr-6 mt-3">
                         <table class="w-full">
                             <thead class="divide-slate-700">

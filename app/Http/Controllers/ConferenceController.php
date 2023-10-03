@@ -149,6 +149,8 @@ class ConferenceController extends Controller
 
             $request_categories = [];
 
+            $request_file = [];
+
             if(count($request->attachments) > 0){
                 foreach($request->attachments as $key => $data){
 
@@ -161,26 +163,34 @@ class ConferenceController extends Controller
                         $file['path'] = $path;
                         $file['details'] = $file['file_details'];
                         if(isset($file['id'])){
+                            array_push($request_file, $file['id']);
                             Attachment::find($file['id'])->update($file);
                         }else{
                             $new_file = [
                                 'category'          => $data['category'],
                                 'category_order'    => $data['category_order'],
-                                'file_name'         => $file['file']->getClientOriginalName(),
+                                'file_name'         => str_replace(' ', '', $file['file']->getClientOriginalName()),
                                 'path'              => $request->title . '/' . $data['category'],
                                 'details'           => $file['file_details'],
                                 'storage_location'  => $file['storage_location'],
                                 'file_order'        => $file['file_order'],
                                 'storage_location'  => $file['storage_location'],
                             ];
-                            $conf->attachment()->create($new_file);
-                            Storage::putFileAs('public/' . $request->title . '/' . $data['category'], $file['file'], $file['file']->getClientOriginalName());
+                            $newFile = $conf->attachment()->create($new_file);
+                            array_push($request_file, $newFile->id);
+                            Storage::putFileAs('public/' . $request->title . '/' . $data['category'], $file['file'], str_replace(' ', '', $file['file']->getClientOriginalName()));
                         }
                     }
                 }
             }
 
             $existing_categories = $conf->attachment->pluck('category')->unique()->values();
+
+            $files = Attachment::where('conference_id', $conf->id)->whereNotIn('id', $request_file)->get();
+
+            if(count($files)){
+                Attachment::where('conference_id', $conf->id)->whereNotIn('id', $request_file)->delete();
+            }
 
             $attachment = Attachment::where('conference_id', $conf->id)->whereNotIn('category', $request_categories)->delete();
 
