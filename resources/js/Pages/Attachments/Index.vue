@@ -15,6 +15,26 @@
     var path = null
     var modalShow = ref(false)
 
+    const form = useForm({
+        search: props.search,
+    })
+
+    const search = () => {
+        form.get(route('attachment.index'), {
+            preserveScroll: true,
+            preserveState: true,
+            onFinish: () => nextTick(() => document.getElementById('search').focus())
+        })
+    }
+
+    const reset = () => {
+        form.search = ""
+        form.get(route('attachment.index'), {
+            preserveScroll: true,
+            preserveState: true,
+        })
+    }
+
     const closeModal = () => {
         modalShow.value = false
     }
@@ -49,7 +69,7 @@
                         </div>
                     </div>
                     <div class="grow">
-                        <form class="flex flex-row mt-1 space-y-6">
+                        <form @submit.prevent="search" class="flex flex-row mt-1 space-y-6">
                             <div class="p-6 grow">
                                 <InputLabel value="Search" for="search" />
                                 <div class="relative mt-2 rounded-md shadow-sm">
@@ -61,10 +81,15 @@
                                         </span>
                                     </div>
 
-                                    <TextInput id="search" type="search" class="block w-full mt-1 pl-9"/>
+                                    <TextInput id="search" type="search" class="block w-full mt-1 pl-9" v-model="form.search"/>
                                 </div>
                             </div>
                         </form>
+                    </div>
+                    <div class="flex flex-row-reverse pl-5 pr-5">
+                        <div class="">
+                            <SecondaryButton @click="reset">Reset</SecondaryButton>
+                        </div>
                     </div>
                     <div class="grow pl-5 pr-5 pb-5">
                         <div class="border rounded p-2 pl-4 mt-2" v-for="file in props.files.data">
@@ -84,7 +109,6 @@
                                         <p class="text-md ml-3">Storage Location: </p>
                                         <p class="text-md ml-2">{{ file.storage_location }}</p>
                                     </div>
-                                    <!-- <p>{{ file }}</p> -->
                                 </div>
                                 <div class="grow mt-2">
                                     <div class="flex items-center justify-center float-right">

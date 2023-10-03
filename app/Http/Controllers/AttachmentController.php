@@ -12,9 +12,11 @@ class AttachmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('Attachments/Index', ['files' => Attachment::paginate(10)]);
+        return Inertia::render('Attachments/Index',
+            ['files' => Attachment::search($request->search)->paginate(10)]
+        );
     }
 
     /**
