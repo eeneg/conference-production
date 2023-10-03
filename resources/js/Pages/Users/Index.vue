@@ -5,6 +5,7 @@ import Pagination from '@/Components/Pagination.vue'
 import NavLink from '@/Components/NavLink.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import { nextTick } from 'vue';
 
     const props = defineProps({users: Object})
@@ -18,6 +19,14 @@ const search = () => {
         preserveScroll: true,
         preserveState: true,
         onFinish: () => nextTick(() => document.getElementById('search').focus())
+    })
+}
+
+const reset = () => {
+    form.search = ""
+    form.get(route('users.index'), {
+        preserveScroll: true,
+        preserveState: true,
     })
 }
 
@@ -60,6 +69,11 @@ const search = () => {
                             </div>
                         </div>
                     </form>
+                    <div class="flex flex-row-reverse pl-6 pr-6">
+                        <div class="">
+                            <SecondaryButton @click="reset">Reset</SecondaryButton>
+                        </div>
+                    </div>
                     <div class="pl-6 pr-6 text-gray-900">
                         <table class="w-full table-auto">
                             <thead>
