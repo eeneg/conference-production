@@ -8,7 +8,7 @@
     import Modal from '@/Components/Modal.vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
     import {nextTick, ref} from 'vue';
-    import { router } from '@inertiajs/vue3'
+    import moment from 'moment';
 
 
     const props = defineProps({files: Object})
@@ -39,10 +39,9 @@
         modalShow.value = false
     }
 
-    const viewFile = (e, file_name) => {
+    const viewFile = (file) => {
+        path = file
         modalShow.value = true
-        path = e + encodeURIComponent(file_name)
-        console.log(path)
     }
 
 </script>
@@ -101,23 +100,27 @@
                                 </div>
                                 <div>
                                     <div class="flex ml-2">
-                                        <p class="text-lg float-left">{{ file.file_name }}</p>
+                                        <p class="text-lg float-left truncate w-96">{{ file.file_name }}</p>
                                     </div>
                                     <div class="flex ml-2">
                                         <p>Details: </p>
-                                        <p class="text-md ml-2">{{ file.details }}</p>
-                                        <p class="text-md ml-3">Storage Location: </p>
-                                        <p class="text-md ml-2">{{ file.storage_location }}</p>
+                                        <p class="text-md ml-2 truncate w-24">{{ file.details }}</p>
+                                        <p class="text-md ml-3">Storage: </p>
+                                        <p class="text-md ml-2 truncate w-24">{{ file.storage_location }}</p>
+                                        <p class="text-md ml-5">Conference: </p>
+                                        <p class="text-md ml-2 truncate w-40">{{ file.conference.title }}</p>
+                                        <p class="text-md ml-2">Category: </p>
+                                        <p class="text-md ml-2 truncate w-24">{{ file.category }}</p>
                                     </div>
                                 </div>
                                 <div class="grow mt-2">
                                     <div class="flex items-center justify-center float-right">
                                         <a :href="route('attachment.edit',{id: file.id})">
                                             <div class="flex h-10 w-10 items-center justify-center rounded-full bg-green-300 hover:bg-green-400 text-red-900 mr-1">
-                                                    <ArrowDownTrayIcon class="w-5 h-5 stroke-gray-900 fill-black " aria-hidden="true" />
+                                                <ArrowDownTrayIcon class="w-5 h-5 stroke-gray-900 fill-black " aria-hidden="true" />
                                             </div>
                                         </a>
-                                        <a @click="viewFile('/storage/'+file.path+'/', file.file_name)">
+                                        <a @click="viewFile('/storage/' + file.path + '/' + file.file_name)">
                                             <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-300 hover:bg-blue-400 text-red-900">
                                                 <BookOpenIcon class="w-5 h-5 stroke-gray-900 fill-none aria-hidden" aria-hidden="true" />
                                             </div>

@@ -65,9 +65,9 @@
     }
 
     const addCategory = (category) => {
-        if (category && !categories.includes(category)) {
+        if (category && !categories.includes(category.replace(/\s/g,''))) {
             form.attachments.push({category: category, category_order: form.attachments.length, files:[]})
-            categories.push(category)
+            categories.push(category.replace(/\s/g,''))
         }else{
             header = "Error!"
             message = "Invalid Category Tittle."
@@ -78,8 +78,22 @@
     const getFiles = ($event, index) => {
         let files = $event.target.files
 
+
         files.forEach(function(e, i){
-            form.attachments[index].files.push({file: e, name: e.name, file_details: null, storage_location: null, file_order: form.attachments[index].files.length})
+            let hasSameFileName = false
+            form.attachments[index].files.forEach(function(existingFiles){
+                if(existingFiles.name == e.name ){
+                    hasSameFileName = true
+                }
+            })
+            console.log(hasSameFileName)
+            if(hasSameFileName == false){
+                form.attachments[index].files.push({file: e, name: e.name, file_details: null, storage_location: null, file_order: form.attachments[index].files.length})
+            }else{
+                header = "Error!"
+                message = "Duplicate Files."
+                modalShow.value = true
+            }
         })
     }
 

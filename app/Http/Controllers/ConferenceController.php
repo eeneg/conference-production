@@ -67,7 +67,7 @@ class ConferenceController extends Controller
 
         }
 
-        $attachments = Conference::fileHandle($request->attachments, $request->title);
+        $attachments = Conference::fileHandle($request->attachments, $conf->id);
 
         Conference::find($conf->id)->attachment()->createMany($attachments);
     }
@@ -142,11 +142,6 @@ class ConferenceController extends Controller
 
             $conf = Conference::find($id);
 
-
-            if($conf->title !== $request->title){
-                Storage::move('public/' . $conf->title, 'public/' . $request->title);
-            }
-
             $request_categories = [];
 
             $request_file = [];
@@ -154,13 +149,13 @@ class ConferenceController extends Controller
             if(count($request->attachments) > 0){
                 foreach($request->attachments as $key => $data){
 
-                    $path = $request->title . '/' . $data['category'];
+                    $path = $conf->id . '/' . $data['category'];
 
                     array_push($request_categories, $data['category']);
 
                     foreach($data['files'] as $key => $file){
                         $file['file_order'] = $key;
-                        $file['path'] = $path;
+                        $file['path'] = str_replace(' ', '', $path);
                         $file['details'] = $file['file_details'];
                         if(isset($file['id'])){
                             array_push($request_file, $file['id']);
@@ -170,7 +165,7 @@ class ConferenceController extends Controller
                                 'category'          => $data['category'],
                                 'category_order'    => $data['category_order'],
                                 'file_name'         => str_replace(' ', '', $file['file']->getClientOriginalName()),
-                                'path'              => $request->title . '/' . $data['category'],
+                                'path'              => str_replace(' ', '', $conf->id . '/' . $data['category']),
                                 'details'           => $file['file_details'],
                                 'storage_location'  => $file['storage_location'],
                                 'file_order'        => $file['file_order'],
@@ -178,7 +173,7 @@ class ConferenceController extends Controller
                             ];
                             $newFile = $conf->attachment()->create($new_file);
                             array_push($request_file, $newFile->id);
-                            Storage::putFileAs('public/' . $request->title . '/' . $data['category'], $file['file'], str_replace(' ', '', $file['file']->getClientOriginalName()));
+                            Storage::putFileAs('public/' . $conf->id . '/' . str_replace(' ', '', $data['category']), $file['file'], str_replace(' ', '', $file['file']->getClientOriginalName()));
                         }
                     }
                 }
@@ -195,7 +190,7 @@ class ConferenceController extends Controller
             $attachment = Attachment::where('conference_id', $conf->id)->whereNotIn('category', $request_categories)->delete();
 
             foreach(array_diff($existing_categories->toArray(), $request_categories) as $folders){
-                Storage::deleteDirectory('public/'. $request->title . '/' . $folders);
+                Storage::deleteDirectory('public/'. $conf->id . '/' . $folders);
             }
 
             $conf->update([
@@ -228,7 +223,7 @@ class ConferenceController extends Controller
         ]);
         $conf = Conference::find($request->id);
         $attachment = Attachment::where('conference_id', $conf->id)->delete();
-        $files = Storage::deleteDirectory('public/' . $conf->title);
+        $files = Storage::deleteDirectory('public/' . $conf->id);
         $conf->delete();
 
         return redirect(route('conferences.index'));

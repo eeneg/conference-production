@@ -18,7 +18,7 @@ class Conference extends Model
 
     protected $fillable = ['title', 'agenda', 'date', 'attachments', 'status'];
 
-    public static function fileHandle($files, $title){
+    public static function fileHandle($files, $id){
 
         $attachments = [];
 
@@ -32,8 +32,8 @@ class Conference extends Model
                     [
                         'category'          => $category,
                         'category_order'    => $category_order,
-                        'file_name'         => str_replace(' ','',$file['file']->getClientOriginalName()),
-                        'path'              => $title . '/' . $category,
+                        'file_name'         => str_replace(' ', '',$file['file']->getClientOriginalName()),
+                        'path'              => str_replace(' ', '',$id . '/' . $category),
                         'details'           => $file['file_details'],
                         'storage_location'  => $file['storage_location'],
                         'file_order'        => $file['file_order'],
@@ -41,7 +41,7 @@ class Conference extends Model
                     ]
                 );
                 if(is_file($file['file'])){
-                    Storage::putFileAs('public/' . $title . '/' . $category, $file['file'], str_replace(' ','',$file['file']->getClientOriginalName()));
+                    Storage::putFileAs('public/' . $id . '/' . str_replace(' ', '', $category), $file['file'], str_replace(' ','',$file['file']->getClientOriginalName()));
                 }
             }
         };
