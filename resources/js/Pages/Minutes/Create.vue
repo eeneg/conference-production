@@ -5,9 +5,17 @@
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import InputError from '@/Components/InputError.vue';
     import { QuillEditor } from '@vueup/vue-quill';
+    import { ref } from 'vue';
+    import SecondaryButton from '@/Components/SecondaryButton.vue';
+    import Modal from '@/Components/Modal.vue';
     import '@vueup/vue-quill/dist/vue-quill.snow.css';
 
     const props = defineProps({id: String, content: {type: String, required: false}, conf_title: String})
+    const modalShow = ref(false)
+
+    var header = ""
+    var success = true
+    var message = ""
 
     const form = useForm({
         id: props.id,
@@ -17,12 +25,22 @@
     const submit = () => {
         form.post(route('minutes.store'), {
             onSuccess: () => {
-
+                header = "Success!"
+                success = true
+                message = "Submitted Successfuly"
+                modalShow.value = true
             },
             onErrorCaptured: () => {
-
+                header = "Error!"
+                success = false
+                message = "Failed to Submit"
+                modalShow.value = true
             }
         })
+    }
+
+    const closeModal = () => {
+        modalShow.value = false
     }
 
 </script>
@@ -75,4 +93,24 @@
 
 
     </AuthenticatedLayout>
+
+
+<Modal :show="modalShow">
+    <div class="p-6">
+        <h2 :class="{'text-lg font-medium text-green-500': success == true, 'text-lg font-medium text-red-500': success == false}">
+            {{ header }}
+        </h2>
+
+        <p class="mt-1 text-sm text-gray-600">
+            {{message}}
+        </p>
+
+
+        <SecondaryButton
+            class="w-full mt-2 place-content-center bg-red-400"
+            @click="closeModal">
+                        <p>OK</p>
+        </SecondaryButton>
+    </div>
+</Modal>
 </template>
