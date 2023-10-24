@@ -23,7 +23,6 @@ class Conference extends Model
         $attachments = [];
 
         foreach($files as $e){
-
             $category = $e['category'];
             $category_order = $e['category_order'];
 

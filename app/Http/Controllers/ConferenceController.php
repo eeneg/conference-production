@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ConferenceResource;
+use App\Jobs\ProcessAttachment;
 use App\Models\Attachment;
 use App\Models\Conference;
-use Exception;
+use App\Services\AttachmentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\File;
 use Inertia\Inertia;
 use Throwable;
 
 class ConferenceController extends Controller
 {
+
+    public function __construct(private ProcessAttachment $attachmentJob, private AttachmentService $attachmentService)
+    {
+
+    }
     /**
      * Display a listing of the resource.
      */
@@ -70,6 +74,11 @@ class ConferenceController extends Controller
         $attachments = Conference::fileHandle($request->attachments, $conf->id);
 
         Conference::find($conf->id)->attachment()->createMany($attachments);
+
+        $at = Attachment::where('conference_id', $conf->id)->get();
+        foreach($at as $files){
+            $this->attachmentService->job($files);
+        }
     }
 
     /**
