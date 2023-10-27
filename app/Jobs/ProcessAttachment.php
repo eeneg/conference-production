@@ -20,16 +20,19 @@ class ProcessAttachment implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct()
-    {
+    public $attachment;
 
+    public function __construct($attachment)
+    {
+        $this->attachment = $attachment;
     }
 
     /**
      * Execute the job.
      */
-    public function handle($attachment)
+    public function handle()
     {
+        $attachment = $this->attachment;
         try{
             $py = Process::path(app_path('/Python/'))->forever()->run('python3 app.py '.escapeshellarg($attachment->path . '/' . $attachment->file_name));
         }catch(Exception $e){
@@ -40,5 +43,7 @@ class ProcessAttachment implements ShouldQueue
         $er = $py->errorOutput();
 
         PdfContent::create(['attachment_id' => $attachment->id, 'content' => $res]);
+
+        Attachment::find($attachment->id)->load('pdfContent')->searchable();
     }
 }

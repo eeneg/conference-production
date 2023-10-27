@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Laravel\Scout\Attributes\SearchUsingFullText;
+use App\Models\PdfContent;
 use Laravel\Scout\Searchable;
 
 class Attachment extends Model
@@ -34,7 +35,7 @@ class Attachment extends Model
             'file_name' => $this->file_name,
             'details' => $this->details,
             'storage_location' => $this->storage_location,
-            // 'content' => PdfContent::where('attachment_id', $this->id)->pluck('content')
+            'content' => $this->pdfContent->content ?? ''
         ];
     }
 }

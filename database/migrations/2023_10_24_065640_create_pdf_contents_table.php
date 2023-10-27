@@ -16,7 +16,8 @@ return new class extends Migration
             $table->uuid('attachment_id');
             $table->foreign('attachment_id')
                 ->references('id')
-                ->on('attachments');
+                ->on('attachments')
+                ->onDelete('cascade');
             $table->text('content');
             $table->timestamps();
         });

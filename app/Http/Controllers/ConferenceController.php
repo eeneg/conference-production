@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Jobs\ProcessAttachment;
 use App\Models\Attachment;
+use App\Models\PdfContent;
 use App\Models\Conference;
 use App\Services\AttachmentService;
+use App\Services\AttachmentEditService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -15,10 +17,10 @@ use Throwable;
 class ConferenceController extends Controller
 {
 
-    public function __construct(private ProcessAttachment $attachmentJob, private AttachmentService $attachmentService)
-    {
-
-    }
+    public function __construct(
+        private AttachmentService $attachmentService,
+        private AttachmentEditService $editService
+    ){}
     /**
      * Display a listing of the resource.
      */
@@ -75,10 +77,8 @@ class ConferenceController extends Controller
 
         Conference::find($conf->id)->attachment()->createMany($attachments);
 
-        $at = Attachment::where('conference_id', $conf->id)->get();
-        foreach($at as $files){
-            $this->attachmentService->job($files);
-        }
+        $this->attachmentService->job($conf->id);
+
     }
 
     /**
@@ -151,56 +151,9 @@ class ConferenceController extends Controller
 
             $conf = Conference::find($id);
 
-            $request_categories = [];
+            $this->editService->handle($request['attachments'], $conf);
 
-            $request_file = [];
-
-            if(count($request->attachments) > 0){
-                foreach($request->attachments as $key => $data){
-
-                    $path = $conf->id . '/' . $data['category'];
-
-                    array_push($request_categories, $data['category']);
-
-                    foreach($data['files'] as $key => $file){
-                        $file['file_order'] = $key;
-                        $file['path'] = str_replace(' ', '', $path);
-                        $file['details'] = $file['file_details'];
-                        if(isset($file['id'])){
-                            array_push($request_file, $file['id']);
-                            Attachment::find($file['id'])->update($file);
-                        }else{
-                            $new_file = [
-                                'category'          => $data['category'],
-                                'category_order'    => $data['category_order'],
-                                'file_name'         => str_replace(' ', '', $file['file']->getClientOriginalName()),
-                                'path'              => str_replace(' ', '', $conf->id . '/' . $data['category']),
-                                'details'           => $file['file_details'],
-                                'storage_location'  => $file['storage_location'],
-                                'file_order'        => $file['file_order'],
-                                'storage_location'  => $file['storage_location'],
-                            ];
-                            $newFile = $conf->attachment()->create($new_file);
-                            array_push($request_file, $newFile->id);
-                            Storage::putFileAs('public/' . $conf->id . '/' . str_replace(' ', '', $data['category']), $file['file'], str_replace(' ', '', $file['file']->getClientOriginalName()));
-                        }
-                    }
-                }
-            }
-
-            $existing_categories = $conf->attachment->pluck('category')->unique()->values();
-
-            $files = Attachment::where('conference_id', $conf->id)->whereNotIn('id', $request_file)->get();
-
-            if(count($files)){
-                Attachment::where('conference_id', $conf->id)->whereNotIn('id', $request_file)->delete();
-            }
-
-            $attachment = Attachment::where('conference_id', $conf->id)->whereNotIn('category', $request_categories)->delete();
-
-            foreach(array_diff($existing_categories->toArray(), $request_categories) as $folders){
-                Storage::deleteDirectory('public/'. $conf->id . '/' . $folders);
-            }
+            $this->attachmentService->job($conf->id);
 
             $conf->update([
                 'title' => $request->title,
@@ -217,9 +170,6 @@ class ConferenceController extends Controller
 
         }
 
-
-
-
     }
 
     /**
@@ -231,8 +181,15 @@ class ConferenceController extends Controller
             'password' => ['required', 'current-password'],
         ]);
         $conf = Conference::find($request->id);
-        $attachment = Attachment::where('conference_id', $conf->id)->delete();
         $files = Storage::deleteDirectory('public/' . $conf->id);
+        PdfContent::whereHas('attachment', fn ($q) => $q->whereConferenceId($conf->id))
+                ->get('id')
+                ->each
+                ->delete();
+        Attachment::where('conference_id', $conf->id)
+            ->get('id')
+            ->each
+            ->delete();
         $conf->delete();
 
         return redirect(route('conferences.index'));

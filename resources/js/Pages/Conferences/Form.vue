@@ -70,7 +70,7 @@
             categories.push(category.replace(/\s/g,''))
         }else{
             header = "Error!"
-            message = "Invalid Category Tittle."
+            message = "Duplicate Category Title"
             modalShow.value = true
         }
     }
