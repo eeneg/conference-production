@@ -68,8 +68,6 @@ class AttachmentEditService {
                 ->delete();
         }
 
-        $attachment = Attachment::where('conference_id', $conf->id)->whereNotIn('category', $request_categories)->delete();
-
         foreach(array_diff($existing_categories->toArray(), $request_categories) as $folders){
             Storage::deleteDirectory('public/'. $conf->id . '/' . $folders);
         }
