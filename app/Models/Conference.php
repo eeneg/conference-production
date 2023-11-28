@@ -31,8 +31,8 @@ class Conference extends Model
                     [
                         'category'          => $category,
                         'category_order'    => $category_order,
-                        'file_name'         => str_replace(' ', '',$file['file']->getClientOriginalName()),
-                        'path'              => str_replace(' ', '',$id . '/' . $category),
+                        'file_name'         => $file['file']->getClientOriginalName(),
+                        'path'              => str_replace(' ', '_',$id . '/' . $category . '/' . $file['file']->getClientOriginalName()),
                         'details'           => $file['file_details'],
                         'storage_location'  => $file['storage_location'],
                         'file_order'        => $file['file_order'],
@@ -40,7 +40,7 @@ class Conference extends Model
                     ]
                 );
                 if(is_file($file['file'])){
-                    Storage::putFileAs('public/' . $id . '/' . str_replace(' ', '', $category), $file['file'], str_replace(' ','',$file['file']->getClientOriginalName()));
+                    Storage::putFileAs('public/' . $id . '/' . str_replace(' ', '_', $category), $file['file'], str_replace(' ','_',$file['file']->getClientOriginalName()));
                 }
             }
         };

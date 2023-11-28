@@ -180,16 +180,21 @@ class ConferenceController extends Controller
         $request->validate([
             'password' => ['required', 'current-password'],
         ]);
+
         $conf = Conference::find($request->id);
+
         $files = Storage::deleteDirectory('public/' . $conf->id);
+
         PdfContent::whereHas('attachment', fn ($q) => $q->whereConferenceId($conf->id))
                 ->get('id')
                 ->each
                 ->delete();
+
         Attachment::where('conference_id', $conf->id)
             ->get('id')
             ->each
             ->delete();
+
         $conf->delete();
 
         return redirect(route('conferences.index'));

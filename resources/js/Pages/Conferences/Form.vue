@@ -19,6 +19,26 @@
     const confirmingConferenceDeletion = ref(false);
     const passwordInput = ref(null);
 
+    var toolbarOptions = [
+        ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+        ['blockquote', 'code-block', 'image'],
+
+        [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+        [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+        [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+        [{ 'direction': 'rtl' }],                         // text direction
+
+        [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+        [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+        [{ 'font': [] }],
+        [{ 'align': [] }],
+
+        ['clean']                                         // remove formatting button
+    ];
+
 
     var header = ""
     var message = ""
@@ -65,9 +85,9 @@
     }
 
     const addCategory = (category) => {
-        if (category && !categories.includes(category.replace(/\s/g,''))) {
+        if (category && !categories.includes(category)) {
             form.attachments.push({category: category, category_order: form.attachments.length, files:[]})
-            categories.push(category.replace(/\s/g,''))
+            categories.push(category)
         }else{
             header = "Error!"
             message = "Duplicate Category Title"
@@ -103,7 +123,7 @@
 
     const removeAttachments = (index) => {
 
-       if(confirm("Are you sure?")){
+       if(confirm("Are you sure?\n\nThis will delete all files under this category!!\n\nYou CANNOT revert this!!")){
             form.attachments.splice(index, 1)
 
             categories.splice(index, 1)
@@ -114,10 +134,11 @@
     }
 
     const formatCategory = (text) => {
-
-        // return text.toUpperCase()
-        return text
-
+        if(text instanceof String){
+            return text.toUpperCase()
+        }else{
+            return text
+        }
     }
 
     const removeFile = (index, number) => {
@@ -205,7 +226,7 @@
 
                     <InputError :message="form.errors.agenda" class="mt-2" />
 
-                    <QuillEditor theme="snow" v-model:content="form.agenda" contentType="html" style="min-height: 500px;max-height: 500px; overflow-y: auto;"/>
+                    <QuillEditor theme="snow" v-model:content="form.agenda" :toolbar="toolbarOptions" contentType="html" style="min-height: 500px;max-height: 500px; overflow-y: auto;"/>
 
                 </div>
 

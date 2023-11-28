@@ -27,7 +27,7 @@ class AttachmentEditService {
 
                 foreach($data['files'] as $key => $file){
                     $file['file_order'] = $key;
-                    $file['path'] = str_replace(' ', '', $path);
+                    $file['path'] = str_replace(' ', '_', $path);
                     $file['details'] = $file['file_details'];
                     if(isset($file['id'])){
                         array_push($request_file, $file['id']);
@@ -36,8 +36,8 @@ class AttachmentEditService {
                         $new_file = [
                             'category'          => $data['category'],
                             'category_order'    => $data['category_order'],
-                            'file_name'         => str_replace(' ', '', $file['file']->getClientOriginalName()),
-                            'path'              => str_replace(' ', '', $conf->id . '/' . $data['category']),
+                            'file_name'         => $file['file']->getClientOriginalName(),
+                            'path'              => str_replace(' ', '_', $conf->id . '/' . $data['category'] . '/' . $file['file']->getClientOriginalName()),
                             'details'           => $file['file_details'],
                             'storage_location'  => $file['storage_location'],
                             'file_order'        => $file['file_order'],
@@ -45,7 +45,7 @@ class AttachmentEditService {
                         ];
                         $newFile = $conf->attachment()->create($new_file);
                         array_push($request_file, $newFile->id);
-                        Storage::putFileAs('public/' . $conf->id . '/' . str_replace(' ', '', $data['category']), $file['file'], str_replace(' ', '', $file['file']->getClientOriginalName()));
+                        Storage::putFileAs('public/' . $conf->id . '/' . str_replace(' ', '_', $data['category']), $file['file'], str_replace(' ', '_', $file['file']->getClientOriginalName()));
                     }
                 }
             }

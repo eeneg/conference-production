@@ -3,7 +3,6 @@
     import Form from '@/Pages/Conferences/Form.vue';
     import { Head } from '@inertiajs/vue3';
     import Modal from '@/Components/Modal.vue';
-    import { useForm } from '@inertiajs/vue3';
     import { ref } from 'vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
 
@@ -23,7 +22,6 @@
                 success = true
                 message = "Confrence Submitted Successfuly"
                 modalShow.value = true
-                form.reset()
             },
             onError: (e) => {
                 console.log(e)
@@ -57,8 +55,6 @@
     const closeModal = () => {
         modalShow.value = false
     }
-
-
 
 </script>
 
