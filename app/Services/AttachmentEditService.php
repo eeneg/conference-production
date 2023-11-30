@@ -12,7 +12,6 @@ class AttachmentEditService {
 
     public function handle($attachments, $conf) : void{
 
-
         $request_categories = [];
 
         $request_file = [];
@@ -21,13 +20,10 @@ class AttachmentEditService {
 
             foreach($attachments as $key => $data){
 
-                $path = $conf->id . '/' . $data['category'];
-
                 array_push($request_categories, $data['category']);
 
                 foreach($data['files'] as $key => $file){
                     $file['file_order'] = $key;
-                    $file['path'] = str_replace(' ', '_', $path);
                     $file['details'] = $file['file_details'];
                     if(isset($file['id'])){
                         array_push($request_file, $file['id']);

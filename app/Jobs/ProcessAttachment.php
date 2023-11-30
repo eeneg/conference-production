@@ -34,7 +34,7 @@ class ProcessAttachment implements ShouldQueue
     {
         $attachment = $this->attachment;
         try{
-            $py = Process::path(app_path('/Python/'))->forever()->run('python3 app.py '.escapeshellarg($attachment->path . '/' . $attachment->file_name));
+            $py = Process::path(app_path('/Python/'))->forever()->run('python3 app.py '.escapeshellarg($attachment->path));
         }catch(Exception $e){
 
         }
