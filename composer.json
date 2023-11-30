@@ -14,7 +14,7 @@
         "laravel/octane": "^2.0",
         "laravel/sanctum": "^3.2",
         "laravel/scout": "^10.2",
-        "laravel/telescope": "^4.15",
+        "laravel/telescope": "^4.17",
         "laravel/tinker": "^2.8",
         "meilisearch/meilisearch-php": "^1.2",
         "symfony/process": "^6.3",
