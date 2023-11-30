@@ -167,9 +167,11 @@ const formatDate = (date) => {
                                 <tr v-for="conf in props.finished.data">
                                     <td class="p-2 text-center border-b border-slate-100">{{conf.title}}</td>
                                     <td class="p-2 text-center border-b border-slate-100">{{conf.date}}</td>
-                                    <td class="p-2 text-center border-b border-slate-100">Minutes</td>
                                     <td class="p-2 text-center border-b border-slate-100">
-                                        Action
+                                        <NavLink :href="route('minutes.create', {'id' : conf.id})">Minutes</NavLink>
+                                    </td>
+                                    <td class="p-2 text-center border-b border-slate-100">
+                                        <NavLink :href="route('conferences.edit', {'id' : conf.id})">Action</NavLink>
                                     </td>
                                 </tr>
                             </tbody>
