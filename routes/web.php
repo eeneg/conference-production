@@ -48,10 +48,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/asd', function(){
-//    $res = new Client();
-//    $req = $res->request('GET', "http://172.22.100.143:8000/initdb", ['asd' => 'asd']);
-
-// //    dd($req);
     set_time_limit(1000);
     return Http::get('http://172.22.100.143:8000');
 });
