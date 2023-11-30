@@ -63,11 +63,23 @@
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="pr-6 pl-6 mt-3">
-                        <form @submit.prevent="submit()" class="mt-1 space-y-6">
+                        <form @submit.prevent="submit()" class="mt-1">
 
-                            <div class="pr-6 pl-6">
+                            <div class="flex justify-between pr-6 pl-6 items-center">
+                                <div>
+                                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">Minutes</h2>
+                                </div>
+                                <div>
+                                    <PrimaryButton
+                                        type="button"
+                                        class=""
+                                    >
+                                        Print
+                                    </PrimaryButton>
+                                </div>
+                            </div>
 
-                                <InputLabel for="agenda" value="Minutes"/>
+                            <div class="pr-6 pl-6 mt-3">
 
                                 <InputError :message="form.errors.content" class="mt-2" />
 
@@ -90,7 +102,6 @@
                 </div>
             </div>
         </div>
-
 
     </AuthenticatedLayout>
 
