@@ -6,29 +6,37 @@ import NavLink from '@/Components/NavLink.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import Dropdown from '@/Components/Dropdown.vue';
+import DropdownLink from '@/Components/DropdownLink.vue';
 import { nextTick } from 'vue';
 
-    const props = defineProps({users: Object})
+    const props = defineProps({users: Object, roles: Object})
 
     const form = useForm({
         search: ''
     })
 
-const search = () => {
-    form.get(route('users.index'), {
-        preserveScroll: true,
-        preserveState: true,
-        onFinish: () => nextTick(() => document.getElementById('search').focus())
+    const roleForm = useForm({
+        password: null,
+        user_id: null,
+        role_id: null
     })
-}
 
-const reset = () => {
-    form.search = ""
-    form.get(route('users.index'), {
-        preserveScroll: true,
-        preserveState: true,
-    })
-}
+    const search = () => {
+        form.get(route('users.index'), {
+            preserveScroll: true,
+            preserveState: true,
+            onFinish: () => nextTick(() => document.getElementById('search').focus())
+        })
+    }
+
+    const reset = () => {
+        form.search = ""
+        form.get(route('users.index'), {
+            preserveScroll: true,
+            preserveState: true,
+        })
+    }
 
 </script>
 
@@ -88,7 +96,9 @@ const reset = () => {
                                 <tr v-for="user in props.users.data">
                                     <td class="p-2 pl-8 text-center border-b border-slate-100">{{ user.name }}</td>
                                     <td class="p-2 pl-8 text-center border-b border-slate-100">{{ user.email }}</td>
-                                    <td class="p-2 pl-8 text-center border-b border-slate-100">{{ user.role }}</td>
+                                    <td class="p-2 pl-8 text-center border-b border-slate-100 relative">
+
+                                    </td>
                                     <td class="p-2 pl-8 text-center border-b border-slate-100"><NavLink :href="route('users.edit', user.id)">Action</NavLink></td>
                                 </tr>
                             </tbody>
