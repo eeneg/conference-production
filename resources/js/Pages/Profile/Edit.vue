@@ -3,6 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
+import AssignRoleFormVue from '@/Layouts/AssignUserRoleLayout.vue'
 import { Head } from '@inertiajs/vue3';
 
 defineProps({
@@ -12,6 +13,13 @@ defineProps({
     status: {
         type: String,
     },
+    roles: {
+        type: Object
+    },
+    currentRole: {
+        type: Object
+    }
+
 });
 </script>
 
@@ -29,6 +37,14 @@ defineProps({
                     <UpdateProfileInformationForm
                         :must-verify-email="mustVerifyEmail"
                         :status="status"
+                        class="max-w-xl"
+                    />
+                </div>
+
+                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                    <AssignRoleFormVue
+                        :roles="roles"
+                        :currentRole="currentRole"
                         class="max-w-xl"
                     />
                 </div>

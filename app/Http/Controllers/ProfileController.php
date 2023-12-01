@@ -8,6 +8,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use App\Models\Role;
+use App\Models\UserRole;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -21,6 +23,8 @@ class ProfileController extends Controller
         return Inertia::render('Profile/Edit', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
+            'roles' => Role::all(),
+            'currentRole' => $request->user()->roles()->first()
         ]);
     }
 
@@ -38,6 +42,22 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit');
+    }
+
+    public function assignRole(Request $request){
+
+        $request->validate(
+            [
+                'role_id' => 'required',
+                'user_id' => 'required|unique'
+            ],
+            [
+                'user_id.unique' => "User is already has this role"
+            ]
+        );
+
+        $user = User::find($request->user_id)->roles()->sync([$request->role_id]);
+
     }
 
     /**
