@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\Role;
+use App\Models\User;
 use App\Models\UserRole;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -49,14 +50,18 @@ class ProfileController extends Controller
         $request->validate(
             [
                 'role_id' => 'required',
-                'user_id' => 'required|unique'
+                'user_id' => 'required'
             ],
             [
-                'user_id.unique' => "User is already has this role"
+                'role_id.required' => 'Field Required'
             ]
         );
 
-        $user = User::find($request->user_id)->roles()->sync([$request->role_id]);
+        $user = User::find($request->user_id);
+
+        $user->roles()->sync([$request->role_id]);
+
+        return Redirect::route('profile.edit');
 
     }
 
