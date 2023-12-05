@@ -51,7 +51,6 @@ class ConferenceController extends Controller
         $request->validate([
             'title' => 'required|unique:conferences',
             'date' => 'required|date',
-            'agenda' => 'required',
             'status' => 'required',
         ]);
 
@@ -142,7 +141,6 @@ class ConferenceController extends Controller
         $request->validate([
             'title' => Rule::unique('conferences')->ignore($id),
             'date' => 'required|date',
-            'agenda' => 'required',
             'status' => 'required',
         ]);
 
