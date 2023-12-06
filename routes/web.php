@@ -5,13 +5,13 @@ use App\Http\Controllers\MinutesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AttachmentController;
+use App\Http\Middleware\IsAdmin;
 use App\Models\Minutes;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -41,17 +41,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile', [ProfileController::class, 'assignRole'])->name('profile.assignRole');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::resource('users', UserController::class);
     Route::patch('/update-password', [UserController::class, 'updatePassword'])->name('user.update-password');
     Route::resource('conferences', ConferenceController::class);
     Route::resource('attachment', AttachmentController::class);
     Route::resource('minutes', MinutesController::class);
 });
 
-Route::get('/asd', function(){
-    set_time_limit(1000);
-    return Http::get('http://172.22.100.143:8000');
-});
+Route::resource('users', UserController::class)->middleware([IsAdmin::class]);
 
 
 require __DIR__.'/auth.php';

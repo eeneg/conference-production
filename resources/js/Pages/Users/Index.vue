@@ -6,11 +6,9 @@ import NavLink from '@/Components/NavLink.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
 import { nextTick } from 'vue';
 
-    const props = defineProps({users: Object, roles: Object})
+    const props = defineProps({users: Object})
 
     const form = useForm({
         search: ''
@@ -36,6 +34,14 @@ import { nextTick } from 'vue';
             preserveScroll: true,
             preserveState: true,
         })
+    }
+
+    const formatRole = (role) => {
+        if(role != null || role != ''){
+            return role.charAt(0).toUpperCase() + role.slice(1)
+        }else{
+            return ''
+        }
     }
 
 </script>
@@ -97,7 +103,7 @@ import { nextTick } from 'vue';
                                     <td class="p-2 pl-8 text-center border-b border-slate-100">{{ user.name }}</td>
                                     <td class="p-2 pl-8 text-center border-b border-slate-100">{{ user.email }}</td>
                                     <td class="p-2 pl-8 text-center border-b border-slate-100 relative">
-
+                                        {{ formatRole(user.roles[0].title) }}
                                     </td>
                                     <td class="p-2 pl-8 text-center border-b border-slate-100"><NavLink :href="route('users.edit', user.id)">Action</NavLink></td>
                                 </tr>

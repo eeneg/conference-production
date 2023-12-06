@@ -41,7 +41,7 @@ defineProps({
                     />
                 </div>
 
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                <div v-if="currentRole.title == 'administrator'" class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                     <AssignRoleFormVue
                         :roles="roles"
                         :currentRole="currentRole"

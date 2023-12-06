@@ -48,6 +48,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    protected $with = [
+        'roles'
+    ];
+
     /**
      * The roles that belong to the User
      *

@@ -1,8 +1,9 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
+import AssignUserRoleLayout from '@/Layouts/AssignUserRoleLayout.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 
 defineProps({
     mustVerifyEmail: {
@@ -13,8 +14,16 @@ defineProps({
     },
     user: {
         type: Object
+    },
+    roles: {
+        type: Object
+    },
+    currentRole: {
+        type: Object
     }
 });
+
+const role = usePage().props.auth.role;
 </script>
 
 <template>
@@ -34,6 +43,13 @@ defineProps({
                         :user="user"
                         class="max-w-xl"
                     />
+                </div>
+
+                <div v-if="role == 'administrator'" class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                    <AssignUserRoleLayout
+                        :roles="roles"
+                        :currentRole="currentRole"
+                        class="max-w-xl"/>
                 </div>
 
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
