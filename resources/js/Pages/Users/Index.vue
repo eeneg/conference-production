@@ -1,11 +1,12 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue'
 import NavLink from '@/Components/NavLink.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { nextTick } from 'vue';
 
     const props = defineProps({users: Object})
@@ -42,6 +43,10 @@ import { nextTick } from 'vue';
         }else{
             return ''
         }
+    }
+
+    const actionBtn = (id) => {
+        router.visit(route('users.edit', id))
     }
 
 </script>
@@ -105,7 +110,10 @@ import { nextTick } from 'vue';
                                     <td class="p-2 pl-8 text-center border-b border-slate-100 relative">
                                         {{ formatRole(user.roles[0].title) }}
                                     </td>
-                                    <td class="p-2 pl-8 text-center border-b border-slate-100"><NavLink :href="route('users.edit', user.id)">Action</NavLink></td>
+                                    <td class="p-2 pl-8 text-center border-b border-slate-100">
+                                        <!-- <NavLink :href="route('users.edit', user.id)">Action</NavLink> -->
+                                        <PrimaryButton @click="actionBtn(user.id)">Action</PrimaryButton>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
