@@ -39,6 +39,10 @@
         })
     }
 
+    const printMinutes = () => {
+
+    }
+
     const closeModal = () => {
         modalShow.value = false
     }
@@ -73,6 +77,7 @@
                                     <PrimaryButton
                                         type="button"
                                         class=""
+                                        @click="printMinutes"
                                     >
                                         Print
                                     </PrimaryButton>
