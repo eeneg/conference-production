@@ -1,6 +1,6 @@
 <script setup>
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-    import { Head, useForm } from '@inertiajs/vue3';
+    import { Head, useForm, router } from '@inertiajs/vue3';
     import InputLabel from '@/Components/InputLabel.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import InputError from '@/Components/InputError.vue';
@@ -16,11 +16,16 @@
     var header = ""
     var success = true
     var message = ""
+    var edited = false
 
     const form = useForm({
         id: props.id,
         content: props.content ? props.content : null
     })
+
+    const minutesEdited = () => {
+        edited = true
+    }
 
     const submit = () => {
         form.post(route('minutes.store'), {
@@ -29,6 +34,7 @@
                 success = true
                 message = "Submitted Successfuly"
                 modalShow.value = true
+                edited = false
             },
             onErrorCaptured: () => {
                 header = "Error!"
@@ -40,7 +46,9 @@
     }
 
     const printMinutes = () => {
-
+        router.visit(route('minutes.show',form.id), {
+            method: 'get'
+        })
     }
 
     const closeModal = () => {
@@ -50,7 +58,13 @@
 </script>
 
 <style>
+.tooltip {
+  @apply invisible absolute;
+}
 
+.has-tooltip:hover .tooltip {
+  @apply visible z-50;
+}
 </style>
 
 <template>
@@ -73,11 +87,17 @@
                                 <div>
                                     <h2 class="font-semibold text-xl text-gray-800 leading-tight">Minutes</h2>
                                 </div>
-                                <div>
+                                <div
+                                    class="group"
+                                    :class="{'has-tooltip':edited}"
+                                >
+                                    <span class='tooltip rounded shadow-lg p-1 bg-gray-800 -mt-9 -ml-7 text-white'>Save first to print</span>
                                     <PrimaryButton
                                         type="button"
-                                        class=""
+                                        class="has-tooltip"
+                                        :class="{'bg-gray-300 hover:bg-gray-400':edited}"
                                         @click="printMinutes"
+                                        :disabled="edited"
                                     >
                                         Print
                                     </PrimaryButton>
@@ -88,7 +108,7 @@
 
                                 <InputError :message="form.errors.content" class="mt-2" />
 
-                                <QuillEditor theme="snow" v-model:content="form.content" contentType="html" style="min-height: 500px;max-height: 500px; overflow-y: auto;"/>
+                                <QuillEditor theme="snow" @textChange="minutesEdited" v-model:content="form.content" contentType="html" style="min-height: 500px;max-height: 500px; overflow-y: auto;"/>
 
                             </div>
 
@@ -111,22 +131,22 @@
     </AuthenticatedLayout>
 
 
-<Modal :show="modalShow">
-    <div class="p-6">
-        <h2 :class="{'text-lg font-medium text-green-500': success == true, 'text-lg font-medium text-red-500': success == false}">
-            {{ header }}
-        </h2>
+    <Modal :show="modalShow">
+        <div class="p-6">
+            <h2 :class="{'text-lg font-medium text-green-500': success == true, 'text-lg font-medium text-red-500': success == false}">
+                {{ header }}
+            </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{message}}
-        </p>
+            <p class="mt-1 text-sm text-gray-600">
+                {{message}}
+            </p>
 
 
-        <SecondaryButton
-            class="w-full mt-2 place-content-center bg-red-400"
-            @click="closeModal">
-                        <p>OK</p>
-        </SecondaryButton>
-    </div>
-</Modal>
+            <SecondaryButton
+                class="w-full mt-2 place-content-center bg-red-400"
+                @click="closeModal">
+                            <p>OK</p>
+            </SecondaryButton>
+        </div>
+    </Modal>
 </template>
