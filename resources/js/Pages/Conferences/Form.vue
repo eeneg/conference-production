@@ -47,7 +47,7 @@
         title: '',
         agenda: '',
         date: '',
-        status: '',
+        status: 'pending',
         attachments: []
     })
 
