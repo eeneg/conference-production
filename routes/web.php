@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('conferences', ConferenceController::class);
     Route::resource('attachment', AttachmentController::class);
     Route::resource('minutes', MinutesController::class);
+    Route::resource('files', FileController::class);
 });
 
 Route::resource('users', UserController::class)->middleware([IsAdmin::class]);

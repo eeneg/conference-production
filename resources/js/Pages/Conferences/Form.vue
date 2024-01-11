@@ -98,7 +98,6 @@
     const getFiles = ($event, index) => {
         let files = $event.target.files
 
-
         files.forEach(function(e, i){
             let hasSameFileName = false
             form.attachments[index].files.forEach(function(existingFiles){
@@ -113,6 +112,7 @@
                 header = "Error!"
                 message = "Duplicate Files."
                 modalShow.value = true
+                document.getElementById('fileUpload').value = []
             }
         })
     }
