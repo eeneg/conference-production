@@ -7,6 +7,7 @@
         <title>Laravel</title>
     </head>
     <body>
-        {{ $mins }}
+        {{-- {{ $mins }} --}}
+        <p>asd</p>
     </body>
 </html>

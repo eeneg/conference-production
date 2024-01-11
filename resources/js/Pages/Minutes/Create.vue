@@ -47,7 +47,20 @@
 
     const printMinutes = () => {
         router.visit(route('minutes.show',form.id), {
-            method: 'get'
+            method: 'get',
+            onSuccess: e => {
+                console.log(e)
+                var f = document.getElementById('i')
+                f.contentWindow.document.write(e.props.content)
+                setTimeout(function () {
+                    f.contentWindow.focus()
+                    f.contentWindow.print()
+
+                    f.contentWindow.document.open();
+                    f.contentWindow.document.write("");
+                    f.contentWindow.document.close();
+                }, 500);
+            }
         })
     }
 
@@ -70,6 +83,7 @@
 <template>
     <Head title="Conference Form" />
 
+    <!-- <iframe id="i" frameborder="0"></iframe> -->
 
     <AuthenticatedLayout>
 

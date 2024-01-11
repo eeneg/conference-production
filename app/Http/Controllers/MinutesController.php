@@ -52,8 +52,6 @@ class MinutesController extends Controller
     public function show(string $id)
     {
         $mins = Minutes::find($id);
-
-        return view('Reports.minutesReports', compact('mins'));
     }
 
     /**
