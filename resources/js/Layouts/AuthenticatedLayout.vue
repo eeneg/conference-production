@@ -43,6 +43,9 @@ const role = usePage().props.auth.role;
                                 <NavLink :href="route('attachment.index')" :active="route().current('attachment.index')">
                                     Find Attachments
                                 </NavLink>
+                                <NavLink :href="route('files.index')" :active="route().current('files.index')">
+                                    File Upload
+                                </NavLink>
                             </div>
                         </div>
 
