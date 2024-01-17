@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('storages', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary()->unique();
+            $table->string('title');
+            $table->string('location');
+            $table->string('details');
             $table->timestamps();
         });
     }
