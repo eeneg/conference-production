@@ -12,7 +12,7 @@ class FileController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Files/Index');
+        return Inertia::render('Files/Index', []);
     }
 
     /**
