@@ -4,6 +4,8 @@ use App\Http\Controllers\ConferenceController;
 use App\Http\Controllers\MinutesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\FileController;
+use App\Http\Controllers\StorageController;
 use App\Http\Controllers\AttachmentController;
 use App\Http\Middleware\IsAdmin;
 use App\Models\Minutes;
@@ -46,6 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('attachment', AttachmentController::class);
     Route::resource('minutes', MinutesController::class);
     Route::resource('files', FileController::class);
+    Route::resource('storage', StorageController::class);
 });
 
 Route::resource('users', UserController::class)->middleware([IsAdmin::class]);
