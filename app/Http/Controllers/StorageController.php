@@ -3,20 +3,23 @@
 namespace App\Http\Controllers;
 
 use Inertia\Inertia;
+use App\Models\Storage;
 use Illuminate\Http\Request;
 
 class StorageController extends Controller
 {
     public function index(){
 
-        return Inertia::render('Storage/Index');
+        return Inertia::render('Storage/Index', [
+            'storage' => Storage::all()
+        ]);
 
     }
 
     public function store(Request $request){
 
         $request->validate([
-            'title' => 'required',
+            'title' => 'required|unique:storages,title',
             'location' => 'required',
         ]);
 
@@ -27,7 +30,7 @@ class StorageController extends Controller
     public function update(Request $request){
 
         $request->validate([
-            'title' => 'required',
+            'title' => 'required}unique:storages,title',
             'location' => 'required',
         ]);
 
