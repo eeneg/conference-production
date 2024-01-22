@@ -8,6 +8,7 @@ use App\Models\PdfContent;
 use App\Models\Conference;
 use App\Services\AttachmentService;
 use App\Services\AttachmentEditService;
+use App\Services\FileHandleService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -19,7 +20,8 @@ class ConferenceController extends Controller
 
     public function __construct(
         private AttachmentService $attachmentService,
-        private AttachmentEditService $editService
+        private AttachmentEditService $editService,
+        private FileHandleService $fileHandleService,
     ){}
     /**
      * Display a listing of the resource.
@@ -72,7 +74,7 @@ class ConferenceController extends Controller
 
         }
 
-        $attachments = Conference::fileHandle($request->attachments, $conf->id);
+        $attachments = $this->fileHandleService->fileHandle($request->attachments, $conf->id);
 
         Conference::find($conf->id)->attachment()->createMany($attachments);
 
@@ -181,7 +183,7 @@ class ConferenceController extends Controller
 
         $conf = Conference::find($request->id);
 
-        $files = Storage::deleteDirectory('public/' . $conf->id);
+        $files = Storage::deleteDirectory('public/Conference_Attachments/' . $conf->id);
 
         PdfContent::whereHas('attachment', fn ($q) => $q->whereConferenceId($conf->id))
                 ->get('id')

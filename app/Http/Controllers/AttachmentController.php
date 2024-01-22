@@ -52,7 +52,7 @@ class AttachmentController extends Controller
      */
     public function edit(Attachment $attachment)
     {
-        return Storage::download('public/' . $attachment->path, $attachment->file_name);
+        return Storage::download('public/Conference_Attachments/' . $attachment->path, $attachment->file_name);
     }
 
     /**

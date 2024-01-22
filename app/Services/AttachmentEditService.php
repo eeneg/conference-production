@@ -41,7 +41,7 @@ class AttachmentEditService {
                         ];
                         $newFile = $conf->attachment()->create($new_file);
                         array_push($request_file, $newFile->id);
-                        Storage::putFileAs('public/' . $conf->id . '/' . str_replace(' ', '_', $data['category']), $file['file'], str_replace(' ', '_', $file['file']->getClientOriginalName()));
+                        Storage::putFileAs('public/Conference_Attachments/' . $conf->id . '/' . str_replace(' ', '_', $data['category']), $file['file'], str_replace(' ', '_', $file['file']->getClientOriginalName()));
                     }
                 }
             }
@@ -65,7 +65,7 @@ class AttachmentEditService {
         }
 
         foreach(array_diff($existing_categories->toArray(), $request_categories) as $folders){
-            Storage::deleteDirectory('public/'. $conf->id . '/' . $folders);
+            Storage::deleteDirectory('public/Conference_Attachments/'. $conf->id . '/' . $folders);
         }
 
     }
