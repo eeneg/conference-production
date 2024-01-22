@@ -18,37 +18,6 @@ class Conference extends Model
 
     protected $fillable = ['title', 'agenda', 'date', 'attachments', 'status'];
 
-    public static function fileHandle($files, $id){
-
-        $attachments = [];
-
-        foreach($files as $e){
-            $category = $e['category'];
-            $category_order = $e['category_order'];
-
-            foreach($e['files'] as $key => $file){
-                array_push($attachments,
-                    [
-                        'category'          => $category,
-                        'category_order'    => $category_order,
-                        'file_name'         => $file['file']->getClientOriginalName(),
-                        'path'              => str_replace(' ', '_',$id . '/' . $category . '/' . $file['file']->getClientOriginalName()),
-                        'details'           => $file['file_details'],
-                        'storage_location'  => $file['storage_location'],
-                        'file_order'        => $file['file_order'],
-                        'storage_location'  => $file['storage_location'],
-                    ]
-                );
-                if(is_file($file['file'])){
-                    Storage::putFileAs('public/' . $id . '/' . str_replace(' ', '_', $category), $file['file'], str_replace(' ','_',$file['file']->getClientOriginalName()));
-                }
-            }
-        };
-
-        return $attachments;
-
-    }
-
     public function minute() : HasOne
     {
         return $this->hasOne(Minutes::class);
