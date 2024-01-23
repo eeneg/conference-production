@@ -3,16 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Storage;
+use App\Models\File;
 use Inertia\Inertia;
+use App\Services\UploadFileHandlerService;
 
 class FileController extends Controller
 {
+
+    public function __construct(
+        private UploadFileHandlerService $uploadFileHandlerService,
+    ){}
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return Inertia::render('Files/Index', []);
+        return Inertia::render('Files/Index', [
+            'storage' => Storage::all()
+        ]);
     }
 
     /**
@@ -28,7 +37,22 @@ class FileController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'files' => 'required',
+            'storage_id' => 'required',
+            'details' => 'required',
+        ]);
+
+        try{
+            $files = $this->uploadFileHandlerService->fileHandle($request->all());
+        }catch(Exception $e){
+            report($e);
+
+            return $e->getMessage();
+        }
+
+        File::createMany($files);
+
     }
 
     /**
