@@ -15,7 +15,7 @@ class Attachment extends Model
 {
     use HasFactory, HasUuids, Searchable;
 
-    protected $fillable = ['conference_id', 'files', 'category', 'file_name', 'path', 'details', 'storage_location', 'category_order', 'file_order'];
+    protected $fillable = ['conference_id', 'files', 'category', 'file_name', 'path', 'details', 'category_order', 'file_order'];
 
     public function conference() : BelongsTo
     {

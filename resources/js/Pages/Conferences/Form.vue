@@ -210,7 +210,7 @@
 
                         <InputLabel for="date" value="Status:"/>
 
-                        <select name="cars" id="cars" v-model="form.status" class="border rounded text-gray-700 border-gray-300">
+                        <select name="status" id="status" v-model="form.status" class="border rounded text-gray-700 border-gray-300">
                             <option value="pending">Pending</option>
                             <option value="completed">Completed</option>
                         </select>
