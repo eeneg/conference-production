@@ -1,5 +1,5 @@
 <script setup>
-import DangerButton from '@/Components/DangerButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { router, useForm, usePage } from '@inertiajs/vue3';
@@ -42,16 +42,17 @@ import { ref } from 'vue';
             </div>
 
             <div class="flex items-center gap-4">
-                <DangerButton
+                <PrimaryButton :disabled="form.processing" :class="{ 'opacity-25': form.processing }">Save</PrimaryButton>
+                <SecondaryButton
                     class=""
                     type="button"
                     :disabled="form.processing"
                     :class="{ 'opacity-25': form.processing }"
+                    v-if="form.role_id != null"
                     @click="clearSelectedRole"
                 >
                         Clear
-                </DangerButton>
-                <PrimaryButton :disabled="form.processing" :class="{ 'opacity-25': form.processing }">Save</PrimaryButton>
+                </SecondaryButton>
 
                 <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
                     <p v-if="form.processing" class="text-sm text-gray-600">Loading...</p>
