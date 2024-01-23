@@ -9,6 +9,7 @@
     import DangerButton from '@/Components/DangerButton.vue';
     import InputError from '@/Components/InputError.vue';
     import {ref} from  'vue';
+    import axios from 'axios';
 
     const props = defineProps({storage: Object})
 
@@ -19,7 +20,13 @@
         details: null
     })
 
+    const confirmForm = useForm({
+        password: null
+    })
+
     const edit = ref(false)
+
+    const confirmingStorageDeletion = ref(false)
 
     var header = ""
     var message = ""
@@ -59,26 +66,45 @@
             onError: () => {
                 header = "Error!"
                 success = false
-                message = "Something went wrong"
+                message = "Something went wrong!"
                 modalShow.value = true
             }
         })
     }
 
+    const checkStorage = () => {
+        axios.get(route('storage.check', form.id))
+        .then(e => {
+            if(e.data){
+                confirmingStorageDeletion.value = true
+            }else{
+                header = "Error!"
+                success = false
+                message = "There are Files and Attachments insinde this storage, thus it cannot be deleted!"
+                modalShow.value = true
+            }
+        })
+        .catch(e => {
+
+        })
+    }
+
     const deleteStorage = () => {
-        form.submit('delete', route('storage.destroy', form.id),{
+        confirmForm.submit('delete', route('storage.destroy', form.id),{
             onSuccess: () => {
                 edit.value = false
                 header = "Success!"
                 success = true
                 message = "Storage Location Deleted Successfuly"
                 modalShow.value = true
-                form.reset()
+                closeDeleteModal()
+                confirmForm.reset()
             },
             onError: () => {
+                edit.value = false
                 header = "Error!"
-                success = false
-                message = "Something went wrong"
+                success = true
+                message = "Something went wrong!"
                 modalShow.value = true
             }
         })
@@ -92,6 +118,10 @@
     const clearForm = () => {
         form.reset()
         edit.value = false
+    }
+
+    const closeDeleteModal = () => {
+        confirmingStorageDeletion.value = false
     }
 
     const closeModal = () => {
@@ -118,12 +148,12 @@
                                 <h2 class="text-lg font-medium text-gray-900">Storage Location</h2>
 
                                 <p class="mt-1 text-sm text-gray-600">
-                                    Create or Edit Storage location for your files
+                                    Create, Edit, or Destroy Storage location for your files
                                 </p>
                             </header>
                         </div>
                     </div>
-                    <div class="mt-3 mb-3 mr-3 pr-6 pl-5 flex flex-nowrap min-h-80 max-h-94">
+                    <div class="mt-3 mb-3 mr-3 pr-6 pl-5 flex flex-nowrap min-h-80 max-h-96">
                         <div class="space-y-6 mr-3 basis-1/2">
                             <div class="">
                                 <InputLabel>Title</InputLabel>
@@ -144,7 +174,7 @@
                                 <PrimaryButton @click="submit" v-if="edit == false">Save</PrimaryButton>
                                 <PrimaryButton @click="update" v-if="edit">Save Changes</PrimaryButton>
                                 <SecondaryButton v-if="edit" @click="clearForm">Cancel</SecondaryButton>
-                                <DangerButton v-if="edit" class="float-right" @click="deleteStorage">Delete</DangerButton>
+                                <DangerButton v-if="edit" class="float-right" @click="checkStorage">Delete</DangerButton>
                             </div>
                         </div>
                         <div class="ml-3 mb-5 overflow-y-auto basis-1/2">
@@ -171,6 +201,50 @@
                 </div>
             </div>
         </div>
+
+
+        <Modal :show="confirmingStorageDeletion" @close="closeModal">
+            <div class="p-6">
+                <h2 class="text-lg font-medium text-gray-900">
+                    Are you sure you want to delete the storage location?
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-600">
+                    Once the storage location is deleted, all of its resources and data will be permanently deleted. Please
+                    enter your password to confirm you would like to permanently delete the storage location.
+                </p>
+
+                <div class="mt-6">
+                    <InputLabel for="password" value="Password" class="sr-only" />
+
+                    <TextInput
+                        id="password"
+                        ref="passwordInput"
+                        v-model="confirmForm.password"
+                        type="password"
+                        class="mt-1 block w-3/4"
+                        placeholder="Password"
+                        @keyup.enter="deleteStorage"
+                    />
+
+                    <InputError :message="confirmForm.errors.password" class="mt-2" />
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <SecondaryButton @click="closeDeleteModal"> Cancel </SecondaryButton>
+
+                    <DangerButton
+                        class="ml-3"
+                        :class="{ 'opacity-25': confirmForm.processing }"
+                        :disabled="confirmForm.processing"
+                        @click="deleteStorage"
+                    >
+                        Delete Storage Location
+                    </DangerButton>
+                </div>
+            </div>
+        </Modal>
+
 
         <Modal :show="modalShow">
             <div class="p-6">

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Storage;
+use App\Models\File;
+use App\Models\Attachment;
 use Illuminate\Http\Request;
 
 class StorageController extends Controller
@@ -30,7 +32,7 @@ class StorageController extends Controller
     public function update(Request $request){
 
         $request->validate([
-            'title' => 'required}unique:storages,title',
+            'title' => 'required|unique:storages,title',
             'location' => 'required',
         ]);
 
@@ -40,7 +42,21 @@ class StorageController extends Controller
 
     }
 
-    public function destroy($id){
+    public function checkStorageRelation($id){
+
+        $files = File::where('storage_id', $id)->count() == 0;
+
+        $attachments = Attachment::where('storage_id', $id)->count() == 0;
+
+        return $files || $attachments;
+
+    }
+
+    public function destroy(Request $request, $id){
+
+        $request->validate([
+            'password' => ['required', 'current-password'],
+        ]);
 
         $storage = Storage::find($id);
 

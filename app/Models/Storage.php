@@ -10,7 +10,7 @@ class Storage extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = ['title', 'location', 'details'];
+    protected $fillable = ['storage_id', 'title', 'location', 'details'];
 
 
 }
