@@ -51,7 +51,7 @@ class FileController extends Controller
             return $e->getMessage();
         }
 
-        File::createMany($files);
+        Storage::find($request->storage_id)->files()->createMany($files);
 
     }
 

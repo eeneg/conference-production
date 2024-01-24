@@ -15,7 +15,7 @@
     const props = defineProps({storage:Object})
 
     const form = useForm({
-        files: null,
+        files: [],
         storage_id: null,
         details: null
     })
@@ -103,12 +103,12 @@
                             <div class="">
                                 <InputLabel>Upload a File</InputLabel>
                                 <input v-on:change="getFiles($event, i)" type="file" placeholder="Storage Location" multiple accept="application/pdf"   />
-                                <InputError :message="form.errors.file" class="mt-2" />
+                                <InputError :message="form.errors.files" class="mt-2" />
                             </div>
                             <div class="">
                                 <InputLabel>Storage Location</InputLabel>
                                 <select v-model="form.storage_id" name="storage_id" id="storage_id" class="border w-full rounded text-gray-700 border-gray-300">
-                                    <option selected>---</option>
+                                    <option :value="null" selected>---</option>
                                     <option :value="storage.id" v-for="storage in props.storage">{{ storage.title.charAt(0).toUpperCase() + storage.title.slice(1) }}</option>
                                 </select>
                                 <InputError :message="form.errors.storage_id" class="mt-2" />
