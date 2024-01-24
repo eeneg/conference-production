@@ -75,12 +75,13 @@
     const checkStorage = () => {
         axios.get(route('storage.check', form.id))
         .then(e => {
+            console.log(e.data)
             if(e.data){
                 confirmingStorageDeletion.value = true
             }else{
                 header = "Error!"
                 success = false
-                message = "There are Files and Attachments insinde this storage, thus it cannot be deleted!"
+                message = "There are Files and Attachments inside this storage, thus it cannot be deleted!"
                 modalShow.value = true
             }
         })
@@ -184,7 +185,7 @@
                                         <th class="border-b border-slate-300" style="width: 30%;">Title</th>
                                         <th class="border-b border-slate-300" style="width: 30%;">Location</th>
                                         <th class="border-b border-slate-300" style="width: 20%;">Details</th>
-                                        <th class="border-b border-slate-300" style="width: 20%;">Action</th>
+                                        <th class="border-b border-slate-300" style="width: 20%;"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
