@@ -7,6 +7,8 @@ use App\Models\Storage;
 use App\Models\File;
 use Inertia\Inertia;
 use App\Services\UploadFileHandlerService;
+use Exception;
+use Throwable;
 
 class FileController extends Controller
 {
@@ -20,7 +22,9 @@ class FileController extends Controller
     public function index()
     {
         return Inertia::render('Files/Index', [
-            'storage' => Storage::all()
+            'storage' => Storage::all(),
+            'duplicates' => [],
+            'error_message' => ''
         ]);
     }
 
@@ -30,6 +34,24 @@ class FileController extends Controller
     public function create()
     {
         //
+    }
+
+    public function fileCheck(Request $request){
+
+        $existing_file_names = [];
+
+        foreach($request->fileNames as $file){
+            $check = File::where('storage_id', $request->storage_id)->where('file_name', str_replace(' ','_',$file))->count() > 0;
+            if($check){
+                array_push($existing_file_names, $file);
+            }
+        }
+
+        if(count($existing_file_names) > 0){
+            return ['response' => 'Duplicate File Names Inside Storage', 'file_names' => $existing_file_names, 'check' => true];
+        }else{
+            return ['check' => false];
+        }
     }
 
     /**
@@ -47,7 +69,6 @@ class FileController extends Controller
             $files = $this->uploadFileHandlerService->fileHandle($request->all());
         }catch(Exception $e){
             report($e);
-
             return $e->getMessage();
         }
 

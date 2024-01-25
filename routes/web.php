@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('files', FileController::class);
     Route::resource('storage', StorageController::class);
     Route::get('/storage_relation/{id}', [StorageController::class, 'checkStorageRelation'])->name('storage.check');
+    Route::post('/file_check', [FileController::class, 'fileCheck'])->name('file.check');
 });
 
 Route::resource('users', UserController::class)->middleware([IsAdmin::class]);

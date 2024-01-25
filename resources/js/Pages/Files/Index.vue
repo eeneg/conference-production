@@ -8,6 +8,7 @@
     import SecondaryButton from '@/Components/SecondaryButton.vue'
     import Modal from '@/Components/Modal.vue';
     import InputError from '@/Components/InputError.vue';
+import axios from 'axios';
 
 
 
@@ -19,6 +20,10 @@
         storage_id: null,
         details: null
     })
+
+    const existingFileNames = ref([])
+    const submitErrorMsg = ref('')
+    var fileNames = []
 
     var header = ""
     var message = ""
@@ -34,6 +39,9 @@
                 message = "Storage Location Submitted Successfuly"
                 modalShow.value = true
                 form.reset()
+                existingFileNames.value = []
+                submitErrorMsg.value = ''
+                document.getElementById('files').value = ''
             },
             onError: (e) => {
                 header = "Error!"
@@ -67,12 +75,34 @@
         })
     }
 
+    const fileCheck = () => {
+        console.log(fileNames, form.storage_id)
+        axios.post(route('file.check'), {fileNames: fileNames, storage_id: form.storage_id})
+        .then(e => {
+            if(e.data.check){
+                existingFileNames.value = e.data.file_names
+                submitErrorMsg.value = e.data.response
+            }else{
+                submit()
+            }
+        })
+        .catch(e => {
+            console.log(e)
+        })
+    }
+
     const closeModal = () => {
         modalShow.value = false
     }
 
     const getFiles = (e, i) => {
         form.files = e.target.files
+        fileNames = []
+        existingFileNames.value = []
+        submitErrorMsg.value = ''
+        Array.from(e.target.files).forEach(element => {
+            fileNames.push(element.name)
+        });
     }
 
 </script>
@@ -102,8 +132,9 @@
                         <div class="space-y-6">
                             <div class="">
                                 <InputLabel>Upload a File</InputLabel>
-                                <input v-on:change="getFiles($event, i)" type="file" placeholder="Storage Location" multiple accept="application/pdf"   />
-                                <InputError :message="form.errors.files" class="mt-2" />
+                                <input v-on:change="getFiles($event, i)" type="file" id="files" class="files" placeholder="Storage Location" multiple accept="application/pdf"   />
+                                <InputError :message="form.errors.files" class="mt-2"/>
+                                <InputError :message="submitErrorMsg" class="mt-2"/>
                             </div>
                             <div class="">
                                 <InputLabel>Storage Location</InputLabel>
@@ -119,8 +150,30 @@
                                 <InputError :message="form.errors.details" class="mt-2" />
                             </div>
                             <div class="">
-                                <PrimaryButton @click="submit">Save</PrimaryButton>
+                                <PrimaryButton @click="fileCheck">Save</PrimaryButton>
                             </div>
+                        </div>
+                        <div class="space-y-6 pl-6 pr-6 max-h-72 overflow-auto">
+                            <table class="w-full" v-if="existingFileNames.length > 0">
+                                <thead>
+                                    <tr>
+                                        <th class="border-b border-slate-300 w-1/6 text-center">#</th>
+                                        <th class="border-b border-slate-300 w-5/6 text-center text-red-600">
+                                            Duplicate Files <br> (Please Delete or Rename Files)
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-slate-700">
+                                    <tr v-for="(file, i) in existingFileNames">
+                                        <td class="text-center p-1 text-center border-b border-slate-100">
+                                            {{ i + 1 }}
+                                        </td>
+                                        <td class="text-center p-1 text-center border-b border-slate-100">
+                                            {{file}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
