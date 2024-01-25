@@ -13,7 +13,7 @@
     import DangerButton from '@/Components/DangerButton.vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
 
-    const props = defineProps({conf: Object, edit: Boolean})
+    const props = defineProps({conf: Object, edit: Boolean, storage:Object})
 
     const modalShow = ref(false)
     const confirmingConferenceDeletion = ref(false);
@@ -69,13 +69,19 @@
     const submitData = (e) => {
 
         var checkFile = []
+        var storage_id = []
 
         form.attachments.forEach(function(e){
             checkFile.push(e.files.length > 0 ? 1 : 0)
+            if(e.files.length > 0){
+                e.files.forEach(function(f){
+                    storage_id.push(f.storage_id != null ? 1 : 0)
+                })
+            }
         })
 
-        if(checkFile.includes(0)){
-            alert("Category Files Cannot be Empty")
+        if(checkFile.includes(0) || storage_id.includes(0)){
+            alert("Category Files and Storage Location Cannot be Empty")
         }else{
             emit('passData', form);
         }
@@ -107,7 +113,7 @@
             })
             console.log(hasSameFileName)
             if(hasSameFileName == false){
-                form.attachments[index].files.push({file: e, name: e.name, file_details: null, storage_location: null, file_order: form.attachments[index].files.length})
+                form.attachments[index].files.push({file: e, name: e.name, file_details: null, storage_id: null, file_order: form.attachments[index].files.length})
             }else{
                 header = "Error!"
                 message = "Duplicate Files."
@@ -308,12 +314,16 @@
                                                     class="font-medium text-gray-700 border-gray-300 mt-2 w-full"
                                                     placeholder="File Details">
 
-                                                <input
-                                                    v-model="form.attachments[i].files[index].storage_location"
-                                                    type="text"
-                                                    name="storage_location"
-                                                    class="font-medium text-gray-700 border-gray-300 mt-0 w-full"
-                                                    placeholder="Storage Location">
+                                                <select
+                                                    v-model="form.attachments[i].files[index].storage_id"
+                                                    name="storage_id"
+                                                    id="storage_id"
+                                                    class="border w-full text-gray-700 border-gray-300 mt-0"
+                                                    :class="{'border-red-600':form.attachments[i].files[index].storage_id == null}">
+                                                    <option :value="null" selected>Storage Location</option>
+                                                    <option :value="storage.id" v-for="storage in props.storage">{{ storage.title.charAt(0).toUpperCase() + storage.title.slice(1) }}</option>
+                                                </select>
+                                                <InputError :message="'Cannot be Empty'" v-if="form.attachments[i].files[index].storage_id == null"/>
                                             </div>
 
                                             <div class="basis border-l-2 text-center p-2">

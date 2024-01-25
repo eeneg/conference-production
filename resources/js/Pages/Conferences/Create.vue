@@ -6,6 +6,8 @@
     import { ref } from 'vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
 
+    var props = defineProps({storage:Object})
+
     var header = ""
     var message = ""
     var success = true
@@ -55,7 +57,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Conference Form</h2>
         </template>
 
-        <Form @passData ="submit($event)" :conf="null" :edit="false">
+        <Form @passData ="submit($event)" :conf="null" :edit="false" :storage="props.storage">
 
         </Form>
 

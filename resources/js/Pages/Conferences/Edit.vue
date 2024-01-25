@@ -6,7 +6,7 @@
     import { ref } from 'vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
 
-    const props = defineProps({conf:Object, edit:Boolean})
+    const props = defineProps({conf:Object, edit:Boolean, storage:Object})
 
     var header = ""
     var message = ""
@@ -74,7 +74,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Conference Edit Form</h2>
         </template>
 
-        <Form @passData ="submit($event)" @deleteConf ="submitDelete($event)" :conf="props.conf" :edit="true">
+        <Form @passData ="submit($event)" @deleteConf ="submitDelete($event)" :conf="props.conf" :edit="true" :storage="props.storage">
 
         </Form>
 

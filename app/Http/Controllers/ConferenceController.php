@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use App\Models\Storage as StorageModel;
 use Throwable;
 
 class ConferenceController extends Controller
@@ -42,7 +43,9 @@ class ConferenceController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Conferences/Create');
+        return Inertia::render('Conferences/Create', [
+            'storage' => StorageModel::all()
+        ]);
     }
 
     /**
@@ -89,7 +92,9 @@ class ConferenceController extends Controller
     {
         $conf = Conference::find($id);
 
-        return Inertia::render('Conferences/Show', $conf);
+        return Inertia::render('Conferences/Show', [
+            'conf'      => $conf,
+        ]);
     }
 
     /**
@@ -121,7 +126,7 @@ class ConferenceController extends Controller
                     'name' => $file->file_name,
                     'path' => $file->path,
                     'file_details' => $file->details,
-                    'storage_location' => $file->storage_location,
+                    'storage_id' => $file->storage_id,
                 ]);
 
             };
@@ -132,7 +137,11 @@ class ConferenceController extends Controller
 
         $conf->attachments = $attachments;
 
-        return Inertia::render('Conferences/Edit', ['conf' => $conf, 'edit' => true]);
+        return Inertia::render('Conferences/Edit', [
+            'conf' => $conf,
+            'edit' => true,
+            'storage'   => StorageModel::all()
+        ]);
     }
 
     /**
