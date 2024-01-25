@@ -12,7 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('pdf_contents', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary()->unique();
+            $table->uuid('attachment_id');
+            $table->foreign('attachment_id')
+                ->references('id')
+                ->on('attachments');
+            $table->string('content');
             $table->timestamps();
         });
     }
