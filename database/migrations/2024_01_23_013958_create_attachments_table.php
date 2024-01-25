@@ -20,7 +20,7 @@ return new class extends Migration
             $table->uuid('storage_id');
             $table->foreign('storage_id')
                 ->references('id')
-                    ->on('storages');
+                ->on('storages');
             $table->string('category');
             $table->integer('category_order');
             $table->integer('file_order');

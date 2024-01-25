@@ -35,9 +35,8 @@ class AttachmentEditService {
                             'file_name'         => $file['file']->getClientOriginalName(),
                             'path'              => str_replace(' ', '_', $conf->id . '/' . $data['category'] . '/' . $file['file']->getClientOriginalName()),
                             'details'           => $file['file_details'],
-                            'storage_location'  => $file['storage_location'],
+                            'storage_id'  => $file['storage_id'],
                             'file_order'        => $file['file_order'],
-                            'storage_location'  => $file['storage_location'],
                         ];
                         $newFile = $conf->attachment()->create($new_file);
                         array_push($request_file, $newFile->id);
