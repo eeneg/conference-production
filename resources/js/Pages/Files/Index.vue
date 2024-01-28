@@ -18,6 +18,7 @@ import axios from 'axios';
     const form = useForm({
         files: [],
         storage_id: null,
+        category_id: null,
         details: null
     })
 
@@ -138,6 +139,14 @@ import axios from 'axios';
                             </div>
                             <div class="">
                                 <InputLabel>Storage Location</InputLabel>
+                                <select v-model="form.storage_id" name="storage_id" id="storage_id" class="border w-full rounded text-gray-700 border-gray-300">
+                                    <option :value="null" selected>---</option>
+                                    <option :value="storage.id" v-for="storage in props.storage">{{ storage.title.charAt(0).toUpperCase() + storage.title.slice(1) }}</option>
+                                </select>
+                                <InputError :message="form.errors.storage_id" class="mt-2" />
+                            </div>
+                            <div class="">
+                                <InputLabel>Category</InputLabel>
                                 <select v-model="form.storage_id" name="storage_id" id="storage_id" class="border w-full rounded text-gray-700 border-gray-300">
                                     <option :value="null" selected>---</option>
                                     <option :value="storage.id" v-for="storage in props.storage">{{ storage.title.charAt(0).toUpperCase() + storage.title.slice(1) }}</option>
