@@ -98,6 +98,7 @@
                 success = true
                 message = "Storage Location Deleted Successfuly"
                 modalShow.value = true
+                form.reset()
                 closeDeleteModal()
                 confirmForm.reset()
             },
@@ -133,7 +134,7 @@
 
 </script>
 <template>
-    <Head title="Attachments" />
+    <Head title="Attachments"/>
 
     <AuthenticatedLayout>
         <template #header>
@@ -146,7 +147,7 @@
                     <div class="flex flex-row">
                         <div class="pl-5 pr-6 mt-3 grow mb-3">
                             <header>
-                                <h2 class="text-lg font-medium text-gray-900">Storage Location</h2>
+                                <h2 class="text-lg font-medium text-gray-900">Physical Storage Location</h2>
 
                                 <p class="mt-1 text-sm text-gray-600">
                                     Create, Edit, or Destroy Storage location for your files
@@ -154,7 +155,7 @@
                             </header>
                         </div>
                     </div>
-                    <div class="mt-3 mb-3 mr-3 pr-6 pl-5 flex flex-nowrap min-h-80 max-h-96">
+                    <div class="mt-3 mb-3 mr-3 pr-6 pl-5 flex flex-nowrap min-h-80 max-h-80">
                         <div class="space-y-6 mr-3 basis-1/2">
                             <div class="">
                                 <InputLabel>Title</InputLabel>
@@ -182,18 +183,16 @@
                             <table class="w-full table-auto text-center">
                                 <thead>
                                     <tr>
-                                        <th class="border-b border-slate-300" style="width: 30%;">Title</th>
-                                        <th class="border-b border-slate-300" style="width: 30%;">Location</th>
-                                        <th class="border-b border-slate-300" style="width: 20%;">Details</th>
+                                        <th class="border-b border-slate-300" style="width: 40%;">Title</th>
+                                        <th class="border-b border-slate-300" style="width: 40%;">Location</th>
                                         <th class="border-b border-slate-300" style="width: 20%;"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="i in props.storage">
-                                        <td>{{i.title}}</td>
-                                        <td>{{i.location}}</td>
-                                        <td>{{i.details}}</td>
-                                        <td><button class="border-b-2 border-b-indigo-400 hover:border-b-indigo-800" @click="fillForm(i)">Edit</button></td>
+                                    <tr v-for="i in props.storage" class="border-b-2 py-2">
+                                        <td class="py-2 text-wrap">{{i.title}}</td>
+                                        <td class="py-2 text-wrap">{{i.location}}</td>
+                                        <td class="py-2 text-wrap"><button class="border-b-2 border-b-indigo-400 hover:border-b-indigo-800" @click="fillForm(i)">Edit</button></td>
                                     </tr>
                                 </tbody>
                             </table>
