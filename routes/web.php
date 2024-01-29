@@ -7,6 +7,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\StorageController;
 use App\Http\Controllers\AttachmentController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Middleware\IsAdmin;
 use App\Models\Minutes;
 use GuzzleHttp\Client;
@@ -49,8 +51,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('minutes', MinutesController::class);
     Route::resource('files', FileController::class);
     Route::resource('storage', StorageController::class);
+    Route::resource('settings', SettingController::class);
+    Route::resource('category', CategoryController::class);
     Route::get('/storage_relation/{id}', [StorageController::class, 'checkStorageRelation'])->name('storage.check');
     Route::post('/file_check', [FileController::class, 'fileCheck'])->name('file.check');
+    Route::get('/category_check/{id}', [CategoryController::class, 'checkCategoryRelation'])->name('category.check');
 });
 
 Route::resource('users', UserController::class)->middleware([IsAdmin::class]);
