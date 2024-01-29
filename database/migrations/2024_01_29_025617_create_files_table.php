@@ -18,6 +18,7 @@ return new class extends Migration
                 ->references('id')
                 ->on('storages');
             $table->string('file_name');
+            $table->date('date');
             $table->string('path');
             $table->string('details');
             $table->timestamps();

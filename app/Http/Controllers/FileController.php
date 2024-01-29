@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Storage;
+use App\Models\Category;
 use App\Models\File;
 use Inertia\Inertia;
 use App\Services\UploadFileHandlerService;
@@ -23,6 +24,7 @@ class FileController extends Controller
     {
         return Inertia::render('Files/Index', [
             'storage' => Storage::all(),
+            'category' => Category::all(),
             'duplicates' => [],
             'error_message' => ''
         ]);
@@ -62,6 +64,8 @@ class FileController extends Controller
         $request->validate([
             'files' => 'required',
             'storage_id' => 'required',
+            'category_id' => 'required',
+            'date' => 'required',
             'details' => 'required',
         ]);
 
@@ -72,7 +76,14 @@ class FileController extends Controller
             return $e->getMessage();
         }
 
-        Storage::find($request->storage_id)->files()->createMany($files);
+        $file = Storage::find($request->storage_id)->files()->createMany($files);
+
+        $this->attachCategory($request->category_id, $file);
+    }
+
+    public function attachCategory($category_id, $files){
+
+        $files->first()->category()->attach($category_id);
 
     }
 

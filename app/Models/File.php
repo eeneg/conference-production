@@ -8,15 +8,21 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Laravel\Scout\Attributes\SearchUsingFullText;
 use Laravel\Scout\Searchable;
 use App\Models\Storage;
+use App\Models\Category;
+use App\Models\FileCategory;
 
 
 class File extends Model
 {
     use HasFactory, HasUuids, Searchable;
 
-    protected $fillable = ['file_name', 'path', 'details'];
+    protected $fillable = ['file_name', 'path', 'details', 'date'];
 
     public function storage(){
         return $this->belongsTo(Storage::class);
+    }
+
+    public function category(){
+        return $this->belongsToMany(Category::class, 'file_categories', 'file_id', 'category_id')->using(FileCategory::class);
     }
 }
