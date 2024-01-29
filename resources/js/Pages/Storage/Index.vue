@@ -134,20 +134,16 @@
 
 </script>
 <template>
-    <Head title="Attachments"/>
+    <Head title="Attachments" />
 
-    <AuthenticatedLayout>
-        <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Storage</h2>
-        </template>
-
+    <div>
         <div class="py-5">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="flex flex-row">
                         <div class="pl-5 pr-6 mt-3 grow mb-3">
                             <header>
-                                <h2 class="text-lg font-medium text-gray-900">Physical Storage Location</h2>
+                                <h2 class="text-lg font-medium text-gray-900">Storage Location</h2>
 
                                 <p class="mt-1 text-sm text-gray-600">
                                     Create, Edit, or Destroy Storage location for your files
@@ -155,36 +151,43 @@
                             </header>
                         </div>
                     </div>
-                    <div class="mt-3 mb-3 mr-3 pr-6 pl-5 flex flex-nowrap min-h-80 max-h-80">
-                        <div class="space-y-6 mr-3 basis-1/2">
-                            <div class="">
+                    <div class="mt-3 mb-3 mr-3 pr-6 pl-5">
+                        <div class="flex flex-row space-x-4">
+                            <div class="basis-1/2">
                                 <InputLabel>Title</InputLabel>
                                 <TextInput class="w-full" type="text" v-model="form.title" placeholder="Title"/>
                                 <InputError :message="form.errors.title" class="mt-2" />
                             </div>
-                            <div class="">
+                            <div class="basis-1/2">
                                 <InputLabel>Location</InputLabel>
                                 <TextInput class="w-full" type="text" v-model="form.location" placeholder="Location"/>
                                 <InputError :message="form.errors.location" class="mt-2" />
                             </div>
-                            <div class="">
+                        </div>
+                        <div class="flex flex-row space-x-4 mt-4">
+                            <div class="basis-full">
                                 <InputLabel>Details</InputLabel>
-                                <TextInput class="w-full" type="text" v-model="form.details" placeholder="Details"/>
+                                <textarea class="w-full rounded border-gray-300" type="text" v-model="form.details" placeholder="Details"></textarea>
                                 <InputError :message="form.errors.details" class="mt-2" />
                             </div>
-                            <div class="space-x-3">
+                        </div>
+                        <div class="flex flex-row">
+                            <div class="space-x-3 mt-2">
                                 <PrimaryButton @click="submit" v-if="edit == false">Save</PrimaryButton>
                                 <PrimaryButton @click="update" v-if="edit">Save Changes</PrimaryButton>
                                 <SecondaryButton v-if="edit" @click="clearForm">Cancel</SecondaryButton>
                                 <DangerButton v-if="edit" class="float-right" @click="checkStorage">Delete</DangerButton>
                             </div>
                         </div>
-                        <div class="ml-3 mb-5 overflow-y-auto basis-1/2">
+                    </div>
+                    <div class="mt-3 mb-3 mr-3 pr-6 pl-5 flex flex-row">
+                        <div class="basis-full p-2 max-h-80 overflow-auto mb-5">
                             <table class="w-full table-auto text-center">
                                 <thead>
                                     <tr>
-                                        <th class="border-b border-slate-300" style="width: 40%;">Title</th>
-                                        <th class="border-b border-slate-300" style="width: 40%;">Location</th>
+                                        <th class="border-b border-slate-300" style="width: 30%;">Title</th>
+                                        <th class="border-b border-slate-300" style="width: 30%;">Location</th>
+                                        <th class="border-b border-slate-300" style="width: 20%;">Details</th>
                                         <th class="border-b border-slate-300" style="width: 20%;"></th>
                                     </tr>
                                 </thead>
@@ -192,6 +195,7 @@
                                     <tr v-for="i in props.storage" class="border-b-2 py-2">
                                         <td class="py-2 text-wrap">{{i.title}}</td>
                                         <td class="py-2 text-wrap">{{i.location}}</td>
+                                        <td class="py-2 text-wrap">{{i.details}}</td>
                                         <td class="py-2 text-wrap"><button class="border-b-2 border-b-indigo-400 hover:border-b-indigo-800" @click="fillForm(i)">Edit</button></td>
                                     </tr>
                                 </tbody>
@@ -264,6 +268,6 @@
             </div>
         </Modal>
 
-    </AuthenticatedLayout>
+    </div>
 
 </template>
