@@ -29,6 +29,17 @@ class DatabaseSeeder extends Seeder
             'title' => 'user'
         ]);
 
+        \App\Models\Storage::create([
+            'title' => 'Sample Title',
+            'location' => 'Sample Location',
+            'details' => 'Sample Details'
+        ]);
+
+        \App\Models\Category::create([
+            'title' => 'Sample Title',
+            'details' => 'Sample Details'
+        ]);
+
         User::where('email', 'test@example.com')->first()->roles()->attach(Role::where('title', 'administrator')->first()->id);
 
         // \App\Models\UserRole::create([
