@@ -1,6 +1,5 @@
 <script setup>
-    import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-    import { Head, useForm } from '@inertiajs/vue3';
+    import { useForm } from '@inertiajs/vue3';
     import TextInput from '@/Components/TextInput.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import InputLabel from '@/Components/InputLabel.vue';
@@ -8,6 +7,7 @@
     import SecondaryButton from '@/Components/SecondaryButton.vue';
     import DangerButton from '@/Components/DangerButton.vue';
     import InputError from '@/Components/InputError.vue';
+    import Pagination from '@/Components/Pagination.vue'
     import {ref} from  'vue';
     import axios from 'axios';
 
@@ -134,7 +134,6 @@
 
 </script>
 <template>
-    <Head title="Attachments" />
 
     <div>
         <div class="py-5">
@@ -192,7 +191,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="i in props.storage" class="border-b-2 py-2">
+                                    <tr v-for="i in props.storage.data" class="border-b-2 py-2">
                                         <td class="py-2 text-wrap">{{i.title}}</td>
                                         <td class="py-2 text-wrap">{{i.location}}</td>
                                         <td class="py-2 text-wrap">{{i.details}}</td>
@@ -201,6 +200,9 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                    <div>
+                        <Pagination :data="props.storage"></Pagination>
                     </div>
                 </div>
             </div>
