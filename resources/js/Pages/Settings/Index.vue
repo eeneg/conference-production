@@ -2,9 +2,11 @@
     import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     import Storage from '../Storage/Index.vue'
     import Category from '../Category/Index.vue'
-    import { Head, useForm } from '@inertiajs/vue3';
+    import Reference from '../Reference/Index.vue'
+    import { Head } from '@inertiajs/vue3';
 
-    const props = defineProps({storage:Object, category:Object})
+    const props = defineProps({storage:Object, category:Object, reference:Object})
+
 </script>
 <template>
     <Head title="Attachments" />
@@ -17,6 +19,8 @@
         <Storage :storage="props.storage"/>
 
         <Category :category="props.category"/>
+
+        <Reference :reference="props.reference"/>
 
     </AuthenticatedLayout>
 
