@@ -30,21 +30,27 @@ class DatabaseSeeder extends Seeder
         ]);
 
         \App\Models\Storage::create([
-            'title' => 'Sample Title',
-            'location' => 'Sample Location',
-            'details' => 'Sample Details'
+            'title' => 'Sample Storage Title',
+            'location' => 'Sample Storage Location',
+            'details' => 'Sample Storage Details'
         ]);
 
         \App\Models\Category::create([
-            'title' => 'Sample Title',
-            'details' => 'Sample Details'
+            'title' => 'Sample Category Title 1',
+            'type' => '1',
+            'details' => 'Sample Category Details 1'
+        ]);
+
+        \App\Models\Category::create([
+            'title' => 'Sample Category Title 2',
+            'type' => '2',
+            'details' => 'Sample Category Details 2'
         ]);
 
         User::where('email', 'test@example.com')->first()->roles()->attach(Role::where('title', 'administrator')->first()->id);
 
-        // \App\Models\UserRole::create([
-        //     'role_id' => \App\Models\Role::where('title', 'administrator')->first()->id,
-        //     'user_id' => \App\Models\User::where('email', 'test@example.com')->first()->id
-        // ]);
+
+
+        \App\Models\User::factory()->count(100)->hasAttached(\App\Models\Role::where('title', 'user')->first())->create();
     }
 }
