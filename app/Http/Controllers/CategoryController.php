@@ -14,6 +14,7 @@ class CategoryController extends Controller
 
         $request->validate([
             'title' => 'required|unique:categories,title',
+            'type' => 'required'
         ]);
 
         Category::create($request->all());
@@ -24,6 +25,7 @@ class CategoryController extends Controller
 
         $request->validate([
             'title' => 'required|unique:categories,title',
+            'type' => 'required'
         ]);
 
         $category = Category::find($request->id);

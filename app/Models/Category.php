@@ -11,7 +11,7 @@ class Category extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = ['title', 'details'];
+    protected $fillable = ['title', 'details', 'type'];
 
     public function files(){
         return $this->hasMany(File::class);

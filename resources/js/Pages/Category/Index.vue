@@ -1,11 +1,12 @@
 <script setup>
-    import { Head, useForm } from '@inertiajs/vue3';
+    import { useForm } from '@inertiajs/vue3';
     import TextInput from '@/Components/TextInput.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import InputLabel from '@/Components/InputLabel.vue';
     import Modal from '@/Components/Modal.vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
     import DangerButton from '@/Components/DangerButton.vue';
+    import Pagination from '@/Components/Pagination.vue'
     import InputError from '@/Components/InputError.vue';
     import {ref} from  'vue';
     import axios from 'axios';
@@ -15,6 +16,7 @@
     const form = useForm({
         id: null,
         title: null,
+        type: "1",
         details: null
     })
 
@@ -136,8 +138,6 @@
 
 </script>
 <template>
-    <Head title="Attachments" />
-
     <div>
         <div class="py-5">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -155,9 +155,17 @@
                     </div>
                     <div class="mt-3 mb-3 mr-3 pr-6 pl-5">
                         <div class="flex flex-row space-x-4">
-                            <div class="basis-full">
+                            <div class="basis-1/2">
                                 <InputLabel>Title</InputLabel>
                                 <TextInput class="w-full" type="text" v-model="form.title" placeholder="Title"/>
+                                <InputError :message="form.errors.title" class="mt-2" />
+                            </div>
+                            <div class="basis-1/2">
+                                <InputLabel>Category Type</InputLabel>
+                                <select name="type" id="type" v-model="form.type" class="border rounded w-full text-gray-700 border-gray-300">
+                                    <option value="1">File</option>
+                                    <option value="2">Reference</option>
+                                </select>
                                 <InputError :message="form.errors.title" class="mt-2" />
                             </div>
                         </div>
@@ -183,19 +191,24 @@
                                 <thead>
                                     <tr>
                                         <th class="border-b border-slate-300" style="width: 30%;">Title</th>
-                                        <th class="border-b border-slate-300" style="width: 20%;">Details</th>
-                                        <th class="border-b border-slate-300" style="width: 20%;"></th>
+                                        <th class="border-b border-slate-300" style="width: 30%;">Details</th>
+                                        <th class="border-b border-slate-300" style="width: 30%;">Type</th>
+                                        <th class="border-b border-slate-300" style="width: 10%;"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="i in props.category" class="border-b-2 py-2">
+                                    <tr v-for="i in props.category.data" class="border-b-2 py-2">
                                         <td class="py-2 text-wrap">{{i.title}}</td>
                                         <td class="py-2 text-wrap">{{i.details}}</td>
+                                        <td class="py-2 text-wrap">{{i.type == "1" ? "File" : "Reference"}}</td>
                                         <td class="py-2 text-wrap"><button class="border-b-2 border-b-indigo-400 hover:border-b-indigo-800" @click="fillForm(i)">Edit</button></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                    <div>
+                        <Pagination :data="props.category"></Pagination>
                     </div>
                 </div>
             </div>
