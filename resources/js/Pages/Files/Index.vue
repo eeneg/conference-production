@@ -134,7 +134,7 @@
                         <div class="space-y-6">
                             <div class="">
                                 <InputLabel>Upload a File</InputLabel>
-                                <input v-on:change="getFiles($event, i)" type="file" id="files" class="files" placeholder="Storage Location" multiple accept="application/pdf"   />
+                                <input v-on:change="getFiles($event, i)" type="file" id="files" class="files" multiple accept="application/pdf"   />
                                 <InputError :message="form.errors.files" class="mt-2"/>
                                 <InputError :message="submitErrorMsg" class="mt-2"/>
                             </div>

@@ -24,7 +24,7 @@ class FileController extends Controller
     {
         return Inertia::render('Files/Index', [
             'storage' => Storage::all(),
-            'category' => Category::all(),
+            'category' => Category::where("type", "1")->get(),
             'duplicates' => [],
             'error_message' => ''
         ]);

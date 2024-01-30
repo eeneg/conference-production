@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('date');
             $table->string('path');
             $table->string('details');
+            $table->string('content');
             $table->timestamps();
         });
     }
