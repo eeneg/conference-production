@@ -13,11 +13,9 @@ return new class extends Migration
     {
         Schema::create('pdf_contents', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('attachment_id');
-            $table->foreign('attachment_id')
-                ->references('id')
-                ->on('attachments');
-            $table->string('content');
+            $table->uuid('contentable_id');
+            $table->string('contentable_type');
+            $table->text('content');
             $table->timestamps();
         });
     }

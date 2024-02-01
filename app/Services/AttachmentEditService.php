@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Attachment;
 use App\Models\PdfContent;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Builder;
 
 class AttachmentEditService {
 
@@ -33,9 +34,9 @@ class AttachmentEditService {
                             'category'          => $data['category'],
                             'category_order'    => $data['category_order'],
                             'file_name'         => $file['file']->getClientOriginalName(),
-                            'path'              => str_replace(' ', '_', $conf->id . '/' . $data['category'] . '/' . $file['file']->getClientOriginalName()),
+                            'path'              => 'Conference_Attachments/' . str_replace(' ', '_', $conf->id . '/' . $data['category'] . '/' . $file['file']->getClientOriginalName()),
                             'details'           => $file['file_details'],
-                            'storage_id'  => $file['storage_id'],
+                            'storage_id'        => $file['storage_id'],
                             'file_order'        => $file['file_order'],
                         ];
                         $newFile = $conf->attachment()->create($new_file);
@@ -52,7 +53,10 @@ class AttachmentEditService {
         $files = Attachment::where('conference_id', $conf->id)->whereNotIn('id', $request_file)->get();
 
         if(count($files)){
-            PdfContent::whereHas('attachment', fn ($q) => $q->whereConferenceId($conf->id)->whereNotIn('id', $request_file))
+            PdfContent::whereHasMorph('contentable', [Attachment::class],
+                function (Builder $query) {
+                    $query->whereNotIn('id', $request_file);
+                })
                 ->get('id')
                 ->each
                 ->delete();

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Laravel\Scout\Attributes\SearchUsingFullText;
 use App\Models\PdfContent;
 use Laravel\Scout\Searchable;
@@ -22,9 +22,9 @@ class Attachment extends Model
         return $this->belongsTo(Conference::class);
     }
 
-    public function pdfContent() : HasOne
+    public function pdfContent() : MorphOne
     {
-        return $this->hasOne(PdfContent::class);
+        return $this->morphOne(PdfContent::class, 'contentable');
     }
 
     #[SearchUsingFullText(['details', 'storage_location'])]

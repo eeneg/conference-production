@@ -120,7 +120,7 @@
                                                 <ArrowDownTrayIcon class="w-5 h-5 stroke-gray-900 fill-black " aria-hidden="true" />
                                             </div>
                                         </a>
-                                        <a @click="viewFile('/storage/Conference_Attachments/' + file.path)">
+                                        <a @click="viewFile('/storage/' + file.path)">
                                             <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-300 hover:bg-blue-400 text-red-900">
                                                 <BookOpenIcon class="w-5 h-5 stroke-gray-900 fill-none aria-hidden" aria-hidden="true" />
                                             </div>
