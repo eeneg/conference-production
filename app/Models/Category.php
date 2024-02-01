@@ -13,7 +13,8 @@ class Category extends Model
 
     protected $fillable = ['title', 'details', 'type'];
 
-    public function files(){
+    public function files(): HasMany
+    {
         return $this->hasMany(File::class);
     }
 }
