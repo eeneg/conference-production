@@ -110,13 +110,14 @@
     const openInputForm = () => {
         formModal.value = true
         header = "Create!"
-        message = "Upload Reference here"
+        message = "Upload Reference File Here"
     }
 
     const closeInputForm = () => {
         formModal.value = false
-
+        form.errors = {}
         form.reset()
+        edit.value = false
     }
 
     const getFile = (e) => {
@@ -126,11 +127,6 @@
     const fillForm = (i) => {
         Object.assign(form, i)
         edit.value = true
-    }
-
-    const clearForm = () => {
-        form.reset()
-        edit.value = false
     }
 
     const closeDeleteModal = () => {
@@ -190,12 +186,12 @@
             </div>
         </div>
 
-        <Modal :show="formModal" @close="closeInputForm">
+        <Modal :show="formModal" :maxWidth="'xl'">
             <div class="p-6">
 
                 <div class="flex flex-row">
                     <div class="basis-1/2">
-                        <h2 :class="{'text-lg font-medium text-green-500': success == true, 'text-lg font-medium text-red-500': success == false}">
+                        <h2 class="text-lg font-medium text-black-500">
                             {{ header }}
                         </h2>
 
@@ -216,7 +212,7 @@
                     <div class="">
                         <div class="mt-4">
                             <InputLabel>Upload File</InputLabel>
-                            <TextInput class="w-full" id="file" type="file" v-on:change="getFile" accept="application/pdf"/>
+                            <input class="w-full" id="file" type="file" v-on:change="getFile" accept="application/pdf"/>
                             <InputError :message="form.errors.file" class="mt-2" />
                         </div>
                         <div class="mt-4">
@@ -233,7 +229,7 @@
                     <div class="mt-4">
                         <div class="">
                             <InputLabel>Details</InputLabel>
-                            <textarea class="w-full rounded border-gray-300" type="text" v-model="form.details" placeholder="Details"></textarea>
+                            <textarea class="w-full rounded border-gray-300 h-24" type="text" v-model="form.details" placeholder="Details"></textarea>
                             <InputError :message="form.errors.details" class="mt-2" />
                         </div>
                     </div>
@@ -241,7 +237,7 @@
                         <div class="space-x-3 mt-2">
                             <PrimaryButton @click="submit" v-if="edit == false">Save</PrimaryButton>
                             <PrimaryButton @click="update" v-if="edit">Save Changes</PrimaryButton>
-                            <SecondaryButton v-if="edit" @click="clearForm">Cancel</SecondaryButton>
+                            <SecondaryButton @click="closeInputForm">Cancel</SecondaryButton>
                             <DangerButton v-if="edit" class="float-right" @click="checkReference">Delete</DangerButton>
                         </div>
                     </div>

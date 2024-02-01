@@ -13,10 +13,6 @@ return new class extends Migration
     {
         Schema::create('references', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('category_id');
-            $table->foreign('category_id')
-                ->refrences('id')
-                ->on('categories');
             $table->string('title')->unique();
             $table->date('date');
             $table->string('details');
