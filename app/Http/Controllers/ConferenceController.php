@@ -15,6 +15,8 @@ use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use App\Models\Storage as StorageModel;
 use Throwable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class ConferenceController extends Controller
 {
@@ -59,15 +61,22 @@ class ConferenceController extends Controller
             'status' => 'required',
         ]);
 
-
         try{
 
-            $conf = Conference::create([
-                'title' => $request->title,
-                'agenda' => $request->agenda,
-                'date' => $request->date,
-                'status' => $request->status
-            ]);
+            $conf = DB::transaction(function() use ($request) {
+                $conf = Conference::create([
+                    'title' => $request->title,
+                    'agenda' => $request->agenda,
+                    'date' => $request->date,
+                    'status' => $request->status
+                ]);
+
+                $attachments = $this->fileHandleService->fileHandle($request->attachments, $conf->id);
+
+                Conference::find($conf->id)->attachment()->createMany($attachments);
+
+                return $conf;
+            });
 
         }catch(Throwable $e){
 
@@ -76,10 +85,6 @@ class ConferenceController extends Controller
             return $e->getMessage();
 
         }
-
-        $attachments = $this->fileHandleService->fileHandle($request->attachments, $conf->id);
-
-        Conference::find($conf->id)->attachment()->createMany($attachments);
 
         $this->attachmentService->job($conf->id);
 
@@ -118,15 +123,15 @@ class ConferenceController extends Controller
            foreach($e as $file){
 
                 array_push($attachment['files'], [
-                    'id' => $file->id,
-                    'conference_id' => $file->conference_id,
-                    'category' => $file->category,
-                    'category_order' => $file->category_order,
-                    'file_order' => $file->file_order,
-                    'name' => $file->file_name,
-                    'path' => $file->path,
-                    'file_details' => $file->details,
-                    'storage_id' => $file->storage_id,
+                    'id'                => $file->id,
+                    'conference_id'     => $file->conference_id,
+                    'category'          => $file->category,
+                    'category_order'    => $file->category_order,
+                    'file_order'        => $file->file_order,
+                    'name'              => $file->file_name,
+                    'path'              => $file->path,
+                    'file_details'      => $file->details,
+                    'storage_id'        => $file->storage_id,
                 ]);
 
             };
@@ -194,10 +199,13 @@ class ConferenceController extends Controller
 
         $files = Storage::deleteDirectory('public/Conference_Attachments/' . $conf->id);
 
-        PdfContent::whereHas('attachment', fn ($q) => $q->whereConferenceId($conf->id))
-                ->get('id')
-                ->each
-                ->delete();
+        PdfContent::whereHasMorph('contentable', [Attachment::class],
+            function (Builder $query) use ($conf) {
+                $query->where('id', $conf->id);
+            })
+            ->get('id')
+            ->each
+            ->delete();
 
         Attachment::where('conference_id', $conf->id)
             ->get('id')
