@@ -161,7 +161,7 @@
                             </div>
                             <div class="">
                                 <InputLabel>Details</InputLabel>
-                                <TextInput v-model="form.details" class="w-full" type="text" placeholder="Details"/>
+                                <textarea v-model="form.details" class="w-full rounded border-gray-300 h-24" type="text" placeholder="Details"></textarea>
                                 <InputError :message="form.errors.details" class="mt-2" />
                             </div>
                             <div class="">

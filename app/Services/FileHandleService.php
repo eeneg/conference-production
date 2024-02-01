@@ -23,7 +23,7 @@ class FileHandleService {
                         'category'          => $category,
                         'category_order'    => $category_order,
                         'file_name'         => $file['file']->getClientOriginalName(),
-                        'path'              => str_replace(' ', '_',$id . '/' . $category . '/' . $file['file']->getClientOriginalName()),
+                        'path'              => 'Conference_Attachments/' . str_replace(' ', '_',$id . '/' . $category . '/' . $file['file']->getClientOriginalName()),
                         'details'           => $file['file_details'],
                         'storage_id'        => $file['storage_id'],
                         'file_order'        => $file['file_order'],

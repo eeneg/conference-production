@@ -78,13 +78,6 @@ class FileController extends Controller
 
         $file = Storage::find($request->storage_id)->files()->createMany($files);
 
-        $this->attachCategory($request->category_id, $file);
-    }
-
-    public function attachCategory($category_id, $files){
-
-        $files->first()->category()->attach($category_id);
-
     }
 
     /**

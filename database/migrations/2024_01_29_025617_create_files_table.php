@@ -17,11 +17,14 @@ return new class extends Migration
             $table->foreign('storage_id')
                 ->references('id')
                 ->on('storages');
+            $table->uuid('category_id');
+            $table->foreign('category_id')
+                ->references('id')
+                ->on('categories');
             $table->string('file_name');
             $table->date('date');
             $table->string('path');
             $table->string('details');
-            $table->string('content');
             $table->timestamps();
         });
     }

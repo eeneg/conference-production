@@ -22,7 +22,8 @@ class File extends Model
         return $this->belongsTo(Storage::class);
     }
 
-    public function category(){
-        return $this->belongsToMany(Category::class, 'file_categories', 'file_id', 'category_id')->using(FileCategory::class);
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }
