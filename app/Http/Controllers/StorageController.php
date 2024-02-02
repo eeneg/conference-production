@@ -13,7 +13,7 @@ class StorageController extends Controller
     public function index(){
 
         return Inertia::render('Storage/Index', [
-            'storage' => Storage::all()
+            'storage' => Storage::paginate(5)
         ]);
 
     }
