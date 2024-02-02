@@ -51,10 +51,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('attachment', AttachmentController::class);
     Route::resource('minutes', MinutesController::class);
     Route::resource('files', FileController::class);
-    Route::resource('storage', StorageController::class);
-    Route::resource('settings', SettingController::class);
-    Route::resource('category', CategoryController::class);
-    Route::resource('reference', ReferenceController::class);
+    Route::resource('/settings/storage', StorageController::class)->name('storage');
+    Route::resource('/settings/category', CategoryController::class)->name('category');
+    Route::resource('/settings/reference', ReferenceController::class)->name('reference');
     Route::get('/storage_relation/{id}', [StorageController::class, 'checkStorageRelation'])->name('storage.check');
     Route::post('/file_check', [FileController::class, 'fileCheck'])->name('file.check');
     Route::get('/category_check/{id}', [CategoryController::class, 'checkCategoryRelation'])->name('category.check');
