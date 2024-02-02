@@ -33,7 +33,7 @@ class AttachmentEditService {
                         $new_file = [
                             'category'          => $data['category'],
                             'category_order'    => $data['category_order'],
-                            'file_name'         => $file['file']->getClientOriginalName(),
+                            'file_name'         => str_replace(' ','_',$file['file']->getClientOriginalName()),
                             'path'              => 'Conference_Attachments/' . str_replace(' ', '_', $conf->id . '/' . $data['category'] . '/' . $file['file']->getClientOriginalName()),
                             'details'           => $file['file_details'],
                             'storage_id'        => $file['storage_id'],
