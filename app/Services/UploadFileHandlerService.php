@@ -13,7 +13,7 @@ class UploadFileHandlerService {
         $files = [];
         foreach($data['files'] as $e){
             array_push($files, [
-                'file_name' =>str_replace(' ','_',$e->getClientOriginalName()),
+                'file_name' => str_replace(' ','_',$e->getClientOriginalName()),
                 'storage_id' => $data['storage_id'],
                 'category_id' => $data['category_id'],
                 'date' => $data['date'],
