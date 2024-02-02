@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use App\Models\Category;
 use App\Models\File;
 
 class CategoryController extends Controller
 {
 
+    public function index(){
+        return Inertia::render('Category/Index',[
+            'category' => Category::paginate(5),
+        ]);
+    }
 
     public function store(Request $request){
 
