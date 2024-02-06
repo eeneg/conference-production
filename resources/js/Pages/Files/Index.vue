@@ -10,13 +10,11 @@
     import InputError from '@/Components/InputError.vue';
     import axios from 'axios';
 
-
-
-
     const props = defineProps({storage:Object, category:Object})
 
     const form = useForm({
-        files: [],
+        file: {},
+        title: null,
         storage_id: null,
         category_id: null,
         date: null,
@@ -78,8 +76,7 @@
     }
 
     const fileCheck = () => {
-        console.log(fileNames, form.storage_id)
-        axios.post(route('file.check'), {fileNames: fileNames, storage_id: form.storage_id})
+        axios.post(route('file.check'), {fileNames: fileNames, storage_id: form.storage_id, category_id: form.category_id})
         .then(e => {
             if(e.data.check){
                 existingFileNames.value = e.data.file_names
@@ -98,7 +95,7 @@
     }
 
     const getFiles = (e, i) => {
-        form.files = e.target.files
+        form.file = e.target.files
         fileNames = []
         existingFileNames.value = []
         submitErrorMsg.value = ''
@@ -134,9 +131,14 @@
                         <div class="space-y-6">
                             <div class="">
                                 <InputLabel>Upload a File</InputLabel>
-                                <input v-on:change="getFiles($event, i)" type="file" id="files" class="files" multiple accept="application/pdf"   />
-                                <InputError :message="form.errors.files" class="mt-2"/>
+                                <input v-on:change="getFiles($event, i)" type="file" id="files" class="files" accept="application/pdf"   />
+                                <InputError :message="form.errors.file" class="mt-2"/>
                                 <InputError :message="submitErrorMsg" class="mt-2"/>
+                            </div>
+                            <div class="">
+                                <InputLabel>Title</InputLabel>
+                                <TextInput type="text" id="title" v-model="form.title" class="w-full" placeholder="Insert Title"/>
+                                <InputError :message="form.errors.title" class="mt-2"/>
                             </div>
                             <div class="">
                                 <InputLabel>Storage Location</InputLabel>
@@ -156,12 +158,12 @@
                             </div>
                             <div class="">
                                 <InputLabel>Date</InputLabel>
-                                <input type="date" id="date" v-model="form.date" class="rounded border-gray-300"/>
+                                <input type="date" id="date" v-model="form.date" class="rounded border-gray-300 w-full"/>
                                 <InputError :message="form.errors.date" class="mt-2" />
                             </div>
                             <div class="">
                                 <InputLabel>Details</InputLabel>
-                                <textarea v-model="form.details" class="w-full rounded border-gray-300 h-24" type="text" placeholder="Details"></textarea>
+                                <textarea v-model="form.details" class="w-full rounded border-gray-300 h-24" type="text" placeholder="Insert Details"></textarea>
                                 <InputError :message="form.errors.details" class="mt-2" />
                             </div>
                             <div class="">
