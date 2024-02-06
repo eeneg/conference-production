@@ -151,7 +151,7 @@
                                     <h2 class="text-lg font-medium text-gray-900">Category</h2>
 
                                     <p class="mt-1 text-sm text-gray-600">
-                                        Create, Edit, or Destroy Category for file classification
+                                        Management tab for file categories
                                     </p>
                                 </header>
                             </div>
