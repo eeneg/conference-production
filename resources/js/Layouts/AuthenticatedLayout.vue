@@ -130,6 +130,19 @@ const role = usePage().props.auth.role;
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
                             Dashboard
                         </ResponsiveNavLink>
+                        <ResponsiveNavLink v-if="role == 'administrator'" :href="route('users.index')" :active="route().current('users.index')">
+                            Users
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('conferences.index')" :active="route().current('conferences.index')">
+                            Conferences
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('attachment.index')" :active="route().current('attachment.index')">
+                            Find Attachments
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('files.index')" :active="route().current('files.index')">
+                            File Upload
+                        </ResponsiveNavLink>
+
                     </div>
 
                     <!-- Responsive Settings Options -->
@@ -143,6 +156,7 @@ const role = usePage().props.auth.role;
 
                         <div class="mt-3 space-y-1">
                             <ResponsiveNavLink :href="route('profile.edit')"> Profile </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('storage.index')"> Settings </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('logout')" method="post" as="button">
                                 Log Out
                             </ResponsiveNavLink>
