@@ -23,6 +23,14 @@
         details: null
     })
 
+    const addCategoryForm = useForm({
+        title: null,
+        type: 2,
+        details: null
+    })
+
+    const addCategoryModal = ref(false)
+
     var referenceList = ref(null)
 
     const formModal = ref(false)
@@ -40,6 +48,24 @@
     var success = true
 
     const modalShow = ref(false)
+
+    const submitCategory = () => {
+        addCategoryForm.submit('post', route('category.store'), {
+            onSuccess: () => {
+                header = "Success!"
+                success = true
+                message = "Reference Submitted Successfuly"
+                modalShow.value = true
+                addCategoryForm.reset()
+            },
+            onError: () => {
+                header = "Error!"
+                success = false
+                message = "Something went wrong"
+                modalShow.value = true
+            }
+        })
+    }
 
 
     const submit = () => {
@@ -110,6 +136,18 @@
         })
     }
 
+    const openAddCategoryForm = () => {
+        addCategoryForm.reset()
+        addCategoryForm.errors = {}
+        header = "Category!"
+        message = "Add Reference Category"
+        addCategoryModal.value = true
+    }
+
+    const closeAddCategoryForm = () => {
+        addCategoryModal.value = false
+    }
+
     const openInputForm = () => {
         formModal.value = true
         header = "Create!"
@@ -157,17 +195,20 @@
                                     <h2 class="text-lg font-medium text-gray-900">References</h2>
 
                                     <p class="mt-1 text-sm text-gray-600">
-                                        Create, Edit, or Destroy References
+                                        Management tab for references
                                     </p>
                                 </header>
                             </div>
                             <div class="pl-5 pr-6 mt-3 grow mb-3">
-                                <PrimaryButton class="float-right" @click="openInputForm">Add</PrimaryButton>
+                                <div class="flex space-x-2 float-right">
+                                    <PrimaryButton class="float-right" @click="openAddCategoryForm">Category</PrimaryButton>
+                                    <PrimaryButton class="float-right" @click="openInputForm">Add</PrimaryButton>
+                                </div>
                             </div>
                         </div>
                         <div class="mt-3 mb-3 mr-3 pr-6 pl-5">
                             <div class="flex w-full md:flex-row-reverse sm:flex-row-reverse">
-                                <select name="cat" v-model="referenceList" id="cat" class="border min-[450px]:w-full rounded text-gray-700 border-gray-300">
+                                <select name="cat" v-model="referenceList" id="cat" class="border min-[300px]:w-full rounded text-gray-700 border-gray-300">
                                     <option :value="null" selected>Select Reference Category</option>
                                     <option :value="category.reference" v-for="category in props.reference">{{ category.title.charAt(0).toUpperCase() + category.title.slice(1) }}</option>
                                 </select>
@@ -196,6 +237,53 @@
                     </div>
                 </div>
             </div>
+
+            <Modal :show="addCategoryModal" :maxWidth="'2xl'">
+                <div class="p-6">
+
+                    <div class="flex flex-row">
+                        <div class="basis-1/2">
+                            <h2 class="text-lg font-medium text-black-500">
+                                {{ header }}
+                            </h2>
+
+                            <p class="mt-1 text-sm text-gray-600">
+                                {{message}}
+                            </p>
+                        </div>
+                        <div class="basis-1/2">
+                            <a class="float-right" role="button" @click="closeAddCategoryForm">
+                                <svg x="0px" y="0px" width="20" height="20" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10" opacity=".35"></circle><path d="M14.812,16.215L7.785,9.188c-0.384-0.384-0.384-1.008,0-1.392l0.011-0.011c0.384-0.384,1.008-0.384,1.392,0l7.027,7.027	c0.384,0.384,0.384,1.008,0,1.392l-0.011,0.011C15.82,16.599,15.196,16.599,14.812,16.215z"></path><path d="M7.785,14.812l7.027-7.027c0.384-0.384,1.008-0.384,1.392,0l0.011,0.011c0.384,0.384,0.384,1.008,0,1.392l-7.027,7.027	c-0.384,0.384-1.008,0.384-1.392,0l-0.011-0.011C7.401,15.82,7.401,15.196,7.785,14.812z"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="mt-3 mb-3 mr-3 pr-6 pl-5">
+                        <div class="">
+                            <div class="mt-4">
+                                <InputLabel>Title</InputLabel>
+                                <TextInput class="w-full" type="text" v-model="addCategoryForm.title" placeholder="Title"/>
+                                <InputError :message="addCategoryForm.errors.title" class="mt-2" />
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="">
+                                <InputLabel>Details</InputLabel>
+                                <textarea class="w-full rounded border-gray-300 h-24" type="text" v-model="addCategoryForm.details" placeholder="Details"></textarea>
+                                <InputError :message="addCategoryForm.errors.details" class="mt-2" />
+                            </div>
+                        </div>
+                        <div class="flex flex-row">
+                            <div class="space-x-3 mt-2">
+                                <PrimaryButton @click="submitCategory">Save</PrimaryButton>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </Modal>
 
             <Modal :show="formModal" :maxWidth="'2xl'">
                 <div class="p-6">
