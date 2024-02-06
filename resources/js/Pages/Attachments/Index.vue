@@ -137,7 +137,7 @@
             </div>
         </div>
 
-        <Modal :show="modalShow" @close="closeModal">
+        <Modal :show="modalShow" :maxWidth="'2xl'" @close="closeModal">
             <div class="p-6">
 
                 <div class="mt-6 h-64" style="height: 50rem;">
