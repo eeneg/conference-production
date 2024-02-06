@@ -143,10 +143,10 @@
                         <div class="flex flex-row">
                             <div class="pl-5 pr-6 mt-3 grow mb-3">
                                 <header>
-                                    <h2 class="text-lg font-medium text-gray-900">Storage Location</h2>
+                                    <h2 class="text-lg font-medium text-gray-900">Physical Storage Location</h2>
 
                                     <p class="mt-1 text-sm text-gray-600">
-                                        Create, Edit, or Destroy Storage location for your files
+                                        Management tab for physical storage locations
                                     </p>
                                 </header>
                             </div>
