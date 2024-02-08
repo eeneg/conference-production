@@ -10,6 +10,7 @@ use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ReferenceController;
+use App\Http\Controllers\ChatController;
 use App\Http\Middleware\IsAdmin;
 use App\Models\Minutes;
 use GuzzleHttp\Client;
@@ -51,12 +52,13 @@ Route::middleware('auth')->group(function () {
     Route::resource('attachment', AttachmentController::class);
     Route::resource('minutes', MinutesController::class);
     Route::resource('files', FileController::class);
-    Route::resource('/settings/storage', StorageController::class)->name('storage');
-    Route::resource('/settings/category', CategoryController::class)->name('category');
-    Route::resource('/settings/reference', ReferenceController::class)->name('reference');
+    Route::resource('/settings/storage', StorageController::class);
+    Route::resource('/settings/category', CategoryController::class);
+    Route::resource('/settings/reference', ReferenceController::class);
     Route::get('/storage_relation/{id}', [StorageController::class, 'checkStorageRelation'])->name('storage.check');
     Route::post('/file_check', [FileController::class, 'fileCheck'])->name('file.check');
     Route::get('/category_check/{id}', [CategoryController::class, 'checkCategoryRelation'])->name('category.check');
+    Route::get('/messages/{id}', [ChatController::class, 'show'])->name('messages');
 });
 
 Route::resource('users', UserController::class)->middleware([IsAdmin::class]);
