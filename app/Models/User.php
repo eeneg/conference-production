@@ -13,6 +13,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Scout\Searchable;
 use Ramsey\Uuid\Uuid;
+use App\Models\Message;
 
 class User extends Authenticatable
 {
@@ -60,6 +61,11 @@ class User extends Authenticatable
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id')->using(UserRole::class);
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
     }
 
 
