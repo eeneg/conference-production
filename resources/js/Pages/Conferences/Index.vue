@@ -108,6 +108,7 @@ const formatDate = (date) => {
                                     </td>
                                     <td class="p-2 text-center border-b border-slate-100">
                                         <NavLink :href="route('conferences.edit', {'id' : conf.id})">Action</NavLink>
+                                        <NavLink :href="route('conferences.show', conf.id)">View</NavLink>
                                     </td>
                                 </tr>
                             </tbody>
@@ -172,6 +173,7 @@ const formatDate = (date) => {
                                     </td>
                                     <td class="p-2 text-center border-b border-slate-100">
                                         <NavLink :href="route('conferences.edit', {'id' : conf.id})">Action</NavLink>
+                                        <NavLink :href="route('conferences.show', conf.id)">View</NavLink>
                                     </td>
                                 </tr>
                             </tbody>

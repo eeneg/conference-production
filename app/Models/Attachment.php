@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Laravel\Scout\Attributes\SearchUsingFullText;
 use App\Models\PdfContent;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\File;
 use Laravel\Scout\Searchable;
 
 class Attachment extends Model
@@ -16,6 +18,8 @@ class Attachment extends Model
     use HasFactory, HasUuids, Searchable;
 
     protected $fillable = ['conference_id', 'files', 'category', 'file_name', 'path', 'details', 'category_order', 'file_order', 'storage_id'];
+
+    protected $appends = ['is_pdf', 'is_previewable', 'mime'];
 
     public function conference() : BelongsTo
     {
@@ -37,5 +41,64 @@ class Attachment extends Model
             'storage_location' => $this->storage_location,
             'content' => $this->pdfContent->content ?? ''
         ];
+    }
+
+    public function mime(): Attribute
+    {
+        return new Attribute(
+            fn () => File::mimeType(storage_path('app/public/' . $this->path))
+        );
+    }
+
+    public function isPdf(): Attribute
+    {
+        return new Attribute(fn () => $this->mime === 'application/pdf');
+    }
+
+    public function isText(): Attribute
+    {
+        return new Attribute(fn () => str($this->mime)->startsWith('text'));
+    }
+
+    public function isPreviewable(): ?Attribute
+    {
+        return new Attribute(
+            fn () => in_array($this->mime, [
+                'application/pdf',
+                'audio/mpeg',
+                'audio/ogg',
+                'audio/wav',
+                'audio/aac',
+                'audio/flac',
+                'video/mp4',
+                'video/webm',
+                'video/ogg',
+                'video/x-msvideo',
+                'video/quicktime',
+                'image/jpeg',
+                'image/png',
+                'image/gif',
+                'image/bmp',
+                'image/svg+xml',
+                'application/xml',
+                'application/x-yaml',
+                'application/javascript',
+                'application/x-javascript',
+                'application/json',
+                'text/plain',
+                'text/x-shellscript',
+                'text/rtf',
+                'text/css',
+                'text/javascript',
+                'text/json',
+                'text/xml',
+                'text/html',
+                'text/csv',
+                'text/sgml',
+                'text/yaml',
+                'text/markdown',
+                'text/vcard',
+            ])
+        );
     }
 }

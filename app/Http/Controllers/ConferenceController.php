@@ -33,7 +33,8 @@ class ConferenceController extends Controller
     {
         return Inertia::render('Conferences/Index', [
             'search' => $request->search,
-            'upcoming' => Conference::pending()->paginate(5),
+            'upcoming' => Conference::pending()
+                ->paginate(5),
             'finished' => Conference::search($request->search)
                 ->query(fn ($q) => $q->completed())
                 ->paginate(5),
@@ -93,12 +94,16 @@ class ConferenceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Conference $conference)
     {
-        $conf = Conference::find($id);
-
         return Inertia::render('Conferences/Show', [
-            'conf'      => $conf,
+            'conf' => $conference,
+            'attachments' => $conference
+                ->attachment()
+                ->orderBy('category_order')
+                ->orderBy('file_order')
+                ->get()
+                ->groupBy('category')
         ]);
     }
 
