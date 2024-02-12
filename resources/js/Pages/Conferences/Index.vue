@@ -1,5 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import ChatBox from '@/Components/ChatBox.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import Pagination from '@/Components/Pagination.vue'
 import TextInput from '@/Components/TextInput.vue';
@@ -185,5 +186,7 @@ const formatDate = (date) => {
                 </div>
             </div>
         </div>
+
+    <ChatBox/>
     </AuthenticatedLayout>
 </template>

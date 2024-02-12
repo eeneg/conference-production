@@ -90,10 +90,11 @@
         categories = []
     }
 
-    const addCategory = (category) => {
-        if (category && !categories.includes(category)) {
-            form.attachments.push({category: category, category_order: form.attachments.length, files:[]})
-            categories.push(category)
+    const addCategory = (cat) => {
+        if (cat && !categories.includes(cat)) {
+            form.attachments.push({category: cat, category_order: form.attachments.length, files:[]})
+            categories.push(cat)
+            category = ''
         }else{
             header = "Error!"
             message = "Duplicate Category Title"
