@@ -4,8 +4,6 @@
 
     const users = ref([])
 
-    const userChatList = ref(null)
-
     const emit = defineEmits(['navChat'])
 
     const goToChat = (id) =>{
@@ -32,7 +30,6 @@
 
     onMounted(() => {
         getUsers()
-        userChatList.value = setTimeout(document.getElementById('userChatList'), 5000)
     })
 </script>
 
