@@ -6,10 +6,20 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link, usePage } from '@inertiajs/vue3';
+import { InboxIcon } from '@heroicons/vue/20/solid';
+import ChatBox from '@/Components/Chat/ChatBox.vue';
 
 const showingNavigationDropdown = ref(false);
 
+const chatUsers = ref({})
+
 const role = usePage().props.auth.role;
+
+const chat = ref(false)
+
+const goChat = (bool) => {
+    chat.value = bool
+}
 </script>
 
 <template>
@@ -176,6 +186,13 @@ const role = usePage().props.auth.role;
             <main>
                 <slot />
             </main>
+            <ChatBox class="fixed bottom-0 right-20 shadow-md" @closeChat="goChat(false)" v-if="chat == true"/>
+            <div class="fixed bottom-4 right-4" @click="goChat(true)" v-if="chat == false">
+                <button class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-4 px-4 rounded-full shadow-lg">
+                    <InboxIcon class="h-6 w-6"/>
+                </button>
+            </div>
+
         </div>
     </div>
 </template>
