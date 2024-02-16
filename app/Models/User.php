@@ -68,6 +68,11 @@ class User extends Authenticatable
         return $this->hasMany(Message::class);
     }
 
+    public function latestMessage()
+    {
+        return $this->hasOne(Message::class)->latestOfMany();
+    }
+
 
     public function toSearchableArray(): array
     {
