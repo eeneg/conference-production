@@ -58,7 +58,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/storage_relation/{id}', [StorageController::class, 'checkStorageRelation'])->name('storage.check');
     Route::post('/file_check', [FileController::class, 'fileCheck'])->name('file.check');
     Route::get('/category_check/{id}', [CategoryController::class, 'checkCategoryRelation'])->name('category.check');
+
     Route::get('/messages/{id}', [ChatController::class, 'show'])->name('messages');
+    Route::get('/usersToChat', [ChatController::class, 'getUsersToChat'])->name('chat.users');
 });
 
 Route::resource('users', UserController::class)->middleware([IsAdmin::class]);
