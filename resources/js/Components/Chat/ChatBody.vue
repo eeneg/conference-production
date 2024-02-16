@@ -1,6 +1,8 @@
 <script setup>
     import PrimaryButton from '../PrimaryButton.vue';
     import TextInput from '../TextInput.vue';
+
+    const props = defineProps({user_id:String})
 </script>
 
 <style>

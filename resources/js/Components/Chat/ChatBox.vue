@@ -6,10 +6,14 @@
 
     const chat = ref(false)
 
+    const data = ref({id: null, name: null})
+
     const emit = defineEmits(['closeChat'])
 
     const goToChat = (bool) => {
         chat.value = bool.chat
+        data.value.name = bool.user_name
+        data.value.id = bool.user_id
     }
 
     const goToChatNav = () => {
@@ -19,6 +23,7 @@
     const close = () => {
         emit('closeChat', false)
     }
+
 </script>
 
 <style>
@@ -35,7 +40,7 @@
                             <ArrowLeftCircleIcon class="h-8 w-8"/>
                         </button>
                         <header v-if="chat == true">
-                            <h2 v-if="chat == true" class="text-lg mt-2 pl-1 font-medium text-gray-900">Sample Name</h2>
+                            <h2 v-if="chat == true" class="text-lg mt-2 pl-1 font-medium text-gray-900 w-56 truncate">{{ data.name }}</h2>
                         </header>
                     </div>
 
@@ -50,7 +55,7 @@
 
                 <div class="">
                     <ChatNav v-if="chat == false"  @navChat="goToChat($event)"></ChatNav>
-                    <ChatBody v-if="chat == true"></ChatBody>
+                    <ChatBody v-if="chat == true" :props="data.id"></ChatBody>
                 </div>
 
             </div>

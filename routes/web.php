@@ -60,7 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/category_check/{id}', [CategoryController::class, 'checkCategoryRelation'])->name('category.check');
 
     Route::get('/messages/{id}', [ChatController::class, 'show'])->name('messages');
-    Route::get('/usersToChat', [ChatController::class, 'getUsersToChat'])->name('chat.users');
+    Route::get('/usersToChat', [ChatController::class, 'getUsersToChat']);
 });
 
 Route::resource('users', UserController::class)->middleware([IsAdmin::class]);
