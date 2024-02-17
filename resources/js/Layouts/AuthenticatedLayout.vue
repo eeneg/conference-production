@@ -11,8 +11,6 @@ import ChatBox from '@/Components/Chat/ChatBox.vue';
 
 const showingNavigationDropdown = ref(false);
 
-const chatUsers = ref({})
-
 const role = usePage().props.auth.role;
 
 const chat = ref(false)

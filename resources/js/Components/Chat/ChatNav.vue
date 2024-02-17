@@ -6,6 +6,8 @@
 
     const userPage = ref(1)
 
+    const showLoading = ref(false)
+
     const emit = defineEmits(['navChat'])
 
     const goToChat = (id, name) =>{
@@ -18,6 +20,7 @@
             data.data.forEach(e => {
                 users.value.push(e)
             })
+            showLoading.value = false
         })
         .catch(e =>{
             console.log(e)
@@ -28,6 +31,7 @@
     const onScroll = ({ target: { scrollTop, clientHeight, scrollHeight }}) => {
       if (scrollTop + clientHeight >= scrollHeight) {
         userPage.value += 1
+        showLoading.value = true
         getUsers(userPage.value)
       }
     }
@@ -58,6 +62,9 @@
                     </div>
                 </div>
             </button>
+        </div>
+        <div class="flex justify-center" v-if="showLoading">
+            Loading ...
         </div>
     </div>
 </template>
