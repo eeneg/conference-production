@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::patch('/update-password', [UserController::class, 'updatePassword'])->name('user.update-password');
     Route::resource('conferences', ConferenceController::class);
+    Route::get('attachment/{attachment}/content', [AttachmentController::class, 'content'])->name('attachment.content');
     Route::resource('attachment', AttachmentController::class);
     Route::resource('minutes', MinutesController::class);
     Route::resource('files', FileController::class);
