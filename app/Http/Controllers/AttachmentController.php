@@ -71,6 +71,11 @@ class AttachmentController extends Controller
         //
     }
 
+    public function download(Attachment $attachment)
+    {
+        return Storage::download("public/$attachment->path");
+    }
+
     public function content(Attachment $attachment)
     {
         return response()->stream(function () use ($attachment) {

@@ -50,6 +50,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/update-password', [UserController::class, 'updatePassword'])->name('user.update-password');
     Route::resource('conferences', ConferenceController::class);
     Route::get('attachment/{attachment}/content', [AttachmentController::class, 'content'])->name('attachment.content');
+    Route::get('attachment/{attachment}/download', [AttachmentController::class, 'download'])->name('attachment.download');
     Route::resource('attachment', AttachmentController::class);
     Route::resource('minutes', MinutesController::class);
     Route::resource('files', FileController::class);
