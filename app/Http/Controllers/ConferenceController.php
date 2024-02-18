@@ -97,7 +97,7 @@ class ConferenceController extends Controller
     public function show(Conference $conference)
     {
         return Inertia::render('Conferences/Show', [
-            'conf' => $conference,
+            'conf' => $conference->append('agenda_markdown'),
             'attachments' => $conference
                 ->attachment()
                 ->orderBy('category_order')
