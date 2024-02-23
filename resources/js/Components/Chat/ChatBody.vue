@@ -1,8 +1,60 @@
 <script setup>
+    import { ref, onMounted } from 'vue';
     import PrimaryButton from '../PrimaryButton.vue';
     import TextInput from '../TextInput.vue';
+    import axios from 'axios';
 
     const props = defineProps({user_id:String})
+
+    const messages = ref([])
+
+    const message = ref('')
+
+    const getMessages = () => {
+      axios.get(route('messages.show', {id: props.user_id}))
+      .then(({data}) => {
+          if(data.data.length > 0){
+            transformData(data.data)
+          }
+      })
+      .catch(e => {
+          console.log(e)
+      })
+    }
+
+    const sendMessage = () => {
+        axios.post(route('messages.store'), {message: message.value, receiver_id: props.user_id})
+        .then(e => {
+            messages.value = []
+            getMessages()
+        })
+        .catch(e => {
+
+        })
+    }
+
+    const transformData = (data) => {
+      let ar = []
+      data.forEach((e, i) => {
+        let len = ar.length
+        if(i == 0){
+          ar.push(e)
+        }else{
+          if(ar[len-1].user_id == e.user_id){
+            ar.push(e)
+          }else{
+            messages.value.push(ar)
+            ar = []
+            ar.push(e)
+          }
+        }
+      })
+      messages.value.push(ar)
+    }
+
+    onMounted(() => {
+        getMessages()
+    })
 </script>
 
 <style>
@@ -100,41 +152,21 @@
 </style>
 
 <template>
-        <div class="flex flex-col h-96">
-            <div class="flex flex-col flex-col-reverse w-full p-3 overflow-auto">
-                <div class="mine messages">
-                    <div class="message last">
-                    Dude
-                    </div>
-                </div>
-                <div class="yours messages">
-                    <div class="message">
-                    Hey!
-                    </div>
-                    <div class="message">
-                    You there?
-                    </div>
-                    <div class="message last">
-                    Hello, how's it going?
-                    </div>
-                </div>
-                <div class="mine messages">
-                    <div class="message">
-                    Great thanks!
-                    </div>
-                    <div class="message last">
-                        How about you? How about you? How about you? How about you?
-                        How about you? How about you? How about you?How about you?
+        <div class="flex flex-col">
+            <div class="flex flex-col flex-col-reverse w-full p-3 overflow-auto h-96">
+                <div v-for="message in messages" :class="{'mine':message[0].user_id != props.user_id,'yours':message[0].user_id == props.user_id, }" class="messages">
+                    <div v-for="(msg, index) in message.slice().reverse()" :class="{'last': (index+1) == message.length}" class="message">
+                      {{ msg.message }}
                     </div>
                 </div>
             </div>
 
             <div class="flex p-2">
                 <div class="flex-initial p-1 w-full">
-                    <TextInput class="w-full" placeholder="Aa"></TextInput>
+                    <TextInput class="w-full" placeholder="Aa" v-model="message"></TextInput>
                 </div>
                 <div class="flex-initial p-1">
-                    <PrimaryButton class="h-full">send</PrimaryButton>
+                    <PrimaryButton class="h-full" @click="sendMessage">send</PrimaryButton>
                 </div>
             </div>
         </div>

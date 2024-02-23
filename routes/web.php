@@ -61,7 +61,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/file_check', [FileController::class, 'fileCheck'])->name('file.check');
     Route::get('/category_check/{id}', [CategoryController::class, 'checkCategoryRelation'])->name('category.check');
 
-    Route::get('/messages/{id}', [ChatController::class, 'show'])->name('messages');
+    Route::get('/messages/{id}', [ChatController::class, 'show'])->name('messages.show');
+    Route::post('/messages', [ChatController::class, 'store'])->name('messages.store');
     Route::get('/usersToChat', [ChatController::class, 'getUsersToChat']);
 });
 

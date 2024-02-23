@@ -55,7 +55,7 @@
 
                 <div class="">
                     <ChatNav v-if="chat == false"  @navChat="goToChat($event)"></ChatNav>
-                    <ChatBody v-if="chat == true" :props="data.id"></ChatBody>
+                    <ChatBody v-if="chat == true" :user_id="data.id"></ChatBody>
                 </div>
 
             </div>

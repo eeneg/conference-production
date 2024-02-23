@@ -21,6 +21,12 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('zxczxczxc')
         ]);
 
+        \App\Models\User::factory()->create([
+            'name' => 'test1',
+            'email' => 'test1@example.com',
+            'password' => Hash::make('zxczxczxc')
+        ]);
+
         \App\Models\Role::create([
             'title' => 'administrator'
         ]);
@@ -48,6 +54,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::where('email', 'test@example.com')->first()->roles()->attach(Role::where('title', 'administrator')->first()->id);
+        User::where('email', 'test1@example.com')->first()->roles()->attach(Role::where('title', 'administrator')->first()->id);
 
 
 

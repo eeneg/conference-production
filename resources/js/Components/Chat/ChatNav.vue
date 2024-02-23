@@ -1,5 +1,6 @@
 <script setup>
     import TextInput from '../TextInput.vue';
+    import _ from 'lodash';
     import { onMounted, ref, watch } from 'vue'
 
     const users = ref([])
@@ -8,14 +9,16 @@
 
     const showLoading = ref(false)
 
+    const search = ref("")
+
     const emit = defineEmits(['navChat'])
 
     const goToChat = (id, name) =>{
         emit('navChat', {chat: true, user_id: id, user_name: name})
     }
 
-    const getUsers = (page) => {
-        axios.get('/usersToChat?page='+page)
+    const getUsers = (page, search) => {
+        axios.get('/usersToChat?page='+page+'&search='+search)
         .then(({data}) => {
             data.data.forEach(e => {
                 users.value.push(e)
@@ -28,16 +31,21 @@
         })
     }
 
+    const searchUser = _.debounce(function(){
+        users.value = []
+        getUsers(1, search.value)
+    }, 300)
+
     const onScroll = ({ target: { scrollTop, clientHeight, scrollHeight }}) => {
       if (scrollTop + clientHeight >= scrollHeight) {
         userPage.value += 1
         showLoading.value = true
-        getUsers(userPage.value)
+        getUsers(userPage.value, search.value)
       }
     }
 
     onMounted(() => {
-        getUsers(userPage)
+        getUsers(userPage, search.value)
     })
 </script>
 
@@ -48,7 +56,7 @@
 <template>
     <div class="flex flex-col h-96">
         <div class="flex w-full p-2">
-            <TextInput class="w-full rounded" placeholder="Search..."></TextInput>
+            <TextInput class="w-full rounded" placeholder="Search..." @input="searchUser()" v-model="search"></TextInput>
         </div>
         <div id="userChatList" class="flex w-full mt-2 flex-col overflow-auto" ref="userChatList" v-on:scroll="onScroll($event)">
             <button v-for="user in users" type="button" class="w-full hover:bg-indigo-700 hover:text-white rounded p-2" @click="goToChat(user.id, user.name)">
