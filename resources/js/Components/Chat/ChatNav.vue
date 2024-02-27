@@ -37,11 +37,11 @@
     }, 300)
 
     const onScroll = ({ target: { scrollTop, clientHeight, scrollHeight }}) => {
-      if (scrollTop + clientHeight >= scrollHeight) {
-        userPage.value += 1
-        showLoading.value = true
-        getUsers(userPage.value, search.value)
-      }
+        if (scrollTop + clientHeight >= scrollHeight) {
+            userPage.value += 1
+            showLoading.value = true
+            getUsers(userPage.value, search.value)
+        }
     }
 
     onMounted(() => {

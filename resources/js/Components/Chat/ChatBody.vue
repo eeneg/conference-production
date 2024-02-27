@@ -1,8 +1,10 @@
 <script setup>
     import { ref, onMounted } from 'vue';
+    import { usePage } from '@inertiajs/vue3';
+    import axios from 'axios';
+    import _ from 'lodash';
     import PrimaryButton from '../PrimaryButton.vue';
     import TextInput from '../TextInput.vue';
-    import axios from 'axios';
 
     const props = defineProps({user_id:String})
 
@@ -10,50 +12,85 @@
 
     const message = ref('')
 
-    const getMessages = () => {
-      axios.get(route('messages.show', {id: props.user_id}))
-      .then(({data}) => {
-          if(data.data.length > 0){
-            transformData(data.data)
-          }
-      })
-      .catch(e => {
-          console.log(e)
-      })
-    }
+    const sending = ref(false)
 
-    const sendMessage = () => {
-        axios.post(route('messages.store'), {message: message.value, receiver_id: props.user_id})
-        .then(e => {
-            messages.value = []
-            getMessages()
+    const chatPage = ref(1)
+
+    const showLoading = ref(true)
+
+    const getMessages = (page = 1) => {
+        axios.get('/messages/'+props.user_id+'?page='+page)
+        .then(({data}) => {
+
+            if(data.data.length > 0){
+                transformData(data.data)
+            }
+            if(data.to == null){
+                showLoading.value = false
+            }
         })
         .catch(e => {
-
+            console.log(e)
         })
     }
 
-    const transformData = (data) => {
-      let ar = []
-      data.forEach((e, i) => {
-        let len = ar.length
-        if(i == 0){
-          ar.push(e)
+    const sendMessage = _.debounce(function() {
+        sending.value = false
+        if(message.value == null || (typeof message.value === "string" && message.value.trim().length === 0)){
+            //TODO
         }else{
-          if(ar[len-1].user_id == e.user_id){
-            ar.push(e)
-          }else{
-            messages.value.push(ar)
-            ar = []
-            ar.push(e)
-          }
+            pushNewUserMessage(message.value, usePage().props.auth.user.id)
+            axios.post(route('messages.store'), {message: message.value, receiver_id: props.user_id})
+            .then(e => {
+                sending.value = true
+                message.value = ''
+            })
+            .catch(e => {
+                console.log(e)
+            })
         }
-      })
-      messages.value.push(ar)
+    }, 200)
+
+    const transformData = (data) => {
+        let groupedMessages = data.reduce((acc, curr) => {
+            let lastGroup = acc[acc.length - 1];
+            if (lastGroup && lastGroup[0].user_id === curr.user_id) {
+                lastGroup.push(curr);
+            } else {
+                acc.push([curr]);
+            }
+            return acc;
+        }, []);
+
+        messages.value.push(...groupedMessages);
     }
+
+    const pushNewUserMessage = (msg, id) => {
+        if (messages.value.length === 0) {
+            messages.value = [[{ message: msg, user_id: id }]];
+        } else {
+            const firstMessageUserId = messages.value[0][0].user_id;
+            if (firstMessageUserId === id) {
+                messages.value[0].unshift({ message: msg, user_id: id });
+            } else {
+                messages.value.unshift([{ message: msg, user_id: id }]);
+            }
+        }
+    }
+
+    const onScroll = _.debounce(function({ target: { scrollTop, clientHeight, scrollHeight }}) {
+        let res = clientHeight - scrollTop
+        if (res == scrollHeight) {
+            chatPage.value += 1
+            getMessages(chatPage.value)
+        }
+    }, 200)
 
     onMounted(() => {
         getMessages()
+        window.Echo.private('chat').listen('MessageSentEvent', (e) => {
+            pushNewUserMessage(e.message.message, e.message.user_id)
+        });
     })
 </script>
 
@@ -78,6 +115,7 @@
   margin-top: 5px;
   margin-bottom: 5px;
   display: inline-block;
+  word-break: break-all;
 }
 
 .yours {
@@ -153,17 +191,23 @@
 
 <template>
         <div class="flex flex-col">
-            <div class="flex flex-col flex-col-reverse w-full p-3 overflow-auto h-96">
+            <div class="flex flex-col flex-col-reverse w-full p-3 overflow-auto h-80" v-on:scroll="onScroll">
                 <div v-for="message in messages" :class="{'mine':message[0].user_id != props.user_id,'yours':message[0].user_id == props.user_id, }" class="messages">
+                    <!-- {{ message }} -->
                     <div v-for="(msg, index) in message.slice().reverse()" :class="{'last': (index+1) == message.length}" class="message">
                       {{ msg.message }}
                     </div>
                 </div>
+                <div class="flex justify-center" v-if="showLoading">
+                    Loading ...
+                </div>
             </div>
-
+            <div class="p-0" v-if="sending">
+                <p class="font-thin text-xs float-right pr-2 text-current">Sent</p>
+            </div>
             <div class="flex p-2">
                 <div class="flex-initial p-1 w-full">
-                    <TextInput class="w-full" placeholder="Aa" v-model="message"></TextInput>
+                    <TextInput style="white-space: pre-wrap;" @keyup.enter="sendMessage" class="w-full" placeholder="Aa" v-model="message"></TextInput>
                 </div>
                 <div class="flex-initial p-1">
                     <PrimaryButton class="h-full" @click="sendMessage">send</PrimaryButton>

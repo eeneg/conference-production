@@ -17,6 +17,12 @@ createInertiaApp({
             .use(ZiggyVue, Ziggy)
             .mount(el);
     },
+    created(){
+        window.Echo.channel(`chat`)
+        .listen('App\\Events\\MessageSentEvent', (e) => {
+            console.log(e);
+        });
+    },
     progress: {
         color: '#4B5563',
     },

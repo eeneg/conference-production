@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
+use App\Events\MessageSentEvent;
 use App\Models\Message;
 use App\Models\User;
 
@@ -15,9 +17,10 @@ class ChatController extends Controller
     }
 
     public function getUsersToChat(Request $request){
-        return User::search($request->search)
-            ->query(fn (Builder $query) => $query->select(['id', 'name'])->without('roles')->with('messages')->latest())
-            ->paginate(15);
+        return Message::distinct('user_id')->with('users')->get('user_id');
+        // return User::search($request->search)
+        //     ->query(fn (Builder $query) => $query->select(['id', 'name'])->without('roles')->with('messages')->latest())
+        //     ->paginate(15);
     }
 
     public function show($id)
@@ -31,16 +34,17 @@ class ChatController extends Controller
                 ->where('receiver_id', auth()->user()->id);
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(20);
+            ->paginate(10);
     }
 
     public function store(Request $request){
 
-        $message = Message::create([
-            'user_id' => auth()->user()->id,
+        $message = User::find(auth()->user()->id)->messages()->create([
             'receiver_id' => $request->receiver_id,
             'message' => $request->message
         ]);
+
+        broadcast(new MessageSentEvent(auth()->user(), $message))->toOthers();
 
     }
 }
