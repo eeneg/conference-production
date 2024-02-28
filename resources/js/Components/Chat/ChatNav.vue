@@ -66,7 +66,7 @@
                     </div>
                     <div class="font-medium">
                         <div>{{ user.name }}</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400 float-left">Hey</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400 float-left">{{ user.latest_message == undefined ? '' : user.latest_message.message }}</div>
                     </div>
                 </div>
             </button>

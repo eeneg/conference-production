@@ -135,6 +135,7 @@ return [
         'index-settings' => [
             App\Models\User::class => [
                 'filterableAttributes' => ['id', 'name', 'email'],
+                'sortableAttributes' => ['name', 'created_at', 'latest_message'],
             ],
 
             App\Models\Conference::class => [

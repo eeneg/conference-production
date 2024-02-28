@@ -17,10 +17,11 @@ class ChatController extends Controller
     }
 
     public function getUsersToChat(Request $request){
-        return Message::distinct('user_id')->with('users')->get('user_id');
-        // return User::search($request->search)
-        //     ->query(fn (Builder $query) => $query->select(['id', 'name'])->without('roles')->with('messages')->latest())
-        //     ->paginate(15);
+
+        $users = User::search($request->search)
+        ->query(fn (Builder $query) => $query->with('latestMessage')->without('roles'))->paginate(15);
+
+        return $users;
     }
 
     public function show($id)
