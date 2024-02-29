@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Database\Eloquent\Builder as Builder1;
 use Illuminate\Support\Facades\DB;
 use App\Events\MessageSentEvent;
 use App\Models\Message;
@@ -19,9 +20,18 @@ class ChatController extends Controller
     public function getUsersToChat(Request $request){
 
         $users = User::search($request->search)
-        ->query(fn (Builder $query) => $query->with('latestMessage')->without('roles'))->paginate(15);
+            ->query(fn (Builder $query) => $query
+            ->with('latestMessage')
+            ->without('roles'))
+            ->paginate(15);
 
         return $users;
+    }
+
+    public function userChatList(){
+
+
+
     }
 
     public function show($id)
