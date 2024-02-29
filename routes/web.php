@@ -11,6 +11,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ReferenceController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\FileSearchController;
 use App\Http\Middleware\IsAdmin;
 use App\Models\Minutes;
 use GuzzleHttp\Client;
@@ -61,8 +62,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/file_check', [FileController::class, 'fileCheck'])->name('file.check');
     Route::get('/category_check/{id}', [CategoryController::class, 'checkCategoryRelation'])->name('category.check');
 
+    Route::get('/findFiles', [FileSearchController::class, 'index'])->name('file.search');
+
     Route::get('/messages/{id}', [ChatController::class, 'show'])->name('messages.show');
     Route::post('/messages', [ChatController::class, 'store'])->name('messages.store');
+    Route::get('/userChatList', [ChatController::class, 'userChatList'])->name('messages.users');
     Route::get('/usersToChat', [ChatController::class, 'getUsersToChat']);
 });
 
