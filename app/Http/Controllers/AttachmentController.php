@@ -15,11 +15,13 @@ class AttachmentController extends Controller
     public function index(Request $request)
     {
         return Inertia::render('Attachments/Index',
-            ['files' => Attachment::search($request->search)
-            ->query(function($query){
-                $query->with('conference');
-            })
-            ->paginate(10)]
+            [
+                'files' => Attachment::search($request->search)
+                            ->query(function($query){
+                                $query->with('conference')->with('storage');
+                            })
+                            ->paginate(10)
+            ]
         );
     }
 

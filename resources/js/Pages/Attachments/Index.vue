@@ -3,6 +3,7 @@
     import { Head, useForm } from '@inertiajs/vue3';
     import TextInput from '@/Components/TextInput.vue';
     import InputLabel from '@/Components/InputLabel.vue';
+    import FindFileLayout from '@/Layouts/FindFileLayout.vue';
     import { DocumentIcon, ArrowDownTrayIcon, BookOpenIcon } from '@heroicons/vue/20/solid';
     import Pagination from '@/Components/Pagination.vue';
     import Modal from '@/Components/Modal.vue';
@@ -48,7 +49,7 @@
 <template>
     <Head title="Attachments" />
 
-    <AuthenticatedLayout>
+    <FindFileLayout :type="1">
         <template #header>
             <h2 class="text-xl font-semibold leading-tight text-gray-800">Attachments</h2>
         </template>
@@ -59,10 +60,10 @@
                     <div class="flex flex-row">
                         <div class="pl-5 pr-6 mt-3 grow">
                             <header>
-                                <h2 class="text-lg font-medium text-gray-900">Search Attachments</h2>
+                                <h2 class="text-lg font-medium text-gray-900">Search Conference Attachments</h2>
 
                                 <p class="mt-1 text-sm text-gray-600">
-                                    File searching
+                                    Searches Conference attachment files via File Name, Storage and Content
                                 </p>
                             </header>
                         </div>
@@ -106,7 +107,7 @@
                                         <p>Details: </p>
                                         <p class="text-md ml-2 truncate w-24">{{ file.details }}</p>
                                         <p class="text-md ml-3">Storage: </p>
-                                        <p class="text-md ml-2 truncate w-24">{{ file.storage_location }}</p>
+                                        <p class="text-md ml-2 truncate w-24">{{ file.storage.title }}</p>
                                         <p class="text-md ml-5">Conference: </p>
                                         <p class="text-md ml-2 truncate w-40">{{ file.conference.title }}</p>
                                         <p class="text-md ml-2">Category: </p>
@@ -150,6 +151,6 @@
             </div>
         </Modal>
 
-    </AuthenticatedLayout>
+    </FindFileLayout>
 
 </template>

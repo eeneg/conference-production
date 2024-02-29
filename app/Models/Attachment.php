@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Laravel\Scout\Attributes\SearchUsingFullText;
-use App\Models\PdfContent;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Support\Facades\File;
 use Laravel\Scout\Searchable;
+use App\Models\PdfContent;
+use App\Models\Storage;
 
 class Attachment extends Model
 {
@@ -38,6 +39,10 @@ class Attachment extends Model
     public function pdfContent() : MorphOne
     {
         return $this->morphOne(PdfContent::class, 'contentable');
+    }
+
+    public function storage(){
+        return $this->belongsTo(Storage::class, 'storage_id');
     }
 
     #[SearchUsingFullText(['details', 'storage_location'])]
