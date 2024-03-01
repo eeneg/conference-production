@@ -48,6 +48,18 @@ class DatabaseSeeder extends Seeder
         ]);
 
         \App\Models\Category::create([
+            'title' => 'Resolutions',
+            'type' => '1',
+            'details' => 'Sample Resolution Details'
+        ]);
+
+        \App\Models\Category::create([
+            'title' => 'Ordinances',
+            'type' => '1',
+            'details' => 'Sample Ordinance Details'
+        ]);
+
+        \App\Models\Category::create([
             'title' => 'Sample Category Title 2',
             'type' => '2',
             'details' => 'Sample Category Details 2'

@@ -47,13 +47,7 @@
 
 </script>
 <template>
-    <Head title="Attachments" />
-
     <FindFileLayout :type="1">
-        <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Attachments</h2>
-        </template>
-
         <div class="py-5">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
@@ -68,9 +62,14 @@
                             </header>
                         </div>
                     </div>
+                    <div class="flex flex-row-reverse mt-3 pl-5 pr-5">
+                        <div class="">
+                            <SecondaryButton @click="reset">Reset</SecondaryButton>
+                        </div>
+                    </div>
                     <div class="grow">
                         <form @submit.prevent="search" class="flex flex-row mt-1 space-y-6">
-                            <div class="p-6 grow">
+                            <div class="pr-6 pl-6 pb-6 grow">
                                 <InputLabel value="Search" for="search" />
                                 <div class="relative mt-2 rounded-md shadow-sm">
                                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -86,11 +85,6 @@
                             </div>
                         </form>
                     </div>
-                    <div class="flex flex-row-reverse pl-5 pr-5">
-                        <div class="">
-                            <SecondaryButton @click="reset">Reset</SecondaryButton>
-                        </div>
-                    </div>
                     <div class="grow pl-5 pr-5 pb-5">
                         <div class="border rounded p-2 pl-4 mt-2" v-for="file in props.files.data">
                             <div class="flex">
@@ -99,19 +93,19 @@
                                         <DocumentIcon class="w-5 h-5 stroke-gray-900 fill-none " aria-hidden="true" />
                                     </div>
                                 </div>
-                                <div>
+                                <div class="ml-4">
                                     <div class="flex ml-2">
                                         <p class="text-lg float-left truncate w-96">{{ file.file_name }}</p>
                                     </div>
                                     <div class="flex ml-2">
+                                        <p>Category: </p>
+                                        <p class="text-md ml-2 truncate w-60">{{ file.category.title }}</p>
+                                        <p>Storage: </p>
+                                        <p class="text-md ml-2 truncate w-60">{{ file.storage.title }}</p>
+                                    </div>
+                                    <div class="flex ml-2">
                                         <p>Details: </p>
                                         <p class="text-md ml-2 truncate w-24">{{ file.details }}</p>
-                                        <p class="text-md ml-3">Storage: </p>
-                                        <p class="text-md ml-2 truncate w-24">{{ file.storage.title }}</p>
-                                        <p class="text-md ml-5">Conference: </p>
-                                        <p class="text-md ml-2 truncate w-40">{{ file.conference.title }}</p>
-                                        <p class="text-md ml-2">Category: </p>
-                                        <p class="text-md ml-2 truncate w-24">{{ file.category }}</p>
                                     </div>
                                 </div>
                                 <div class="grow mt-2">

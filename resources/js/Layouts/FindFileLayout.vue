@@ -14,11 +14,12 @@
 
 </script>
 <template>
-    <Head title="Attachments" />
+    <Head title="Search"/>
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">Files</h2>
+            <h2 v-if="props.type == 1" class="text-xl font-semibold leading-tight text-gray-800">Search Attachments</h2>
+            <h2 v-if="props.type == 2" class="text-xl font-semibold leading-tight text-gray-800">Search Files</h2>
         </template>
 
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 flex md:flex-row sm:flex-col min-[300px]:flex-col">
