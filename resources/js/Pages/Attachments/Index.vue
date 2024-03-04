@@ -1,6 +1,5 @@
 <script setup>
-    import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-    import { Head, useForm } from '@inertiajs/vue3';
+    import { useForm } from '@inertiajs/vue3';
     import TextInput from '@/Components/TextInput.vue';
     import InputLabel from '@/Components/InputLabel.vue';
     import FindFileLayout from '@/Layouts/FindFileLayout.vue';
@@ -9,7 +8,6 @@
     import Modal from '@/Components/Modal.vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
     import {nextTick, ref} from 'vue';
-    import moment from 'moment';
 
 
     const props = defineProps({files: Object})
@@ -24,7 +22,7 @@
         form.get(route('attachment.index'), {
             preserveScroll: true,
             preserveState: true,
-            onFinish: () => nextTick(() => document.getElementById('search').focus())
+            onFinish: () => nextTick(() => document.getElementById('search_attachment').focus())
         })
     }
 
@@ -80,7 +78,7 @@
                                         </span>
                                     </div>
 
-                                    <TextInput id="search" type="search" class="block w-full mt-1 pl-9" v-model="form.search"/>
+                                    <TextInput id="search_attachment" type="search" class="block w-full mt-1 pl-9" v-model="form.search"/>
                                 </div>
                             </div>
                         </form>

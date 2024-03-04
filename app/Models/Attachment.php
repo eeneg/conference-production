@@ -52,7 +52,7 @@ class Attachment extends Model
             'id' => $this->getKey(),
             'file_name' => $this->file_name,
             'details' => $this->details,
-            'storage_location' => $this->storage_location,
+            'storage_location' => $this->storage->title,
             'content' => $this->pdfContent->content ?? ''
         ];
     }
