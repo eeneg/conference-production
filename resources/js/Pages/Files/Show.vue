@@ -5,16 +5,35 @@
     import SecondaryButton from '@/Components/SecondaryButton.vue';
     import { ArrowDownTrayIcon, DocumentIcon, BookOpenIcon } from '@heroicons/vue/20/solid';
     import InputLabel from '@/Components/InputLabel.vue';
-    import { ref } from 'vue';
+    import { useForm } from '@inertiajs/vue3';
+    import { ref, nextTick } from 'vue';
 
 
     const props = defineProps({files: Object, storage: Object, category: Object})
 
-    const search = ref("")
-
     const path = ref(null)
 
     const modalShow = ref(false)
+
+    const form = useForm({
+        search: props.search,
+    })
+
+    const search = () => {
+        form.get(route('file.index'), {
+            preserveScroll: true,
+            preserveState: true,
+            onFinish: () => nextTick(() => document.getElementById('search_file').focus())
+        })
+    }
+
+    const reset = () => {
+        form.search = ""
+        form.get(route('file.index'), {
+            preserveScroll: true,
+            preserveState: true,
+        })
+    }
 
     const closeModal = () => {
         modalShow.value = false
@@ -45,11 +64,11 @@
                     </div>
                     <div class="flex flex-row-reverse mt-3 pl-5 pr-5">
                         <div class="">
-                            <SecondaryButton>Reset</SecondaryButton>
+                            <SecondaryButton @click="reset">Reset</SecondaryButton>
                         </div>
                     </div>
                     <div class="grow">
-                        <form class="flex flex-row mt-1 space-y-2">
+                        <form @submit.prevent="search" class="flex flex-row mt-1 space-y-2">
                             <div class="pr-6 pl-6 pb-6 grow">
                                 <InputLabel value="Search" for="search" />
                                 <div class="relative mt-2 rounded-md shadow-sm">
@@ -61,7 +80,7 @@
                                         </span>
                                     </div>
 
-                                    <TextInput id="search" type="search" class="block w-full mt-1 pl-9" v-model="search"/>
+                                    <TextInput id="search_file" type="search" class="block w-full mt-1 pl-9" v-model="form.search"/>
                                 </div>
                             </div>
                         </form>

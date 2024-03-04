@@ -32,7 +32,7 @@
                         </button>
                     </li>
                     <li class="">
-                        <button @click="changeType('file.search')" class="border-l-4 pl-4 pt-1 pb-1 border-transparent w-full text-left" :class="{'border-l-4 w-full border-indigo-500 bg-slate-200 border-l-indigo-500' : props.type == 2}">
+                        <button @click="changeType('file.index')" class="border-l-4 pl-4 pt-1 pb-1 border-transparent w-full text-left" :class="{'border-l-4 w-full border-indigo-500 bg-slate-200 border-l-indigo-500' : props.type == 2}">
                             Files
                         </button>
                     </li>

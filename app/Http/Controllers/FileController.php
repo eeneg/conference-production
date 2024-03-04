@@ -88,7 +88,7 @@ class FileController extends Controller
                 'date'          => $request->date,
             ]);
             FileStorage::putFileAs('public/File_Uploads/'. $request->storage_id . '/' . $request->category_id, $request->file[0], str_replace(' ','_',$request->file[0]->getClientOriginalName()));
-            $this->fileContentService->handle($file);
+            $this->fileContentService->handle($file->id);
         });
     }
 
