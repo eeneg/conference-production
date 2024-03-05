@@ -42,8 +42,8 @@ class ProcessAttachment implements ShouldQueue
         $res = $py->output();
         $er = $py->errorOutput();
 
-        Attachment::find($attachment->id)->pdfContent()->create(['content' => $res]);
+        $attachment->pdfContent()->create(['content' => $res]);
 
-        Attachment::find($attachment->id)->load('pdfContent')->searchable();
+        $attachment->load('pdfContent')->searchable();
     }
 }

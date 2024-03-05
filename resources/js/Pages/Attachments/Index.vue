@@ -103,7 +103,7 @@
                                     </div>
                                     <div class="flex ml-2">
                                         <p>Details: </p>
-                                        <p class="text-md ml-2 truncate w-24">{{ file.details }}</p>
+                                        <p class="text-md ml-2 truncate w-80">{{ file.details }}</p>
                                     </div>
                                 </div>
                                 <div class="grow mt-2">
