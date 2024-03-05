@@ -10,7 +10,7 @@ class FileContentService {
 
 
     public function handle($id){
-        $file = File::find($id)->first();
+        $file = File::find($id);
         ProcessFileContent::dispatchSync($file);
     }
 }

@@ -49,7 +49,7 @@ const goChat = (bool) => {
                                     Conferences
                                 </NavLink>
                                 <NavLink :href="route('attachment.index')" :active="route().current('attachment.*')">
-                                    Find Attachments
+                                    Find Files
                                 </NavLink>
                                 <NavLink :href="route('files.index')" :active="route().current('files.*')">
                                     File Upload

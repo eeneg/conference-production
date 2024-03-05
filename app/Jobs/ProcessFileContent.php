@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\PdfContent;
+use App\Models\File;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -45,6 +46,6 @@ class ProcessFileContent implements ShouldQueue
 
         $file->pdfContent()->create(['content' => $res]);
 
-        $file->load('pdfContent')->searchable();
+        $file->loadMorph('contentable', [PdfContent::class => 'pdfContent'])->searchable();
     }
 }
