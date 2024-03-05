@@ -14,6 +14,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Laravel\Scout\Searchable;
 use Ramsey\Uuid\Uuid;
 use App\Models\Message;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class User extends Authenticatable
 {
@@ -70,7 +71,15 @@ class User extends Authenticatable
 
     public function latestMessage()
     {
-        return $this->hasOne(Message::class)->latestOfMany();
+        return $this->hasOne(Message::class)
+            ->ofMany([
+                'created_at' => 'max',
+            ], function (Builder $query) {
+                $query->where('messages.user_id', '=', auth()->user()->id)
+                    ->orWhere('messages.receiver_id', '=', auth()->user()->id);
+            });
+
+        // return $this->hasOne(Message::class)->latestOfMany();
     }
 
 
