@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('user_id');
-            $table->foreign('user_id')
+            $table->uuid('sender_id');
+            $table->foreign('sender_id')
                 ->references('id')
                 ->on('users');
-            $table->string('receiver_id');
+            $table->string('recipient_id');
             $table->string('message');
             $table->boolean('read')->default(false);
             $table->timestamps();

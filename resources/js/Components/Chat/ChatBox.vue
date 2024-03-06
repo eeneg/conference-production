@@ -6,14 +6,14 @@
 
     const chat = ref(false)
 
-    const data = ref({id: null, name: null})
+    const data = ref({recipient_id: null, name: null})
 
     const emit = defineEmits(['closeChat'])
 
     const goToChat = (bool) => {
-        chat.value = bool.chat
         data.value.name = bool.user_name
-        data.value.id = bool.user_id
+        data.value.recipient_id = bool.recipient_id
+        chat.value = true
     }
 
     const goToChatNav = () => {
@@ -55,7 +55,7 @@
 
                 <div class="">
                     <ChatNav v-if="chat == false"  @navChat="goToChat($event)"></ChatNav>
-                    <ChatBody v-if="chat == true" :user_id="data.id"></ChatBody>
+                    <ChatBody v-if="chat == true" :recipient_id="data.recipient_id"></ChatBody>
                 </div>
 
             </div>

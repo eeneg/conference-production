@@ -12,9 +12,9 @@ class Message extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = ['message', 'user_id', 'receiver_id'];
+    protected $fillable = ['message', 'sender_id', 'recipient_id'];
 
     public function users(){
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'sender_id');
     }
 }

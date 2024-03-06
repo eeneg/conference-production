@@ -1,6 +1,7 @@
 <script setup>
     import TextInput from '../TextInput.vue';
     import _ from 'lodash';
+import moment from 'moment';
     import { onMounted, ref, watch } from 'vue'
 
     const users = ref([])
@@ -14,7 +15,7 @@
     const emit = defineEmits(['navChat'])
 
     const goToChat = (id, name) =>{
-        emit('navChat', {chat: true, user_id: id, user_name: name})
+        emit('navChat', {chat: true, recipient_id: id, user_name: name})
     }
 
     const searchUsers = (page, search) => {

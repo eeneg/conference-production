@@ -10,6 +10,7 @@ use App\Events\MessageSentEvent;
 use Illuminate\Database\Query\JoinClause;
 use App\Models\Message;
 use App\Models\User;
+use App\Models\Chat;
 
 class ChatController extends Controller
 {
@@ -22,7 +23,7 @@ class ChatController extends Controller
 
         $users = User::search($request->search)
             ->query(fn (Builder $query) => $query
-            ->with('latestMessage')
+            ->where('id', '!=', auth()->user()->id)
             ->without('roles'))
             ->paginate(15);
 
@@ -31,78 +32,52 @@ class ChatController extends Controller
 
     public function userChatList(){
 
-        $users = User::without('roles')
-            ->where('users.id', '!=', auth()->user()->id)
-            ->leftJoin('messages', function ($join) {
-                $join->on('users.id', '=', 'messages.user_id')
-                    ->orOn('users.id', '=', 'messages.receiver_id');
-            })
-            ->select('users.id', 'users.name', DB::raw('MAX(messages.created_at) as latest_received_message'))
-            ->groupBy('users.id');
+        $userId = auth()->user()->id;
 
-        return User::where('users.id', '!=', auth()->user()->id)
+        $chatList = User::select('users.id', 'users.name', 'messages.message', 'messages.created_at')
             ->without('roles')
-            ->leftJoin('messages', function ($join) {
-                $join->on('users.id', '=', 'messages.user_id')
-                    ->orOn('users.id', '=', 'messages.receiver_id');
+            ->leftJoin('messages', function($join){
+                $join->on('users.id', '=', 'messages.sender_id')
+                    ->orOn('users.id', '=', 'messages.recipient_id');
             })
-            ->select('users.id', 'users.name', DB::raw('MAX(messages.created_at) as latest_received_message'))
-            ->where(function($query){
-                $query->where('messages.user_id', auth()->user()->id)
-                    ->orWhere('messages.receiver_id', auth()->user()->id);
+            ->where(function(Builder $query){
+                $query->where('messages.sender_id', auth()->user()->id)
+                    ->orWhere('messages.recipient_id', auth()->user()->id);
             })
-            ->groupBy('users.id')
-            ->union($users)
-            ->orderByDesc('latest_received_message')
+            ->whereRaw('messages.created_at = (
+                SELECT MAX(created_at) FROM messages
+                WHERE (messages.sender_id = users.id OR messages.recipient_id = users.id)
+            )')
+            ->where('users.id', '!=', auth()->user()->id)
+            ->orWhereNull('messages.id')
+            ->orderByDesc('created_at')
             ->paginate(10);
 
-            //
-            // $subQuery = User::without('roles')
-            //     ->where('users.id', '!=', auth()->user()->id)
-            //     ->leftJoin('messages', function ($join) {
-            //         $join->on('users.id', '=', 'messages.user_id')
-            //             ->orOn('users.id', '=', 'messages.receiver_id');
-            //     })
-            //     ->select('users.id', DB::raw('MAX(messages.created_at) as latest_received_message'))
-            //     ->where('users.id', '!=', auth()->user()->id)
-            //     ->groupBy('users.id');
-
-            // $users = User::without('roles')
-            //     ->where('users.id', '!=', auth()->user()->id)
-            //     ->leftJoin('messages', function ($join) {
-            //         $join->on('users.id', '=', 'messages.user_id')
-            //             ->orOn('users.id', '=', 'messages.receiver_id');
-            //     })
-            //     ->joinSub($subQuery, 'sub', function ($join) {
-            //         $join->on('users.id', '=', 'sub.id');
-            //     })
-            //     ->select('users.id', 'users.name', 'sub.latest_received_message', 'messages.message')
-            //     ->orderByDesc('latest_received_message')
-            //     ->paginate(10);
-
+        return $chatList;
     }
 
     public function show($id)
     {
-        return Message::where('user_id', auth()->user()->id)
+        return Message::where('sender_id', auth()->user()->id)
             ->where(function($query) use ($id){
-                $query->where('receiver_id', $id);
+                $query->where('recipient_id', $id);
             })
             ->orWhere(function($query) use ($id){
-                $query->where('user_id', $id)
-                ->where('receiver_id', auth()->user()->id);
+                $query->where('sender_id', $id)
+                ->where('recipient_id', auth()->user()->id);
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
     }
 
     public function store(Request $request){
-
         $message = User::find(auth()->user()->id)->messages()->create([
-            'user_id' => auth()->user()->id,
-            'receiver_id' => $request->receiver_id,
+            // 'sender_id' => auth()->user()->id,
+            'recipient_id' => $request->recipient_id,
             'message' => $request->message
         ]);
+
+        // $chat = Chat::updateOrCreate(['id1' => auth()->user()->id, 'id2' => $request->recipient_id], ['id1' => auth()->user()->id, 'id2' => $request->recipient_id, 'latest_message_id' => $message->id]);
 
         broadcast(new MessageSentEvent(auth()->user(), $message))->toOthers();
 

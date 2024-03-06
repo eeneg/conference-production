@@ -6,7 +6,7 @@
     import PrimaryButton from '../PrimaryButton.vue';
     import TextInput from '../TextInput.vue';
 
-    const props = defineProps({user_id:String})
+    const props = defineProps({recipient_id:String})
 
     const messages = ref([])
 
@@ -19,7 +19,7 @@
     const showLoading = ref(true)
 
     const getMessages = (page = 1) => {
-        axios.get('/messages/'+props.user_id+'?page='+page)
+        axios.get('/messages/'+props.recipient_id+'?page='+page)
         .then(({data}) => {
 
             if(data.data.length > 0){
@@ -40,7 +40,7 @@
             //TODO
         }else{
             pushNewUserMessage(message.value, usePage().props.auth.user.id)
-            axios.post(route('messages.store'), {message: message.value, receiver_id: props.user_id})
+            axios.post(route('messages.store'), {message: message.value, recipient_id: props.recipient_id})
             .then(e => {
                 sending.value = true
                 message.value = ''
@@ -54,7 +54,7 @@
     const transformData = (data) => {
         let groupedMessages = data.reduce((acc, curr) => {
             let lastGroup = acc[acc.length - 1];
-            if (lastGroup && lastGroup[0].user_id === curr.user_id) {
+            if (lastGroup && lastGroup[0].sender_id === curr.sender_id) {
                 lastGroup.push(curr);
             } else {
                 acc.push([curr]);
@@ -67,13 +67,13 @@
 
     const pushNewUserMessage = (msg, id) => {
         if (messages.value.length === 0) {
-            messages.value = [[{ message: msg, user_id: id }]];
+            messages.value = [[{ message: msg, sender_id: id }]];
         } else {
-            const firstMessageUserId = messages.value[0][0].user_id;
+            const firstMessageUserId = messages.value[0][0].sender_id;
             if (firstMessageUserId === id) {
-                messages.value[0].unshift({ message: msg, user_id: id });
+                messages.value[0].unshift({ message: msg, sender_id: id });
             } else {
-                messages.value.unshift([{ message: msg, user_id: id }]);
+                messages.value.unshift([{ message: msg, sender_id: id }]);
             }
         }
     }
@@ -89,7 +89,7 @@
     onMounted(() => {
         getMessages()
         window.Echo.private('chat').listen('MessageSentEvent', (e) => {
-            pushNewUserMessage(e.message.message, e.message.user_id)
+            pushNewUserMessage(e.message.message, e.message.sender_id)
         });
     })
 </script>
@@ -192,7 +192,7 @@
 <template>
         <div class="flex flex-col">
             <div class="flex flex-col flex-col-reverse w-full p-3 overflow-auto h-80" v-on:scroll="onScroll">
-                <div v-for="message in messages" :class="{'mine':message[0].user_id != props.user_id,'yours':message[0].user_id == props.user_id, }" class="messages">
+                <div v-for="message in messages" :class="{'mine':message[0].sender_id != props.recipient_id,'yours':message[0].sender_id == props.recipient_id, }" class="messages">
                     <!-- {{ message }} -->
                     <div v-for="(msg, index) in message.slice().reverse()" :class="{'last': (index+1) == message.length}" class="message">
                       {{ msg.message }}

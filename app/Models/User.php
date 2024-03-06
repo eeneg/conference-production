@@ -66,7 +66,7 @@ class User extends Authenticatable
 
     public function messages()
     {
-        return $this->hasMany(Message::class)->orderBy('created_at');
+        return $this->hasMany(Message::class, 'sender_id')->orderBy('created_at');
     }
 
     public function latestMessage()
@@ -75,7 +75,7 @@ class User extends Authenticatable
             ->ofMany([
                 'created_at' => 'max',
             ], function (Builder $query) {
-                $query->where('messages.user_id', '=', auth()->user()->id)
+                $query->where('messages.sender_id', '=', auth()->user()->id)
                     ->orWhere('messages.receiver_id', '=', auth()->user()->id);
             });
 

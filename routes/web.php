@@ -14,6 +14,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FileSearchController;
 use App\Http\Middleware\IsAdmin;
 use App\Models\Minutes;
+use App\Models\Message;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Http;
@@ -69,6 +70,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/messages', [ChatController::class, 'store'])->name('messages.store');
     Route::get('/userChatList', [ChatController::class, 'userChatList'])->name('messages.users');
     Route::get('/usersToChat', [ChatController::class, 'getUsersToChat']);
+
+    Route::get('/allChat', function(){
+        return Message::all();
+    })->name('chat.all');
 });
 
 Route::resource('users', UserController::class)->middleware([IsAdmin::class]);
