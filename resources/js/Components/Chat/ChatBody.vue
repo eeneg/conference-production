@@ -78,6 +78,16 @@
         }
     }
 
+    const setMessageReadStatus = () => {
+        axios.post(route('message.set'), {id: props.recipient_id})
+        .then(e => {
+
+        })
+        .catch(e => {
+            console.log(e)
+        })
+    }
+
     const onScroll = _.debounce(function({ target: { scrollTop, clientHeight, scrollHeight }}) {
         let res = clientHeight - scrollTop
         if (res == scrollHeight) {
@@ -88,6 +98,7 @@
 
     onMounted(() => {
         getMessages()
+        setMessageReadStatus()
         window.Echo.private('chat').listen('MessageSentEvent', (e) => {
             pushNewUserMessage(e.message.message, e.message.sender_id)
         });

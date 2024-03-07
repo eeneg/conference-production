@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/messages', [ChatController::class, 'store'])->name('messages.store');
     Route::get('/userChatList', [ChatController::class, 'userChatList'])->name('messages.users');
     Route::get('/usersToChat', [ChatController::class, 'getUsersToChat']);
+    Route::post('/setMessageStatus', [ChatController::class, 'setMessageStatus'])->name('message.set');
 
     Route::get('/allChat', function(){
         return Message::all();

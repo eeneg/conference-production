@@ -34,22 +34,19 @@ class ChatController extends Controller
 
         $userId = auth()->user()->id;
 
-        $chatList = User::select('users.id', 'users.name', 'messages.message', 'messages.created_at')
+        $chatList = User::select('users.id', 'users.name', 'messages.sender_id', 'messages.recipient_id', 'messages.message', 'messages.read', 'messages.created_at')
             ->without('roles')
             ->leftJoin('messages', function($join){
                 $join->on('users.id', '=', 'messages.sender_id')
-                    ->orOn('users.id', '=', 'messages.recipient_id');
+                    ->orOn('users.id', '=', 'messages.recipient_id')
+                    ->whereRaw('messages.created_at = (
+                        SELECT MAX(created_at) FROM messages
+                        WHERE (messages.sender_id = users.id OR messages.recipient_id = users.id)
+                    )');
             })
-            ->where(function(Builder $query){
-                $query->where('messages.sender_id', auth()->user()->id)
-                    ->orWhere('messages.recipient_id', auth()->user()->id);
-            })
-            ->whereRaw('messages.created_at = (
-                SELECT MAX(created_at) FROM messages
-                WHERE (messages.sender_id = users.id OR messages.recipient_id = users.id)
-            )')
-            ->where('users.id', '!=', auth()->user()->id)
-            ->orWhereNull('messages.id')
+            // ->where('users.id', '!=', auth()->user()->id)
+            ->where('messages.sender_id', auth()->user()->id)
+            // ->where('messages.recipient_id', auth()->user()->id)
             ->orderByDesc('created_at')
             ->paginate(10);
 
@@ -72,14 +69,15 @@ class ChatController extends Controller
 
     public function store(Request $request){
         $message = User::find(auth()->user()->id)->messages()->create([
-            // 'sender_id' => auth()->user()->id,
             'recipient_id' => $request->recipient_id,
             'message' => $request->message
         ]);
 
-        // $chat = Chat::updateOrCreate(['id1' => auth()->user()->id, 'id2' => $request->recipient_id], ['id1' => auth()->user()->id, 'id2' => $request->recipient_id, 'latest_message_id' => $message->id]);
-
         broadcast(new MessageSentEvent(auth()->user(), $message))->toOthers();
 
+    }
+
+    public function setMessageStatus(Request $request){
+        return Message::where('sender_id', $request->id)->where('recipient_id', auth()->user()->id)->where('read', false)->update(['read' => true]);
     }
 }

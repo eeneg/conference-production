@@ -1,12 +1,16 @@
 <script setup>
     import TextInput from '../TextInput.vue';
+    import { usePage } from '@inertiajs/vue3';
     import _ from 'lodash';
-import moment from 'moment';
-    import { onMounted, ref, watch } from 'vue'
+    import { onMounted, ref } from 'vue'
+
+    const id = usePage().props.auth.user.id;
 
     const users = ref([])
 
     const userPage = ref(1)
+
+    const modeMessageList = ref(1)
 
     const showLoading = ref(false)
 
@@ -63,6 +67,16 @@ import moment from 'moment';
         }
     }
 
+    const navigate = (mode) => {
+        users.value = []
+        modeMessageList.value = mode
+        if(mode == 1){
+            getUsersChatList(1)
+        }else{
+            searchUsers(1, search.value)
+        }
+    }
+
     const formatText = (text) => {
         if(text.length > 20){
             text = text.slice(0, 20) + " ..."
@@ -72,6 +86,10 @@ import moment from 'moment';
 
     onMounted(() => {
         getUsersChatList(1)
+        window.Echo.private('chat').listen('MessageSentEvent', (e) => {
+            users.value = []
+            getUsersChatList(1)
+        });
     })
 </script>
 
@@ -84,6 +102,10 @@ import moment from 'moment';
         <div class="flex w-full p-2">
             <TextInput class="w-full rounded" placeholder="Search..." @input="searchUserFunction()" v-model="search"></TextInput>
         </div>
+        <div class="flex flex-row w-full space-x-3 p-2">
+            <button @click="navigate(1)" class="rounded rounded-full px-2 py-1 uppercase text-xs text-white bg-gray-800" :class="{'border-2 border-indigo-600 bg-indigo-800' : modeMessageList == 1}">Messages</button>
+            <button @click="navigate(2)" class="rounded rounded-full px-2 py-1 uppercase text-xs text-white bg-gray-800" :class="{'border-2 border-indigo-600 bg-indigo-800' : modeMessageList == 2}">Contacts</button>
+        </div>
         <div id="userChatList" class="flex w-full mt-2 flex-col overflow-auto" ref="userChatList" v-on:scroll="onScroll($event)">
             <button v-for="user in users" type="button" class="w-full hover:bg-indigo-700 hover:text-white rounded p-2" @click="goToChat(user.id, user.name)">
                 <div class="flex gap-4">
@@ -92,9 +114,9 @@ import moment from 'moment';
                             <span class="font-medium text-gray-600 dark:text-gray-300">SP</span>
                         </div>
                     </div>
-                    <div class="flex flex-col">
+                    <div class="flex flex-col w-full pr-2">
                         <div class=""><p class="float-left">{{ user.name }}</p></div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                        <div class="text-sm w-full" :class="{'font-bold dark:text-black-400' : user.read == false && user.sender_id != id, 'dark:text-black-400' : user.sender_id == id}">
                             <p class="float-left">{{formatText(user.message == undefined ? '' : user.message)}}</p>
                         </div>
                     </div>
