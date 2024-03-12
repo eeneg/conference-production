@@ -69,6 +69,6 @@ class DatabaseSeeder extends Seeder
         User::where('email', 'test1@example.com')->first()->roles()->attach(Role::where('title', 'administrator')->first()->id);
 
 
-        \App\Models\User::factory()->count(3)->hasAttached(\App\Models\Role::where('title', 'user')->first())->create();
+        \App\Models\User::factory()->count(100000)->hasAttached(\App\Models\Role::where('title', 'user')->first())->create();
     }
 }

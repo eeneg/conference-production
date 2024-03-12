@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Laravel\Scout\Attributes\SearchUsingFullText;
 use Laravel\Scout\Searchable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Storage;
 use App\Models\PdfContent;
 use App\Models\Category;
@@ -24,9 +25,9 @@ class File extends Model
         return $this->belongsTo(Storage::class);
     }
 
-    public function category()
+    public function category() : BelongsToMany
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'file_category', 'file_id', 'category_id')->using(FileCategory::class);
     }
 
     public function pdfContent() : MorphOne

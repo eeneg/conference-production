@@ -11,6 +11,6 @@ class FileContentService {
 
     public function handle($id){
         $file = File::find($id);
-        ProcessFileContent::dispatchSync($file);
+        ProcessFileContent::dispatch($file);
     }
 }

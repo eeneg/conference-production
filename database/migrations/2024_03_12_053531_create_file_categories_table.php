@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('messages', function (Blueprint $table) {
+        Schema::create('file_categories', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('sender_id');
-            $table->foreign('sender_id')
+            $table->uuid('file_id');
+            $table->foreign('file_id')
                 ->references('id')
-                ->on('users');
-            $table->string('recipient_id');
-            $table->string('message');
+                ->on('files');
+            $table->uuid('category_id');
+            $table->foreign('category_id')
+                ->references('id')
+                ->on('categories');
             $table->timestamps();
         });
     }
@@ -28,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('messages');
+        Schema::dropIfExists('file_categories');
     }
 };

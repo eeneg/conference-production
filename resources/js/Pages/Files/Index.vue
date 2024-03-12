@@ -4,6 +4,7 @@
     import TextInput from '@/Components/TextInput.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import InputLabel from '@/Components/InputLabel.vue';
+    import { XCircleIcon } from '@heroicons/vue/20/solid';
     import {ref} from  'vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue'
     import Modal from '@/Components/Modal.vue';
@@ -155,6 +156,12 @@
                                     <option :value="category.id" v-for="category in props.category">{{ category.title.charAt(0).toUpperCase() + category.title.slice(1) }}</option>
                                 </select>
                                 <InputError :message="form.errors.storage_id" class="mt-2" />
+                            </div>
+                            <div class="flex flex-nowrap overflow-x-auto p-2 space-x-2 w-full">
+                                <div v-for="x in 20" class="flex rounded-full space-x-2 px-3 py-1 text-white bg-indigo-500">
+                                    <span>asd</span>
+                                    <button class="rounded-full p-0"><XCircleIcon class="h-5 rounded-full hover:bg-indigo-900"></XCircleIcon></button>
+                                </div>
                             </div>
                             <div class="">
                                 <InputLabel>Date</InputLabel>

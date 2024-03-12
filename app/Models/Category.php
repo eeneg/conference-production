@@ -15,9 +15,9 @@ class Category extends Model
 
     protected $fillable = ['title', 'details', 'type'];
 
-    public function files(): HasMany
+    public function files(): BelongsToMany
     {
-        return $this->hasMany(File::class);
+        return $this->belongsToMany(File::class);
     }
 
     public function reference(): HasMany
