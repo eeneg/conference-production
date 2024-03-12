@@ -50,6 +50,17 @@
         })
     }
 
+    const updateChatList = () => {
+        axios.get('/userChatList?page='+1)
+        .then(({data}) => {
+            users.value = data.data
+        })
+        .catch(e =>{
+            console.log(e)
+            console.log('Something Went Wrong!')
+        })
+    }
+
     const searchUserFunction = _.debounce(function(){
         users.value = []
         if(search.value){
@@ -87,8 +98,7 @@
     onMounted(() => {
         getUsersChatList(1)
         window.Echo.private('chat').listen('MessageSentEvent', (e) => {
-            users.value = []
-            getUsersChatList(1)
+            updateChatList()
         });
     })
 </script>
@@ -103,8 +113,8 @@
             <TextInput class="w-full rounded" placeholder="Search..." @input="searchUserFunction()" v-model="search"></TextInput>
         </div>
         <div class="flex flex-row w-full space-x-3 p-2">
-            <button @click="navigate(1)" class="rounded rounded-full px-2 py-1 uppercase text-xs text-white bg-gray-800" :class="{'border-2 border-indigo-600 bg-indigo-800' : modeMessageList == 1}">Messages</button>
-            <button @click="navigate(2)" class="rounded rounded-full px-2 py-1 uppercase text-xs text-white bg-gray-800" :class="{'border-2 border-indigo-600 bg-indigo-800' : modeMessageList == 2}">Contacts</button>
+            <button @click="navigate(1)" class="rounded rounded-full px-2 py-1 uppercase border-2 text-xs text-white bg-gray-800" :class="{'border-2 border-indigo-600 bg-indigo-800' : modeMessageList == 1}">Messages</button>
+            <button @click="navigate(2)" class="rounded rounded-full px-2 py-1 uppercase border-2 text-xs text-white bg-gray-800" :class="{'border-2 border-indigo-600 bg-indigo-800' : modeMessageList == 2}">Contacts</button>
         </div>
         <div id="userChatList" class="flex w-full mt-2 flex-col overflow-auto" ref="userChatList" v-on:scroll="onScroll($event)">
             <button v-for="user in users" type="button" class="w-full hover:bg-indigo-700 hover:text-white rounded p-2" @click="goToChat(user.id, user.name)">

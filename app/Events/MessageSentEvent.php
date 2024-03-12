@@ -21,14 +21,16 @@ class MessageSentEvent implements ShouldBroadcast, ShouldDispatchAfterCommit
      * Create a new event instance.
      */
 
+    public $sender_id;
+    public $recipient_id;
     public $message;
-    public $user;
 
 
-    public function __construct(User $user, Message $message)
+    public function __construct($sender_id, $recipient_id, Message $message)
     {
         $this->message = $message;
-        $this->user = $user;
+        $this->sender_id = $sender_id;
+        $this->recipient_id = $recipient_id;
     }
 
     /**

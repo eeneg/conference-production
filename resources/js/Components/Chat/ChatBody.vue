@@ -19,15 +19,15 @@
     const showLoading = ref(true)
 
     const getMessages = (page = 1) => {
+        showLoading.value = true
         axios.get('/messages/'+props.recipient_id+'?page='+page)
         .then(({data}) => {
 
             if(data.data.length > 0){
                 transformData(data.data)
             }
-            if(data.to == null){
-                showLoading.value = false
-            }
+
+            showLoading.value = false
         })
         .catch(e => {
             console.log(e)
@@ -79,13 +79,13 @@
     }
 
     const setMessageReadStatus = () => {
-        axios.post(route('message.set'), {id: props.recipient_id})
-        .then(e => {
+        // axios.post(route('message.set'), {id: props.recipient_id})
+        // .then(e => {
 
-        })
-        .catch(e => {
-            console.log(e)
-        })
+        // })
+        // .catch(e => {
+        //     console.log(e)
+        // })
     }
 
     const onScroll = _.debounce(function({ target: { scrollTop, clientHeight, scrollHeight }}) {
@@ -100,7 +100,9 @@
         getMessages()
         setMessageReadStatus()
         window.Echo.private('chat').listen('MessageSentEvent', (e) => {
-            pushNewUserMessage(e.message.message, e.message.sender_id)
+            if(props.recipient_id == e.sender_id){
+                pushNewUserMessage(e.message.message, e.message.sender_id, e.message.recipient_id)
+            }
         });
     })
 </script>
@@ -216,13 +218,9 @@
             <div class="p-0" v-if="sending">
                 <p class="font-thin text-xs float-right pr-2 text-current">Sent</p>
             </div>
-            <div class="flex p-2">
-                <div class="flex-initial p-1 w-full">
-                    <TextInput style="white-space: pre-wrap;" @keyup.enter="sendMessage" class="w-full" placeholder="Aa" v-model="message"></TextInput>
-                </div>
-                <div class="flex-initial p-1">
-                    <PrimaryButton class="h-full" @click="sendMessage">send</PrimaryButton>
-                </div>
+            <div class="flex w-full p-2 space-x-2">
+                <textarea class="w-full border rounded-full"  style="white-space: pre-wrap; resize: none; overflow: auto; height: auto;" rows="1" @keyup.enter="sendMessage" placeholder="Aa" v-model="message"></textarea>
+                <PrimaryButton class="" @click="sendMessage">send</PrimaryButton>
             </div>
         </div>
 </template>
