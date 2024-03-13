@@ -19,6 +19,7 @@ return new class extends Migration
                 ->on('users');
             $table->string('recipient_id');
             $table->string('message');
+            $table->boolean('read')->default(false);
             $table->timestamps();
         });
     }

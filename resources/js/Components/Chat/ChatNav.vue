@@ -117,7 +117,7 @@
             <button @click="navigate(2)" class="rounded rounded-full px-2 py-1 uppercase border-2 text-xs text-white bg-gray-800" :class="{'border-2 border-indigo-600 bg-indigo-800' : modeMessageList == 2}">Contacts</button>
         </div>
         <div id="userChatList" class="flex w-full mt-2 flex-col overflow-auto" ref="userChatList" v-on:scroll="onScroll($event)">
-            <button v-for="user in users" type="button" class="w-full hover:bg-indigo-700 hover:text-white rounded p-2" @click="goToChat(user.id, user.name)">
+            <div v-for="user in users" type="button" class="w-full hover:bg-indigo-700 hover:text-white rounded p-2 cursor-pointer" @click="goToChat(user.id, user.name)">
                 <div class="flex gap-4">
                     <div class="flex items-center gap-4">
                         <div class="relative inline-flex items-center justify-center w-10 h-10 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-600">
@@ -127,11 +127,11 @@
                     <div class="flex flex-col w-full pr-2">
                         <div class=""><p class="float-left">{{ user.name }}</p></div>
                         <div class="text-sm w-full" :class="{'font-bold dark:text-black-400' : user.read == false && user.sender_id != id, 'dark:text-black-400' : user.sender_id == id}">
-                            <p class="float-left">{{formatText(user.message == undefined ? '' : user.message)}}</p>
+                            <p class="float-left truncate w-24">{{user.message == undefined ? '' : user.message}}</p>
                         </div>
                     </div>
                 </div>
-            </button>
+            </div>
         </div>
         <div class="flex justify-center" v-if="showLoading">
             Loading ...

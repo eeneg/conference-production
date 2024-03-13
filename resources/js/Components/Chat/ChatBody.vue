@@ -79,13 +79,13 @@
     }
 
     const setMessageReadStatus = () => {
-        // axios.post(route('message.set'), {id: props.recipient_id})
-        // .then(e => {
+        axios.post(route('message.set'), {id: props.recipient_id})
+        .then(e => {
 
-        // })
-        // .catch(e => {
-        //     console.log(e)
-        // })
+        })
+        .catch(e => {
+            console.log(e)
+        })
     }
 
     const onScroll = _.debounce(function({ target: { scrollTop, clientHeight, scrollHeight }}) {
@@ -102,6 +102,7 @@
         window.Echo.private('chat').listen('MessageSentEvent', (e) => {
             if(props.recipient_id == e.sender_id){
                 pushNewUserMessage(e.message.message, e.message.sender_id, e.message.recipient_id)
+                // setMessageReadStatus()
             }
         });
     })
