@@ -19,7 +19,9 @@ class File extends Model
 {
     use HasFactory, HasUuids, Searchable;
 
-    protected $fillable = ['title', 'file_name', 'storage_id', 'category_id', 'path', 'details', 'date'];
+    protected $fillable = ['title', 'file_name', 'storage_id', 'category_id', 'path', 'tags', 'details', 'date'];
+
+    protected $casts = ['tags' => 'array'];
 
     public function storage(){
         return $this->belongsTo(Storage::class);
@@ -27,7 +29,7 @@ class File extends Model
 
     public function category() : BelongsToMany
     {
-        return $this->belongsToMany(Category::class, 'file_category', 'file_id', 'category_id')->using(FileCategory::class);
+        return $this->belongsToMany(Category::class, 'file_categories', 'file_id', 'category_id')->using(FileCategory::class);
     }
 
     public function pdfContent() : MorphOne
@@ -41,7 +43,7 @@ class File extends Model
         return [
             'id' => $this->getKey(),
             'storage' => $this->storage->title,
-            'category' => $this->category->title,
+            'category' => $this->category->map->title->join(', '),
             'file_name' => $this->file_name,
             'details' => $this->details,
             'date' => $this->date,

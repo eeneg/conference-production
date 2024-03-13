@@ -3,13 +3,13 @@
     import { Head, useForm } from '@inertiajs/vue3';
     import TextInput from '@/Components/TextInput.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
+    import Combobox  from '@/Components/ComboBox.vue';
     import InputLabel from '@/Components/InputLabel.vue';
     import { XCircleIcon } from '@heroicons/vue/20/solid';
     import {ref} from  'vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue'
     import Modal from '@/Components/Modal.vue';
     import InputError from '@/Components/InputError.vue';
-    import axios from 'axios';
 
     const props = defineProps({storage:Object, category:Object})
 
@@ -17,7 +17,7 @@
         file: {},
         title: null,
         storage_id: null,
-        category_id: null,
+        category_id: [],
         date: null,
         details: null
     })
@@ -54,6 +54,14 @@
         })
     }
 
+    const getCategoryId = (id) => {
+        form.category_id = id
+    }
+
+    const removeCategoryId = (category) => {
+        form.category_id.splice(category, 1)
+    }
+
     const update = () => {
         form.submit('patch', route('files.update'),{
             onSuccess: () =>{
@@ -77,18 +85,18 @@
     }
 
     const fileCheck = () => {
-        axios.post(route('file.check'), {fileNames: fileNames, storage_id: form.storage_id, category_id: form.category_id})
-        .then(e => {
-            if(e.data.check){
-                existingFileNames.value = e.data.file_names
-                submitErrorMsg.value = e.data.response
-            }else{
+        // axios.post(route('file.check'), {fileNames: fileNames, storage_id: form.storage_id, category_id: form.category_id})
+        // .then(e => {
+        //     if(e.data.check){
+        //         existingFileNames.value = e.data.file_names
+        //         submitErrorMsg.value = e.data.response
+        //     }else{
                 submit()
-            }
-        })
-        .catch(e => {
-            console.log(e)
-        })
+        //     }
+        // })
+        // .catch(e => {
+        //     console.log(e)
+        // })
     }
 
     const closeModal = () => {
@@ -149,19 +157,28 @@
                                 </select>
                                 <InputError :message="form.errors.storage_id" class="mt-2" />
                             </div>
-                            <div class="">
-                                <InputLabel>Category</InputLabel>
-                                <select v-model="form.category_id" name="category_id" id="category_id" class="border w-full rounded text-gray-700 border-gray-300">
-                                    <option :value="null" selected>---</option>
-                                    <option :value="category.id" v-for="category in props.category">{{ category.title.charAt(0).toUpperCase() + category.title.slice(1) }}</option>
-                                </select>
-                                <InputError :message="form.errors.storage_id" class="mt-2" />
-                            </div>
-                            <div class="flex flex-nowrap overflow-x-auto p-2 space-x-2 w-full">
-                                <div v-for="x in 20" class="flex rounded-full space-x-2 px-3 py-1 text-white bg-indigo-500">
-                                    <span>asd</span>
-                                    <button class="rounded-full p-0"><XCircleIcon class="h-5 rounded-full hover:bg-indigo-900"></XCircleIcon></button>
+                            <div class="flex flex-col">
+                                <div class="flex flex-row justify-between">
+                                    <InputLabel>Category</InputLabel>
+                                    <p style="line-height: 2; font-size: 11px;" class="float-right">
+                                        Not Enough Categories?
+                                        <a class="text-indigo-900 underline" style="font-size: 11px;" :href="'/settings/category'" :active="route().current('files.*')">
+                                            Add Here
+                                        </a>
+                                    </p>
                                 </div>
+                                <div class="flex flex-row space-x-2">
+                                    <div class="w-full">
+                                        <Combobox @passData ="getCategoryId($event)":data="props.category"></Combobox>
+                                    </div>
+                                </div>
+                                <InputError :message="form.errors.storage_id" class="mt-2" />
+                                <div class="flex flex-nowrap overflow-x-auto p-2 space-x-2 w-full">
+                                <div v-for="(cat, i) in form.category_id" class="flex flex-shrink-0 rounded-full space-x-2 px-3 py-1 text-white bg-indigo-500 mt-2">
+                                    <span>{{cat.title}}</span>
+                                    <button class="rounded-full p-0" @click="removeCategoryId(i)"><XCircleIcon class="h-5 rounded-full hover:bg-indigo-900"></XCircleIcon></button>
+                                </div>
+                            </div>
                             </div>
                             <div class="">
                                 <InputLabel>Date</InputLabel>

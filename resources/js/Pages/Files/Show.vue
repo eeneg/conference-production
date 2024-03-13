@@ -3,7 +3,7 @@
     import Modal from '@/Components/Modal.vue';
     import TextInput from '@/Components/TextInput.vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
-    import { ArrowDownTrayIcon, DocumentIcon, BookOpenIcon } from '@heroicons/vue/20/solid';
+    import { ArrowDownTrayIcon, DocumentIcon, BookOpenIcon, TrashIcon } from '@heroicons/vue/20/solid';
     import InputLabel from '@/Components/InputLabel.vue';
     import { useForm } from '@inertiajs/vue3';
     import { ref, nextTick } from 'vue';
@@ -99,17 +99,24 @@
                                     </div>
                                     <div class="flex ml-2">
                                         <p>Category: </p>
-                                        <p class="text-md ml-2 truncate w-60">{{ file.category.title }}</p>
+                                        <p class="text-md ml-2 truncate w-96">{{ file.category.map(e => e.title).join(', ')}}</p>
+                                    </div>
+                                    <div class="flex ml-2">
                                         <p>Storage: </p>
-                                        <p class="text-md ml-2 truncate w-60">{{ file.storage.title }}</p>
+                                        <p class="text-md ml-2 truncate w-96">{{ file.storage.title }}</p>
                                     </div>
                                     <div class="flex ml-2">
                                         <p>Details: </p>
-                                        <p class="text-md ml-2 truncate w-80">{{ file.details }}</p>
+                                        <p class="text-md ml-2 truncate w-96">{{ file.details }}</p>
                                     </div>
                                 </div>
                                 <div class="grow mt-2">
                                     <div class="flex items-center justify-center float-right">
+                                        <a :href="route('file.download',{ id:file.id })">
+                                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-red-300 hover:bg-red-400 text-red-900 mr-1">
+                                                <TrashIcon class="w-5 h-5 fill-black " aria-hidden="true" />
+                                            </div>
+                                        </a>
                                         <a :href="route('file.download',{ id:file.id })">
                                             <div class="flex h-10 w-10 items-center justify-center rounded-full bg-green-300 hover:bg-green-400 text-red-900 mr-1">
                                                 <ArrowDownTrayIcon class="w-5 h-5 stroke-gray-900 fill-black " aria-hidden="true" />

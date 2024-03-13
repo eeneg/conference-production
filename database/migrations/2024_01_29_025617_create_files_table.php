@@ -17,10 +17,6 @@ return new class extends Migration
             $table->foreign('storage_id')
                 ->references('id')
                 ->on('storages');
-            $table->uuid('category_id');
-            $table->foreign('category_id')
-                ->references('id')
-                ->on('categories');
             $table->string('title');
             $table->string('file_name');
             $table->date('date');

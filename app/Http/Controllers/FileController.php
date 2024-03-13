@@ -69,7 +69,9 @@ class FileController extends Controller
             'file' => 'required',
             'title' => 'required:|unique:files',
             'storage_id' => 'required',
-            'category_id' => 'required',
+            'category_id' => 'required|array',
+            'category_id.*' => 'array',
+            'category_id.*.id' => 'required|string|uuid|exists:categories,id',
             'date' => 'required',
             'details' => 'required',
         ],[
@@ -81,15 +83,25 @@ class FileController extends Controller
             $file = File::create([
                 'title'         => $request->title,
                 'file_name'     => str_replace(' ','_',$request->file[0]->getClientOriginalName()),
-                'path'          => 'public/File_Uploads/'. $request->storage_id . '/' . $request->category_id .'/'. str_replace(' ','_',$request->file[0]->getClientOriginalName()),
+                'path'          => 'public/File_Uploads/'. $request->storage_id .'/'. str_replace(' ','_',$request->file[0]->hashName()),
                 'storage_id'    => $request->storage_id,
-                'category_id'   => $request->category_id,
                 'details'       => $request->details,
                 'date'          => $request->date,
             ]);
-            FileStorage::putFileAs('public/File_Uploads/'. $request->storage_id . '/' . $request->category_id, $request->file[0], str_replace(' ','_',$request->file[0]->getClientOriginalName()));
-            $this->fileContentService->handle($file->id);
+            return $file;
         });
+            FileStorage::putFileAs('public/File_Uploads/'. $request->storage_id, $request->file[0], str_replace(' ','_',$request->file[0]->hashName()));
+            $this->fileContentService->handle($tr->id);
+            $this->attachCategory($tr->id, $request->category_id);
+
+    }
+
+    public function attachCategory($id, $categories){
+        $file = File::find($id);
+
+        $file->category()->attach(collect($categories)->map->id);
+
+        $file->load('category')->searchable();
     }
 
     /**
