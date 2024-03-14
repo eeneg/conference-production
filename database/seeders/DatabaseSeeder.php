@@ -47,6 +47,8 @@ class DatabaseSeeder extends Seeder
             'details' => 'Sample Category Details 1'
         ]);
 
+        \App\Models\Category::factory()->count(10)->create();
+
         \App\Models\Category::create([
             'title' => 'Resolutions',
             'type' => '1',
