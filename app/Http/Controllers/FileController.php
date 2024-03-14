@@ -133,6 +133,19 @@ class FileController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $f = File::find($id);
+
+        if(count(FileStorage::files('public/File_Uploads/'.$f->storage_id)) == 1){
+            FileStorage::deleteDirectory('public/File_Uploads/'.$f->storage_id);
+        }else{
+            FileStorage::delete($f->path);
+        }
+
+        $f->category()->detach();
+
+        $f->pdfContent()->delete();
+
+        $f->delete();
+
     }
 }

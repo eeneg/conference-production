@@ -47,7 +47,8 @@ class File extends Model
             'file_name' => $this->file_name,
             'details' => $this->details,
             'date' => $this->date,
-            'content' => $this->pdfContent->content ?? ''
+            'content' => $this->pdfContent->content ?? '',
+            'created_at' => $this->created_at
         ];
     }
 }

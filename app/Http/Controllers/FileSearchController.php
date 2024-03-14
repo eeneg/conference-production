@@ -19,7 +19,9 @@ class FileSearchController extends Controller
             'files' => File::search($request->search)
                 ->query(function($query){
                     $query->with('category')->with('storage');
-                })->paginate(15),
+                })
+                ->orderBy('created_at', 'desc')
+                ->paginate(15),
             'storage' => Storage::all(),
             'category' => Category::where("type", "1")->get(),
         ]);

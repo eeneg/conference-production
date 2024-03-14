@@ -3,11 +3,11 @@
       <Combobox v-model="selected" multiple>
         <div class="relative">
           <div
-            class="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left border border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm"
+            class="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left border border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-indigo-300 sm:text-sm"
           >
             <ComboboxInput
-              class="w-full border-none py-3 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-              :displayValue="(data) => data.title"
+              class="w-full border-none h-10 py-3 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+              :displayValue="(data) => data.map(e => e.title)"
               @change="query = $event.target.value"
             />
             <ComboboxButton
@@ -46,7 +46,7 @@
                 <li
                   class="relative cursor-default select-none py-2 pl-10 pr-4"
                   :class="{
-                    'bg-teal-600 text-white': active,
+                    'bg-indigo-600 text-white': active,
                     'text-gray-900': !active,
                   }"
                 >
@@ -59,7 +59,7 @@
                   <span
                     v-if="selected"
                     class="absolute inset-y-0 left-0 flex items-center pl-3"
-                    :class="{ 'text-white': active, 'text-teal-600': !active }"
+                    :class="{ 'text-white': active, 'text-indigo-600': !active }"
                   >
                     <CheckIcon class="h-5 w-5" aria-hidden="true" />
                   </span>

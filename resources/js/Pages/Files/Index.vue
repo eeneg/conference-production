@@ -149,17 +149,27 @@
                                 <TextInput type="text" id="title" v-model="form.title" class="w-full" placeholder="Insert Title"/>
                                 <InputError :message="form.errors.title" class="mt-2"/>
                             </div>
-                            <div class="">
-                                <InputLabel>Storage Location</InputLabel>
-                                <select v-model="form.storage_id" name="storage_id" id="storage_id" class="border w-full rounded text-gray-700 border-gray-300">
-                                    <option :value="null" selected>---</option>
-                                    <option :value="storage.id" v-for="storage in props.storage">{{ storage.title.charAt(0).toUpperCase() + storage.title.slice(1) }}</option>
-                                </select>
+                            <div class="flex flex-col">
+                                <div class="flex flex-row justify-between">
+                                    <InputLabel>Storage Location</InputLabel>
+                                    <p style="line-height: 2; font-size: 11px;" class="float-right">
+                                        Not Enough Storage Locations?
+                                        <a class="text-indigo-900 underline" style="font-size: 11px;" :href="'/settings/storage'" :active="route().current('files.*')">
+                                            Add Here
+                                        </a>
+                                    </p>
+                                </div>
+                                <div>
+                                    <select v-model="form.storage_id" name="storage_id" id="storage_id" class="border w-full rounded text-gray-700 border-gray-300">
+                                        <option :value="null" selected>---</option>
+                                        <option :value="storage.id" v-for="storage in props.storage">{{ storage.title.charAt(0).toUpperCase() + storage.title.slice(1) }}</option>
+                                    </select>
+                                </div>
                                 <InputError :message="form.errors.storage_id" class="mt-2" />
                             </div>
                             <div class="flex flex-col">
                                 <div class="flex flex-row justify-between">
-                                    <InputLabel>Category</InputLabel>
+                                    <InputLabel>Category (e.g. Ordinances, Resolutions)</InputLabel>
                                     <p style="line-height: 2; font-size: 11px;" class="float-right">
                                         Not Enough Categories?
                                         <a class="text-indigo-900 underline" style="font-size: 11px;" :href="'/settings/category'" :active="route().current('files.*')">
