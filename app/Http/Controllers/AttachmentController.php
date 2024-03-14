@@ -17,10 +17,10 @@ class AttachmentController extends Controller
         return Inertia::render('Attachments/Index',
             [
                 'files' => Attachment::search($request->search)
-                            ->query(function($query){
-                                $query->with('conference')->with('storage');
-                            })
-                            ->paginate(10)
+                    ->query(function($query){
+                        $query->with('conference')->with('storage');
+                    })
+                    ->paginate(10)
             ]
         );
     }
