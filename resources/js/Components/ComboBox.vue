@@ -72,36 +72,44 @@
     </div>
   </template>
 
-  <script setup>
-  import { ref, computed } from 'vue'
-  import {
-    Combobox,
-    ComboboxInput,
-    ComboboxButton,
-    ComboboxOptions,
-    ComboboxOption,
-    TransitionRoot,
-  } from '@headlessui/vue'
-  import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
+<script setup>
+    import { ref, computed } from 'vue'
+    import {
+        Combobox,
+        ComboboxInput,
+        ComboboxButton,
+        ComboboxOptions,
+        ComboboxOption,
+        TransitionRoot,
+    } from '@headlessui/vue'
+    import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
 
-  const props = defineProps({data:Object})
+    const props = defineProps({data:Object})
 
-  let selected = ref([])
-  const emit = defineEmits(['passData'])
-  let query = ref('')
+    let selected = ref([])
+    const emit = defineEmits(['passData'])
+    let query = ref('')
 
-  const passData = () => {
-    emit('passData', selected);
-  }
+    const passData = () => {
+        emit('passData', selected);
+    }
+
+    const reset = () => {
+        selected.value = []
+    }
+
+    defineExpose({
+        reset
+    })
 
   let filteredData = computed(() =>
     query.value === ''
-      ? props.data
-      : props.data.filter((data) =>
-          data.title
-            .toLowerCase()
-            .replace(/\s+/g, '')
-            .includes(query.value.toLowerCase().replace(/\s+/g, ''))
-        )
-  )
-  </script>
+        ? props.data
+        : props.data.filter((data) =>
+            data.title
+                .toLowerCase()
+                .replace(/\s+/g, '')
+                .includes(query.value.toLowerCase().replace(/\s+/g, ''))
+            )
+    )
+</script>

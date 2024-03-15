@@ -144,7 +144,7 @@ return [
             ],
 
             App\Models\File::class => [
-                'filterableAttributes'=> ['id', 'title', 'agenda'],
+                'filterableAttributes'=> ['id', 'title', 'category', 'storage', 'file_name'],
                 'sortableAttributes' => ['id', 'title', 'created_at'],
             ],
         ],

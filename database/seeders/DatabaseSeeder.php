@@ -41,6 +41,12 @@ class DatabaseSeeder extends Seeder
             'details' => 'Sample Storage Details'
         ]);
 
+        \App\Models\Storage::create([
+            'title' => 'Sample Storage Title 1',
+            'location' => 'Sample Storage Location 1',
+            'details' => 'Sample Storage Details 1'
+        ]);
+
         \App\Models\Category::create([
             'title' => 'Sample Category Title 1',
             'type' => '1',

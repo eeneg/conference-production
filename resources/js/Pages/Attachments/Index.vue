@@ -93,17 +93,15 @@
                                 </div>
                                 <div class="ml-4">
                                     <div class="flex ml-2">
-                                        <p class="text-lg float-left truncate w-96">{{ file.file_name }}</p>
+                                        <p class="text-lg float-left truncate w-96 text-indigo-800">{{ file.file_name }}</p>
                                     </div>
                                     <div class="flex ml-2">
-                                        <p>Category: </p>
-                                        <p class="text-md ml-2 truncate w-60">{{ file.category.title }}</p>
                                         <p>Storage: </p>
-                                        <p class="text-md ml-2 truncate w-60">{{ file.storage.title }}</p>
+                                        <p class="text-md ml-2 truncate w-60 text-gray-500">{{ file.storage.title }}</p>
                                     </div>
                                     <div class="flex ml-2">
                                         <p>Details: </p>
-                                        <p class="text-md ml-2 truncate w-80">{{ file.details }}</p>
+                                        <p class="text-md ml-2 truncate w-80 text-gray-500">{{ file.details }}</p>
                                     </div>
                                 </div>
                                 <div class="grow mt-2">

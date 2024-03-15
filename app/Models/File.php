@@ -37,18 +37,17 @@ class File extends Model
         return $this->morphOne(PdfContent::class, 'contentable');
     }
 
-    #[SearchUsingFullText(['details, content'])]
+    #[SearchUsingFullText(['details, content, category'])]
     public function toSearchableArray(): array
     {
         return [
             'id' => $this->getKey(),
-            'storage' => $this->storage->title,
+            'storage' => $this->storage->id,
             'category' => $this->category->map->title->join(', '),
             'file_name' => $this->file_name,
             'details' => $this->details,
             'date' => $this->date,
             'content' => $this->pdfContent->content ?? '',
-            'created_at' => $this->created_at
         ];
     }
 }

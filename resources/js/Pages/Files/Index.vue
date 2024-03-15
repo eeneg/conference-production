@@ -179,7 +179,7 @@
                                 </div>
                                 <div class="flex flex-row space-x-2">
                                     <div class="w-full">
-                                        <Combobox @passData ="getCategoryId($event)":data="props.category"></Combobox>
+                                        <Combobox @passData ="getCategoryId($event)" :data="props.category"></Combobox>
                                     </div>
                                 </div>
                                 <InputError :message="form.errors.storage_id" class="mt-2" />
