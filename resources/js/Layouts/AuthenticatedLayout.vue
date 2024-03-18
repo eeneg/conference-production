@@ -20,6 +20,22 @@ const goChat = (bool) => {
 }
 </script>
 
+<style>
+.badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 25px;
+    height: 25px;
+    background: red;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+}
+</style>
+
 <template>
     <div>
         <div class="min-h-screen bg-gray-100">
@@ -188,6 +204,7 @@ const goChat = (bool) => {
             <div class="fixed bottom-4 right-4" @click="goChat(true)" v-if="chat == false">
                 <button class="px-4 py-4 font-bold text-white bg-indigo-500 rounded-full shadow-lg hover:bg-indigo-600">
                     <InboxIcon class="w-6 h-6"/>
+                    <span class="badge">1</span>
                 </button>
             </div>
 
