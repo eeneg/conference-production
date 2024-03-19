@@ -42,8 +42,7 @@ class File extends Model
     {
         return [
             'id' => $this->getKey(),
-            'storage' => $this->storage->id,
-            'category' => $this->category->map->title->join(', '),
+            'title' => $this->title,
             'file_name' => $this->file_name,
             'details' => $this->details,
             'date' => $this->date,

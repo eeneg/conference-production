@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Storage as StorageDownload;
 use App\Models\Storage;
 use App\Models\Category;
@@ -26,19 +26,19 @@ class FileSearchController extends Controller
 
     public function searchFile(Request $request)
     {
-        $files = File::search($request->search)
-            ->query(function($query) use ($request){
-                $query->has('category')
-                ->with('storage')
-                ->where('storage_id', $request->storage)
-                ->whereHas('category', function(Builder $query) use ($request){
-                    $query->where('category_id', $request->category);
-                });
-            })
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $file =
+        // $files = File::search($request->search)
+        //     ->query(function($query) use ($request){
+        //         $query->with('storage')
+        //         ->with('category')
+        //         ->where('storage_id', $request->storage)
+        //         ->whereHas('category', function($query) use ($request){
+        //             $query->whereIn('categories.id', $request->category);
+        //         });
+        //     })
+        //     ->orderBy('created_at', 'desc')
+        //     ->paginate(10);
 
-            // dd($files->toArray());
         return $files;
     }
 
