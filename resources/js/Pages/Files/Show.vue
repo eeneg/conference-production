@@ -68,7 +68,7 @@
     }
 
     const getCategoryId = (id) => {
-        form.category = id.value
+        form.category = id.value.map(e => e.id)
     }
 
     const closeDeleteModal = () => {
@@ -76,9 +76,9 @@
     }
 
     const search = () => {
-        if(form.category.length != 0){
-            form.category = form.category.map(e => e.title).join(', ')
-        }
+        // if(form.category.length != 0){
+        //     form.category = form.category.map(e => e.title).join(', ')
+        // }
 
         search_button_text.value = "LOADING..."
 

@@ -18,7 +18,9 @@ const chat = ref(false)
 const goChat = (bool) => {
     chat.value = bool
 }
+
 </script>
+
 
 <style>
 .badge {
@@ -188,13 +190,6 @@ const goChat = (bool) => {
                     </div>
                 </div>
             </nav>
-
-            <!-- Page Heading -->
-            <header class="bg-white shadow" v-if="$slots.header">
-                <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <slot name="header" />
-                </div>
-            </header>
 
             <!-- Page Content -->
             <main>

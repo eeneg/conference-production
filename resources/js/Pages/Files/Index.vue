@@ -116,121 +116,119 @@
 </script>
 <template>
     <Head title="Attachments" />
+    <header class="bg-white shadow">
+        <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Files</h2>
+        </div>
+    </header>
 
-    <AuthenticatedLayout>
-        <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">File Upload</h2>
-        </template>
+    <div class="py-5">
+        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+                <div class="flex flex-row">
+                    <div class="pl-5 pr-6 mt-3 grow mb-3">
+                        <header>
+                            <h2 class="text-lg font-medium text-gray-900">Files</h2>
 
-        <div class="py-5">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                    <div class="flex flex-row">
-                        <div class="pl-5 pr-6 mt-3 grow mb-3">
-                            <header>
-                                <h2 class="text-lg font-medium text-gray-900">Files</h2>
-
-                                <p class="mt-1 text-sm text-gray-600">
-                                    Upload files
+                            <p class="mt-1 text-sm text-gray-600">
+                                Upload files
+                            </p>
+                        </header>
+                    </div>
+                </div>
+                <div class="mt-3 mb-3 pr-6 pl-5 grid grid-cols-2">
+                    <div class="space-y-6">
+                        <div class="">
+                            <InputLabel>Upload a File</InputLabel>
+                            <input v-on:change="getFiles($event, i)" type="file" id="files" class="files" accept="application/pdf"   />
+                            <InputError :message="form.errors.file" class="mt-2"/>
+                            <InputError :message="submitErrorMsg" class="mt-2"/>
+                        </div>
+                        <div class="">
+                            <InputLabel>Title</InputLabel>
+                            <TextInput type="text" id="title" v-model="form.title" class="w-full" placeholder="Insert Title"/>
+                            <InputError :message="form.errors.title" class="mt-2"/>
+                        </div>
+                        <div class="flex flex-col">
+                            <div class="flex flex-row justify-between">
+                                <InputLabel>Storage Location</InputLabel>
+                                <p style="line-height: 2; font-size: 11px;" class="float-right">
+                                    Not Enough Storage Locations?
+                                    <a class="text-indigo-900 underline" style="font-size: 11px;" :href="'/settings/storage'" :active="route().current('files.*')">
+                                        Add Here
+                                    </a>
                                 </p>
-                            </header>
+                            </div>
+                            <div>
+                                <select v-model="form.storage_id" name="storage_id" id="storage_id" class="border w-full rounded text-gray-700 border-gray-300">
+                                    <option :value="null" selected>---</option>
+                                    <option :value="storage.id" v-for="storage in props.storage">{{ storage.title.charAt(0).toUpperCase() + storage.title.slice(1) }}</option>
+                                </select>
+                            </div>
+                            <InputError :message="form.errors.storage_id" class="mt-2" />
+                        </div>
+                        <div class="flex flex-col">
+                            <div class="flex flex-row justify-between">
+                                <InputLabel>Category (e.g. Ordinances, Resolutions)</InputLabel>
+                                <p style="line-height: 2; font-size: 11px;" class="float-right">
+                                    Not Enough Categories?
+                                    <a class="text-indigo-900 underline" style="font-size: 11px;" :href="'/settings/category'" :active="route().current('files.*')">
+                                        Add Here
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="flex flex-row space-x-2">
+                                <div class="w-full">
+                                    <Combobox @passData ="getCategoryId($event)" :data="props.category"></Combobox>
+                                </div>
+                            </div>
+                            <InputError :message="form.errors.storage_id" class="mt-2" />
+                            <div class="flex flex-nowrap overflow-x-auto p-2 space-x-2 w-full">
+                            <div v-for="(cat, i) in form.category_id" class="flex flex-shrink-0 rounded-full space-x-2 px-3 py-1 text-white bg-indigo-500 mt-2">
+                                <span>{{cat.title}}</span>
+                                <button class="rounded-full p-0" @click="removeCategoryId(i)"><XCircleIcon class="h-5 rounded-full hover:bg-indigo-900"></XCircleIcon></button>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="">
+                            <InputLabel>Date</InputLabel>
+                            <input type="date" id="date" v-model="form.date" class="rounded border-gray-300 w-full"/>
+                            <InputError :message="form.errors.date" class="mt-2" />
+                        </div>
+                        <div class="">
+                            <InputLabel>Details</InputLabel>
+                            <textarea v-model="form.details" class="w-full rounded border-gray-300 h-24" type="text" placeholder="Insert Details"></textarea>
+                            <InputError :message="form.errors.details" class="mt-2" />
+                        </div>
+                        <div class="">
+                            <PrimaryButton @click="fileCheck">Save</PrimaryButton>
                         </div>
                     </div>
-                    <div class="mt-3 mb-3 pr-6 pl-5 grid grid-cols-2">
-                        <div class="space-y-6">
-                            <div class="">
-                                <InputLabel>Upload a File</InputLabel>
-                                <input v-on:change="getFiles($event, i)" type="file" id="files" class="files" accept="application/pdf"   />
-                                <InputError :message="form.errors.file" class="mt-2"/>
-                                <InputError :message="submitErrorMsg" class="mt-2"/>
-                            </div>
-                            <div class="">
-                                <InputLabel>Title</InputLabel>
-                                <TextInput type="text" id="title" v-model="form.title" class="w-full" placeholder="Insert Title"/>
-                                <InputError :message="form.errors.title" class="mt-2"/>
-                            </div>
-                            <div class="flex flex-col">
-                                <div class="flex flex-row justify-between">
-                                    <InputLabel>Storage Location</InputLabel>
-                                    <p style="line-height: 2; font-size: 11px;" class="float-right">
-                                        Not Enough Storage Locations?
-                                        <a class="text-indigo-900 underline" style="font-size: 11px;" :href="'/settings/storage'" :active="route().current('files.*')">
-                                            Add Here
-                                        </a>
-                                    </p>
-                                </div>
-                                <div>
-                                    <select v-model="form.storage_id" name="storage_id" id="storage_id" class="border w-full rounded text-gray-700 border-gray-300">
-                                        <option :value="null" selected>---</option>
-                                        <option :value="storage.id" v-for="storage in props.storage">{{ storage.title.charAt(0).toUpperCase() + storage.title.slice(1) }}</option>
-                                    </select>
-                                </div>
-                                <InputError :message="form.errors.storage_id" class="mt-2" />
-                            </div>
-                            <div class="flex flex-col">
-                                <div class="flex flex-row justify-between">
-                                    <InputLabel>Category (e.g. Ordinances, Resolutions)</InputLabel>
-                                    <p style="line-height: 2; font-size: 11px;" class="float-right">
-                                        Not Enough Categories?
-                                        <a class="text-indigo-900 underline" style="font-size: 11px;" :href="'/settings/category'" :active="route().current('files.*')">
-                                            Add Here
-                                        </a>
-                                    </p>
-                                </div>
-                                <div class="flex flex-row space-x-2">
-                                    <div class="w-full">
-                                        <Combobox @passData ="getCategoryId($event)" :data="props.category"></Combobox>
-                                    </div>
-                                </div>
-                                <InputError :message="form.errors.storage_id" class="mt-2" />
-                                <div class="flex flex-nowrap overflow-x-auto p-2 space-x-2 w-full">
-                                <div v-for="(cat, i) in form.category_id" class="flex flex-shrink-0 rounded-full space-x-2 px-3 py-1 text-white bg-indigo-500 mt-2">
-                                    <span>{{cat.title}}</span>
-                                    <button class="rounded-full p-0" @click="removeCategoryId(i)"><XCircleIcon class="h-5 rounded-full hover:bg-indigo-900"></XCircleIcon></button>
-                                </div>
-                            </div>
-                            </div>
-                            <div class="">
-                                <InputLabel>Date</InputLabel>
-                                <input type="date" id="date" v-model="form.date" class="rounded border-gray-300 w-full"/>
-                                <InputError :message="form.errors.date" class="mt-2" />
-                            </div>
-                            <div class="">
-                                <InputLabel>Details</InputLabel>
-                                <textarea v-model="form.details" class="w-full rounded border-gray-300 h-24" type="text" placeholder="Insert Details"></textarea>
-                                <InputError :message="form.errors.details" class="mt-2" />
-                            </div>
-                            <div class="">
-                                <PrimaryButton @click="fileCheck">Save</PrimaryButton>
-                            </div>
-                        </div>
-                        <div class="space-y-6 pl-6 pr-6 max-h-72 overflow-auto">
-                            <table class="w-full" v-if="existingFileNames.length > 0">
-                                <thead>
-                                    <tr>
-                                        <th class="border-b border-slate-300 w-1/6 text-center">#</th>
-                                        <th class="border-b border-slate-300 w-5/6 text-center text-red-600">
-                                            Duplicate Files <br> (Please Delete or Rename Files)
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-slate-700">
-                                    <tr v-for="(file, i) in existingFileNames">
-                                        <td class="text-center p-1 text-center border-b border-slate-100">
-                                            {{ i + 1 }}
-                                        </td>
-                                        <td class="text-center p-1 text-center border-b border-slate-100">
-                                            {{file}}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="space-y-6 pl-6 pr-6 max-h-72 overflow-auto">
+                        <table class="w-full" v-if="existingFileNames.length > 0">
+                            <thead>
+                                <tr>
+                                    <th class="border-b border-slate-300 w-1/6 text-center">#</th>
+                                    <th class="border-b border-slate-300 w-5/6 text-center text-red-600">
+                                        Duplicate Files <br> (Please Delete or Rename Files)
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-slate-700">
+                                <tr v-for="(file, i) in existingFileNames">
+                                    <td class="text-center p-1 text-center border-b border-slate-100">
+                                        {{ i + 1 }}
+                                    </td>
+                                    <td class="text-center p-1 text-center border-b border-slate-100">
+                                        {{file}}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-
         <Modal :show="modalShow">
             <div class="p-6">
                 <h2 :class="{'text-lg font-medium text-green-500': success == true, 'text-lg font-medium text-red-500': success == false}">
@@ -248,8 +246,5 @@
                 </SecondaryButton>
             </div>
         </Modal>
-
-
-    </AuthenticatedLayout>
-
+    </div>
 </template>
