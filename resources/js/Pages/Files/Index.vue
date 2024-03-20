@@ -136,8 +136,8 @@
                         </header>
                     </div>
                 </div>
-                <div class="mt-3 mb-3 pr-6 pl-5 grid grid-cols-2">
-                    <div class="space-y-6">
+                <div class="mt-3 mb-3 pr-6 pl-5 grid grid-cols-2 max-[600px]:grid-cols-1">
+                    <div class="space-y-6 ">
                         <div class="">
                             <InputLabel>Upload a File</InputLabel>
                             <input v-on:change="getFiles($event, i)" type="file" id="files" class="files" accept="application/pdf"   />

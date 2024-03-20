@@ -76,10 +76,6 @@
     }
 
     const search = () => {
-        // if(form.category.length != 0){
-        //     form.category = form.category.map(e => e.title).join(', ')
-        // }
-
         search_button_text.value = "LOADING..."
 
         axios.post(route('file.search'), form)
@@ -139,7 +135,7 @@
                     <div class="grow">
                         <form @submit.prevent="search">
                             <div class="pr-6 pl-6 pb-1 flex space-x-2">
-                                <div class="grow relative rounded-md shadow-sm">
+                                <div class="relative rounded-md shadow-sm w-1/2">
                                     <InputLabel value="File Name/Content" for="search" />
                                     <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                         <span class="text-gray-500 sm:text-sm mt-5">
@@ -173,32 +169,32 @@
                             </div>
                         </form>
                     </div>
-                    <div class="grow pl-5 pr-5 pb-5">
-                        <div class="border rounded p-2 pl-4 mt-2" v-for="file in files.data">
+                    <div class="grow pl-5 pr-5 pb-5 text-sm">
+                        <div class="border rounded p-2 pl-2 mt-2" v-for="file in files.data">
                             <div class="flex">
-                                <div class="flex items-center justify-center ml-1">
+                                <div class="flex items-center p-1 justify-center sm:text-sm">
                                     <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-300 text-red-900">
                                         <DocumentIcon class="w-5 h-5 stroke-gray-900 fill-none " aria-hidden="true" />
                                     </div>
                                 </div>
-                                <div class="ml-4">
+                                <div class="grow p-1 text-sm">
                                     <div class="flex ml-2">
-                                        <p class="text-lg float-left truncate w-96 text-indigo-800">{{ file.file_name }}</p>
+                                        <p class="text-lg truncate float-left text-indigo-800">{{ file.file_name }}</p>
                                     </div>
                                     <div class="flex ml-2">
                                         <p class="">Category: </p>
-                                        <p class="text-md ml-2 truncate w-96 text-gray-500">{{ file.category.map(e => e.title).join(', ')}}</p>
+                                        <p class="text-md ml-2 truncate text-gray-500">{{ file.category.map(e => e.title).join(', ')}}</p>
                                     </div>
                                     <div class="flex ml-2">
                                         <p class="">Storage: </p>
-                                        <p class="text-md ml-2 truncate w-96 text-gray-500">{{ file.storage.title }}</p>
+                                        <p class="text-md ml-2 truncate text-gray-500">{{ file.storage.title }}</p>
                                     </div>
                                     <div class="flex ml-2">
                                         <p class="">Details: </p>
-                                        <p class="text-md ml-2 truncate w-96 text-gray-500">{{ file.details }}</p>
+                                        <p class="text-md ml-2 truncate text-gray-500">{{ file.details }}</p>
                                     </div>
                                 </div>
-                                <div class="grow mt-2">
+                                <div class="mt-2">
                                     <div class="flex items-center justify-center float-right">
                                         <button @click="deleteModal(file.id)">
                                             <div class="flex h-10 w-10 items-center justify-center rounded-full bg-red-300 hover:bg-red-400 text-red-900 mr-1">

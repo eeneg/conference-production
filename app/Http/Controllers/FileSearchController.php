@@ -26,18 +26,21 @@ class FileSearchController extends Controller
 
     public function searchFile(Request $request)
     {
-        $file =
-        // $files = File::search($request->search)
-        //     ->query(function($query) use ($request){
-        //         $query->with('storage')
-        //         ->with('category')
-        //         ->where('storage_id', $request->storage)
-        //         ->whereHas('category', function($query) use ($request){
-        //             $query->whereIn('categories.id', $request->category);
-        //         });
-        //     })
-        //     ->orderBy('created_at', 'desc')
-        //     ->paginate(10);
+        $files = File::search($request->search)
+            ->query(function($query) use ($request){
+                $query->with('storage')
+                    ->with('category')
+                    ->when($request->storage != null, function($query) use ($request){
+                        $query->where('storage_id', $request->storage);
+                    })
+                    ->when(count($request->category) > 0, function($query) use ($request){
+                        $query->whereHas('category', function($query) use ($request){
+                            $query->whereIn('categories.id', $request->category);
+                        });
+                    });
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
 
         return $files;
     }
