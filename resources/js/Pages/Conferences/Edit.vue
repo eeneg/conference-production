@@ -1,5 +1,4 @@
 <script setup>
-    import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     import Form from '@/Pages/Conferences/Form.vue';
     import { Head } from '@inertiajs/vue3';
     import Modal from '@/Components/Modal.vue';
@@ -68,33 +67,32 @@
     <Head title="Conference Form" />
 
 
-    <AuthenticatedLayout>
-
-        <template #header>
+    <header class="bg-white shadow">
+        <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Conference Edit Form</h2>
-        </template>
+        </div>
+    </header>
 
-        <Form @passData ="submit($event)" @deleteConf ="submitDelete($event)" :conf="props.conf" :edit="true" :storage="props.storage">
+    <Form @passData ="submit($event)" @deleteConf ="submitDelete($event)" :conf="props.conf" :edit="true" :storage="props.storage">
 
-        </Form>
+    </Form>
 
-        <Modal :show="modalShow">
-            <div class="p-6">
-                <h2 :class="{'text-lg font-medium text-green-500': success == true, 'text-lg font-medium text-red-500': success == false}">
-                    {{ header }}
-                </h2>
+    <Modal :show="modalShow">
+        <div class="p-6">
+            <h2 :class="{'text-lg font-medium text-green-500': success == true, 'text-lg font-medium text-red-500': success == false}">
+                {{ header }}
+            </h2>
 
-                <p class="mt-1 text-sm text-gray-600">
-                    {{message}}
-                </p>
+            <p class="mt-1 text-sm text-gray-600">
+                {{message}}
+            </p>
 
-                <SecondaryButton
-                    class="w-full mt-2 place-content-center"
-                    @click="closeModal">
-                        <p>OK</p>
-                </SecondaryButton>
-            </div>
-        </Modal>
+            <SecondaryButton
+                class="w-full mt-2 place-content-center"
+                @click="closeModal">
+                    <p>OK</p>
+            </SecondaryButton>
+        </div>
+    </Modal>
 
-    </AuthenticatedLayout>
 </template>
