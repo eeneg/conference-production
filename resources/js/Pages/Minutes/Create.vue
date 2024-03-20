@@ -103,84 +103,79 @@
 <template>
     <Head title="Conference Form" />
 
-    <!-- <iframe id="i" frameborder="0"></iframe> -->
-
-    <AuthenticatedLayout>
-
-        <template #header>
+    <header class="bg-white shadow">
+        <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Minutes Form <br> {{ props.conf_title }}</h2>
-        </template>
+        </div>
+    </header>
 
-        <div class="py-5">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="pr-6 pl-6 mt-3">
-                        <form @submit.prevent="submit()" class="mt-1">
+    <div class="py-5">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="pr-6 pl-6 mt-3">
+                    <form @submit.prevent="submit()" class="mt-1">
 
-                            <div class="flex justify-between pr-6 pl-6 items-center">
-                                <div>
-                                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">Minutes</h2>
-                                </div>
-                                <div
-                                    class="group"
-                                    :class="{'has-tooltip':edited}"
-                                >
-                                    <span class='tooltip rounded shadow-lg p-1 bg-gray-800 -mt-9 -ml-7 text-white'>Save first to print</span>
-                                    <PrimaryButton
-                                        type="button"
-                                        class="has-tooltip"
-                                        :class="{'bg-gray-300 hover:bg-gray-400':edited}"
-                                        @click="printMinutes"
-                                        :disabled="edited"
-                                    >
-                                        Print
-                                    </PrimaryButton>
-                                </div>
+                        <div class="flex justify-between pr-6 pl-6 items-center">
+                            <div>
+                                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Minutes</h2>
                             </div>
-
-                            <div class="pr-6 pl-6 mt-3">
-
-                                <InputError :message="form.errors.content" class="mt-2" />
-
-                                <QuillEditor theme="snow" :toolbar="toolbarOptions" @textChange="minutesEdited" v-model:content="form.content" contentType="html" style="min-height: 500px;max-height: 500px; overflow-y: auto;"/>
-                                
-                            </div>
-
-
-                            <div class="pr-6 pl-6 mt-3 pb-3 border-t-2">
+                            <div
+                                class="group"
+                                :class="{'has-tooltip':edited}"
+                            >
+                                <span class='tooltip rounded shadow-lg p-1 bg-gray-800 -mt-9 -ml-7 text-white'>Save first to print</span>
                                 <PrimaryButton
-                                    type="submit"
-                                    class="mt-4 w-full place-content-center"
+                                    type="button"
+                                    class="has-tooltip"
+                                    :class="{'bg-gray-300 hover:bg-gray-400':edited}"
+                                    @click="printMinutes"
+                                    :disabled="edited"
                                 >
-                                    Submit
+                                    Print
                                 </PrimaryButton>
                             </div>
+                        </div>
 
-                        </form>
-                    </div>
+                        <div class="pr-6 pl-6 mt-3">
+
+                            <InputError :message="form.errors.content" class="mt-2" />
+
+                            <QuillEditor theme="snow" :toolbar="toolbarOptions" @textChange="minutesEdited" v-model:content="form.content" contentType="html" style="min-height: 500px;max-height: 500px; overflow-y: auto;"/>
+
+                        </div>
+
+
+                        <div class="pr-6 pl-6 mt-3 pb-3 border-t-2">
+                            <PrimaryButton
+                                type="submit"
+                                class="mt-4 w-full place-content-center"
+                            >
+                                Submit
+                            </PrimaryButton>
+                        </div>
+
+                    </form>
                 </div>
             </div>
         </div>
+        <Modal :show="modalShow">
+            <div class="p-6">
+                <h2 :class="{'text-lg font-medium text-green-500': success == true, 'text-lg font-medium text-red-500': success == false}">
+                    {{ header }}
+                </h2>
 
-    </AuthenticatedLayout>
-
-
-    <Modal :show="modalShow">
-        <div class="p-6">
-            <h2 :class="{'text-lg font-medium text-green-500': success == true, 'text-lg font-medium text-red-500': success == false}">
-                {{ header }}
-            </h2>
-
-            <p class="mt-1 text-sm text-gray-600">
-                {{message}}
-            </p>
+                <p class="mt-1 text-sm text-gray-600">
+                    {{message}}
+                </p>
 
 
-            <SecondaryButton
-                class="w-full mt-2 place-content-center bg-red-400"
-                @click="closeModal">
-                            <p>OK</p>
-            </SecondaryButton>
-        </div>
-    </Modal>
+                <SecondaryButton
+                    class="w-full mt-2 place-content-center bg-red-400"
+                    @click="closeModal">
+                                <p>OK</p>
+                </SecondaryButton>
+            </div>
+        </Modal>
+    </div>
+
 </template>
