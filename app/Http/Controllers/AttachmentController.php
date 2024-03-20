@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attachment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use App\Models\Attachment;
+use App\Models\Storage as StorageModel;
 
 class AttachmentController extends Controller
 {
@@ -17,10 +18,15 @@ class AttachmentController extends Controller
         return Inertia::render('Attachments/Index',
             [
                 'files' => Attachment::search($request->search)
-                    ->query(function($query){
-                        $query->with('conference')->with('storage');
+                    ->query(function($query) use ($request){
+                        $query->with('conference')
+                            ->with('storage')
+                            ->when($request->storage, function($query) use ($request){
+                                $query->where('storage_id', $request->storage);
+                            });
                     })
-                    ->paginate(10)
+                    ->paginate(10),
+                'storage' => StorageModel::all()
             ]
         );
     }
