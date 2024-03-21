@@ -36,7 +36,7 @@ class ChatController extends Controller
 
         $users = User::where('users.id', '!=', auth()->user()->id)
             ->without('roles')
-            ->select('users.id', 'users.name', 'messages.sender_id', 'messages.recipient_id', 'messages.message', 'messages.created_at')
+            ->select('users.id', 'users.name', 'messages.sender_id', 'messages.recipient_id', 'messages.message', 'messages.read', 'messages.created_at')
             ->leftJoin('messages', function(JoinClause $join){
                 $join->on('users.id', '=','messages.sender_id')
                     ->orOn('users.id', '=', 'messages.recipient_id');
@@ -79,5 +79,9 @@ class ChatController extends Controller
 
     public function setMessageStatus(Request $request){
         return Message::where('sender_id', $request->id)->where('recipient_id', auth()->user()->id)->where('read', false)->update(['read' => true]);
+    }
+
+    public function newMessageCount(Request $request){
+        return Message::where('recipient_id', auth()->user()->id)->where('read', false)->count();
     }
 }

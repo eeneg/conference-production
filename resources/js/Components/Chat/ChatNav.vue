@@ -1,6 +1,7 @@
 <script setup>
     import TextInput from '../TextInput.vue';
     import { usePage } from '@inertiajs/vue3';
+import axios from 'axios';
     import _ from 'lodash';
     import { onMounted, ref } from 'vue'
 
@@ -19,7 +20,18 @@
     const emit = defineEmits(['navChat'])
 
     const goToChat = (id, name) =>{
+        markMessageAsRead()
         emit('navChat', {chat: true, recipient_id: id, user_name: name})
+    }
+
+    const markMessageAsRead = () => {
+        axios.post('/setMessageStatus', {id: id})
+        .then(({e}) => {
+
+        })
+        .catch(e => {
+
+        })
     }
 
     const searchUsers = (page, search) => {
@@ -125,8 +137,8 @@
                         </div>
                     </div>
                     <div class="flex flex-col w-full pr-2">
-                        <div class=""><p class="float-left">{{ user.name }}</p></div>
-                        <div class="text-sm w-full" :class="{'font-bold dark:text-black-400' : user.read == false && user.sender_id != id, 'dark:text-black-400' : user.sender_id == id}">
+                        <div class=""><p class="float-left font-bold">{{ user.name }}</p></div>
+                        <div class="text-sm w-full" :class="{'font-bold text-lg dark:text-black-400' : user.read == false && user.sender_id != id, 'dark:text-black-400' : user.sender_id == id}">
                             <p class="float-left truncate w-24">{{user.message == undefined ? '' : user.message}}</p>
                         </div>
                     </div>
