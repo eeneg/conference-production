@@ -19,6 +19,10 @@ class Conference extends Model
 
     protected $fillable = ['title', 'agenda', 'date', 'attachments', 'status'];
 
+    public function poll() : HasMany {
+        return $this->hasMany(Poll::class);
+    }
+
     public function minute() : HasOne
     {
         return $this->hasOne(Minutes::class);

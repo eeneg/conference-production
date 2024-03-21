@@ -135,7 +135,7 @@ const formatDate = (date) => {
 
                                         <template #content>
                                             <DropdownLink :href="route('conferences.edit', {'id' : conf.id})">Edit</DropdownLink>
-                                            <DropdownLink :href="route('agenda.index')">Agenda</DropdownLink>
+                                            <DropdownLink :href="route('agenda.index', {'id' : conf.id})">Agenda</DropdownLink>
                                             <DropdownLink :href="route('conferences.show', conf.id)">View</DropdownLink>
                                         </template>
                                     </Dropdown>
