@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -13,11 +13,35 @@ const showingNavigationDropdown = ref(false);
 
 const role = usePage().props.auth.role;
 
+const newMessageCount = ref(0)
+
 const chat = ref(false)
 
 const goChat = (bool) => {
     chat.value = bool
 }
+
+const resetMessageCount = () => {
+    newMessageCount.value = 0
+}
+
+const getNewMessageCount = () => {
+    axios.get('/newMessageCount')
+    .then(({data}) => {
+        newMessageCount.value = data
+    })
+    .catch(e =>{
+        console.log(e)
+        console.log('Something Went Wrong!')
+    })
+}
+
+onMounted(() => {
+    getNewMessageCount()
+    window.Echo.private('chat').listen('MessageSentEvent', (e) => {
+        getNewMessageCount()
+    });
+})
 
 </script>
 
@@ -197,9 +221,9 @@ const goChat = (bool) => {
             </main>
             <ChatBox class="fixed bottom-0 shadow-md right-20" @closeChat="goChat(false)" v-if="chat == true"/>
             <div class="fixed bottom-4 right-4" @click="goChat(true)" v-if="chat == false">
-                <button class="px-4 py-4 font-bold text-white bg-indigo-500 rounded-full shadow-lg hover:bg-indigo-600">
+                <button @click="resetMessageCount" class="px-4 py-4 font-bold text-white bg-indigo-500 rounded-full shadow-lg hover:bg-indigo-600">
                     <InboxIcon class="w-6 h-6"/>
-                    <span class="badge">1</span>
+                    <span class="badge" v-if="newMessageCount != 0">{{newMessageCount}}</span>
                 </button>
             </div>
 
