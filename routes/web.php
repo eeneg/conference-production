@@ -74,6 +74,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/userChatList', [ChatController::class, 'userChatList'])->name('messages.users');
     Route::get('/usersToChat', [ChatController::class, 'getUsersToChat']);
     Route::post('/setMessageStatus', [ChatController::class, 'setMessageStatus'])->name('message.set');
+    Route::get('/newMessageCount', [ChatController::class, 'newMessageCount']);
 
     Route::resource('agenda', AgendaController::class);
 
