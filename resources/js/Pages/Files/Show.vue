@@ -11,6 +11,7 @@
     import { useForm } from '@inertiajs/vue3';
     import { ref, nextTick, onMounted } from 'vue';
     import { router } from '@inertiajs/vue3'
+    import Pagination from '@/Components/Pagination.vue';
     import axios from 'axios';
 
 
@@ -217,7 +218,7 @@
                         </div>
                     </div>
                     <div class="p-6">
-                        <!-- <Pagination :data="props.files"></Pagination> -->
+                        <Pagination :data="files"></Pagination>
                     </div>
                 </div>
             </div>
