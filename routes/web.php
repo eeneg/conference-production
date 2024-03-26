@@ -13,6 +13,7 @@ use App\Http\Controllers\ReferenceController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FileSearchController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\PollController;
 use App\Http\Middleware\IsAdmin;
 use App\Models\Minutes;
 use App\Models\Message;
@@ -75,6 +76,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/usersToChat', [ChatController::class, 'getUsersToChat']);
     Route::post('/setMessageStatus', [ChatController::class, 'setMessageStatus'])->name('message.set');
     Route::get('/newMessageCount', [ChatController::class, 'newMessageCount']);
+
+    Route::resource('poll', PollController::class);
 
     Route::resource('agenda', AgendaController::class);
 

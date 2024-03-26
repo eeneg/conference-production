@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('undecided_count');
             $table->string('result');
             $table->string('details');
+            $table->boolean('concluded')->default(false);
             $table->timestamps();
         });
     }
