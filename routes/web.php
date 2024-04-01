@@ -78,6 +78,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/newMessageCount', [ChatController::class, 'newMessageCount']);
 
     Route::resource('poll', PollController::class);
+    Route::post('/setPollActive', [PollController::class, 'setPollActive']);
+    Route::get('/getPoll/{id}', [PollController::class, 'getPoll']);
 
     Route::resource('agenda', AgendaController::class);
 

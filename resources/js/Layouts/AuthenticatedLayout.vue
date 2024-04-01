@@ -36,10 +36,23 @@ const getNewMessageCount = () => {
     })
 }
 
+const openPollModal = (e) => {
+    axios.get('/getPoll/'+e.poll_id)
+    .then(({data}) => {
+
+    })
+    .catch(e => {
+
+    })
+}
+
 onMounted(() => {
     getNewMessageCount()
     window.Echo.private('chat').listen('MessageSentEvent', (e) => {
         getNewMessageCount()
+    });
+    window.Echo.private('poll').listen('PollSetActiveEvent', (e) => {
+        openPollModal(e)
     });
 })
 

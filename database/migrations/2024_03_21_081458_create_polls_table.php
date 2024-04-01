@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('result');
             $table->string('details');
             $table->boolean('concluded')->default(false);
+            $table->boolean('active')->default(false);
             $table->timestamps();
         });
     }

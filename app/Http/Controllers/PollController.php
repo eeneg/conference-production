@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Events\PollSetActiveEvent;
 use App\Models\Poll;
 use App\Models\Conference;
 
@@ -21,6 +22,20 @@ class PollController extends Controller
             'title' => $request->title,
             'details' => $request->details
         ]);
+    }
+
+    public function getPoll($id){
+        return Poll::find($id)->only('id', 'title', 'details');
+    }
+
+    public function setPollActive(Request $request){
+        $request->validate([
+            'id' => 'required|exists:polls,id'
+        ]);
+
+        $poll = Poll::find($request->id)->update(['active' => true]);
+
+        broadcast(new PollSetActiveEvent($request->id));
     }
 
     public function destroy(Request $request){
