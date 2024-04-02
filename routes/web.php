@@ -80,6 +80,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('poll', PollController::class);
     Route::post('/setPollActive', [PollController::class, 'setPollActive']);
     Route::get('/getPoll/{id}', [PollController::class, 'getPoll']);
+    Route::post('/submitPollResponse', [PollController::class, 'submitPollResponse']);
+    Route::get('/countPollVotes/{id}', [PollController::class, 'countPollVotes']);
+    Route::post('/endPoll', [PollController::class, 'endPoll']);
 
     Route::resource('agenda', AgendaController::class);
 

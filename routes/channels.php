@@ -25,3 +25,7 @@ Broadcast::channel('chat', function ($user) {
 Broadcast::channel('poll', function ($user) {
     return Auth::check();
 });
+
+Broadcast::channel('poll-vote', function ($user) {
+    return Auth::check();
+});

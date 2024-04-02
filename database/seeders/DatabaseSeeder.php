@@ -73,10 +73,15 @@ class DatabaseSeeder extends Seeder
             'details' => 'Sample Category Details 2'
         ]);
 
+        \App\Models\Role::create([
+            'title' => 'board member'
+        ]);
+
         User::where('email', 'test@example.com')->first()->roles()->attach(Role::where('title', 'administrator')->first()->id);
         User::where('email', 'test1@example.com')->first()->roles()->attach(Role::where('title', 'administrator')->first()->id);
 
 
-        \App\Models\User::factory()->count(100)->hasAttached(\App\Models\Role::where('title', 'user')->first())->create();
+        \App\Models\User::factory()->count(90)->hasAttached(\App\Models\Role::where('title', 'user')->first())->create();
+        \App\Models\User::factory()->count(10)->hasAttached(\App\Models\Role::where('title', 'board member')->first())->create();
     }
 }

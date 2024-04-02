@@ -11,6 +11,8 @@ class UserRole extends Pivot
 {
     use HasFactory, HasUuids;
 
+    protected $table = 'user_roles';
+
     protected $fillable = ['role_id', 'user_id'];
 
 

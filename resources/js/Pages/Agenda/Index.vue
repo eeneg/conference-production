@@ -7,9 +7,12 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import { PlayIcon, PencilIcon, TrashIcon } from '@heroicons/vue/20/solid';
-import { Head, useForm } from '@inertiajs/vue3';
-import {ref} from  'vue';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
+import { ref } from  'vue';
 import axios from 'axios';
+import { onMounted } from 'vue';
+
+const user_id = usePage().props.auth.user.id;
 
 const props = defineProps({conference:Object})
 
@@ -51,8 +54,6 @@ const closePollModal = () => {
 }
 
 const showPollModalList = () => {
-    header.value = 'Poll List'
-    message.value = 'View Polls Here'
     showPollModal.value = true
     getPolls()
 }
@@ -123,6 +124,7 @@ const deletePoll = (id) => {
             header.value = "Success!"
             success.value = true
             message.value = "Poll deleted successfully"
+            confirmingPollDeletion.value = false
             responeModal.value = true
             deleteForm.reset()
             getPolls()
@@ -131,21 +133,32 @@ const deletePoll = (id) => {
             header.value = "Failed!"
             success.value = false
             message.value = "Something went wrong"
+            confirmingPollDeletion.value = false
             responeModal.value = true
             console.log(e)
         }
     })
 }
 
-const openVotingPollModal = (id) => {
-    axios.post('/setPollActive', {id: id})
-    .then(({data}) => {
+const openVotingPollModal = (id, concluded) => {
+    if(concluded && !confirm('Poll already concluded. \n\nProceed anyway?')){
 
-    })
-    .catch(e => {
-        console.log(e)
-    })
+    }else{
+        axios.post('/setPollActive', {id: id, initiatorID: user_id, value:true})
+        .then(({data}) => {
+
+        })
+        .catch(e => {
+            console.log(e)
+        })
+    }
 }
+
+onMounted(() => {
+    window.Echo.private('poll').listen('PollSetActiveEvent', (e) => {
+        getPolls()
+    });
+})
 </script>
 <template>
     <Head title="Conferences" />
@@ -231,11 +244,11 @@ const openVotingPollModal = (id) => {
                 <div class="flex flex-row">
                     <div class="basis-1/2">
                         <h2 class="text-lg font-medium text-black-500">
-                            {{ header }}
+                            Poll
                         </h2>
 
                         <p class="mt-1 text-sm text-gray-600">
-                            {{message}}
+                            View Poll List Here
                         </p>
                     </div>
                     <div class="basis-1/2">
@@ -259,11 +272,11 @@ const openVotingPollModal = (id) => {
                         <div class="flex items-center justify-center w-64 p-2 border-r">
                             {{ (poll.result == "") || (poll.result == null) ? "No Result" : poll.result }}
                         </div>
-                        <div class="flex items-center justify-center w-64 p-2 text-red-900 border-r" :class="{'text-green-900':poll.concluded}">
+                        <div class="flex items-center justify-center w-64 p-2 border-r" :class="{'text-green-900':poll.concluded, 'text-red-900':poll.concluded == false}">
                             {{ poll.concluded == false ? 'Unconcluded' : 'Concluded' }}
                         </div>
                         <div class="flex items-center justify-center float-right p-2">
-                            <button @click="openVotingPollModal(poll.id)">
+                            <button @click="openVotingPollModal(poll.id, poll.concluded)">
                                 <div class="flex h-5 w-5 items-center justify-center rounded-full bg-green-400 hover:bg-green-300 text-red-900 mr-1">
                                     <PlayIcon class="w-3 h-3 fill-black " aria-hidden="true" />
                                 </div>
@@ -340,12 +353,11 @@ const openVotingPollModal = (id) => {
                         :disabled="deleteForm.processing"
                         @click="deletePoll"
                     >
-                        Delete Conference
+                        Delete Poll
                     </DangerButton>
                 </div>
             </div>
         </Modal>
-
 
     </div>
 

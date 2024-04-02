@@ -8,10 +8,15 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { InboxIcon } from '@heroicons/vue/20/solid';
 import ChatBox from '@/Components/Chat/ChatBox.vue';
+import Poll from '@/Components/Poll.vue';
 
 const showingNavigationDropdown = ref(false);
 
 const role = usePage().props.auth.role;
+
+const showPollModal = ref(false)
+const pollID = ref(null)
+const initiatorID = ref(null)
 
 const newMessageCount = ref(0)
 
@@ -37,13 +42,9 @@ const getNewMessageCount = () => {
 }
 
 const openPollModal = (e) => {
-    axios.get('/getPoll/'+e.poll_id)
-    .then(({data}) => {
-
-    })
-    .catch(e => {
-
-    })
+    showPollModal.value = e.value
+    pollID.value = e.poll_id
+    initiatorID.value = e.initiatorID
 }
 
 onMounted(() => {
@@ -239,6 +240,9 @@ onMounted(() => {
                     <span class="badge" v-if="newMessageCount != 0">{{newMessageCount}}</span>
                 </button>
             </div>
+
+            <!-- poll modal -->
+            <Poll v-if="showPollModal" :show="showPollModal" :pollID="pollID" :initiatorID="initiatorID"/>
 
         </div>
     </div>
