@@ -11,7 +11,7 @@ class Poll extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = ['title', 'agree_count', 'disagree_count', 'undecided_count', 'result', 'details', 'concluded', 'active'];
+    protected $fillable = ['title', 'type', 'agree_count', 'disagree_count', 'undecided_count', 'result', 'details', 'concluded', 'active'];
 
     public function conference() : BelongsTo{
         return $this->belongsTo(Conference::class);

@@ -20,12 +20,31 @@ class PollController extends Controller
     public function store(Request $request){
         $request->validate([
             'title' => 'required',
+            'type' => 'required',
         ]);
 
         Conference::find($request->conf_id)->poll()->create([
             'title' => $request->title,
+            'type' => $request->type,
             'details' => $request->details
         ]);
+    }
+
+    public function update(Request $request, String $poll_id){
+        $request->validate([
+            'title' => 'required',
+            'type' => 'required',
+        ]);
+
+        Poll::find($poll_id)->update([
+            'title' => $request->title,
+            'type' => $request->type,
+            'details' => $request->details
+        ]);
+    }
+
+    public function getUserPoll($poll_id, $user_id){
+        return PollVote::where('user_id', $user_id)->where('poll_id', $poll_id)->select('vote', 'note')->first();
     }
 
     public function getPoll($id){
@@ -62,9 +81,9 @@ class PollController extends Controller
         $res = '';
 
         if($count['tr'] > $count['fa']){
-            $res = 'Passed';
+            $res = 'Approved';
         }else if($count['tr'] < $count['fa']){
-            $res = 'Rejected';
+            $res = 'Dissaproved';
         }else if($count['tr'] == $count['fa']){
             $res = 'Impasse';
         }

@@ -4,6 +4,7 @@ import { useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import PrimaryButton from './PrimaryButton.vue';
 import SecondaryButton from './SecondaryButton.vue';
+import InputLabel from './InputLabel.vue';
 import InputError from './InputError.vue';
 import { onMounted } from 'vue';
 import axios from 'axios';
@@ -13,6 +14,10 @@ const props = defineProps({showPollModal:Boolean, pollID:String, initiatorID:Str
 const user_id = usePage().props.auth.user.id;
 
 const errors = ref('')
+
+const sbmtBtnTxt = ref('Submit')
+
+const initiator = user_id == props.initiatorID
 
 const pollForm = useForm({
     poll_id: props.pollID,
@@ -26,6 +31,8 @@ const pollDetails = ref('')
 
 const pollTrueCount = ref(0)
 const pollFalseCount = ref(0)
+const result = ref('')
+const percentage = ref(null)
 
 const getPoll = () => {
     axios.get('/getPoll/'+props.pollID)
@@ -49,11 +56,14 @@ const closeModal = () => {
 }
 
 const setValue = (value) => {
-    pollForm.vote = value
-    errors.value = ''
+    if(!initiator){
+        pollForm.vote = value
+        errors.value = ''
+    }
 }
 
 const submitPollResponse = () => {
+    sbmtBtnTxt.value = 'Loading...'
     axios.post('/submitPollResponse', pollForm)
     .then(({data}) => {
 
@@ -67,6 +77,17 @@ const submitPollResponse = () => {
 const setPollCount = (e) => {
     pollTrueCount.value = (e.tr / e.u) * 100
     pollFalseCount.value = (e.fa / e.u) * 100
+
+    if(pollTrueCount.value > pollFalseCount.value){
+        percentage.value = 1
+        result.value = "Approved"
+    }else if(pollTrueCount.value < pollFalseCount.value){
+        percentage.value = 2
+        result.value = "Dissaproved"
+    }else if((pollTrueCount.value == pollFalseCount.value) && (pollTrueCount.value != 0 && pollFalseCount.value != 0)){
+        percentage.value = 3
+        result.value = "Impasse"
+    }
 }
 
 const getPollCount = () => {
@@ -76,6 +97,16 @@ const getPollCount = () => {
     })
     .catch(e => {
         errors.value = e.response.data.message
+        console.log(e)
+    })
+}
+
+const getUserPoll = () => {
+    axios.get('/getUserPoll/'+props.pollID+'/'+user_id)
+    .then(({data}) => {
+        pollForm.vote = data.vote
+    })
+    .catch(e => {
         console.log(e)
     })
 }
@@ -93,8 +124,10 @@ const endPoll = () => {
 onMounted(() => {
     getPoll()
     getPollCount()
+    getUserPoll()
     window.Echo.private('poll-vote').listen('PollVoteSubmittedEvent', (e) => {
         setPollCount(e.vote)
+        sbmtBtnTxt.value = 'Submit'
     });
 })
 
@@ -111,11 +144,16 @@ onMounted(() => {
                 {{ pollDetails }}
             </p>
 
-            <div class="mt-6 space-y-5">
+            <div class="mt-6 space-y-3">
                 <div class="border p-6 rounded shadow border-l-8 border-green-400 hover:border-2 hover:border-l-8" @click="setValue(true)">
-                    <div class="">
-                        <input type="radio" class="" id="yes" v-model="pollForm.vote" :value="true" name="selection"></input>
-                        <label for="yes" class="ml-2">YES</label>
+                    <div class="flex">
+                        <div class="grow">
+                            <input  type="radio" class="" id="yes" v-if="!initiator" v-model="pollForm.vote" :value="true" name="selection"></input>
+                            <label for="yes" class="ml-2">YES</label>
+                        </div>
+                        <div class="text-green-400 text-xl" v-if="percentage == 1 || percentage == 3">
+                            {{ result }}
+                        </div>
                     </div>
                     <div class="mt-3" v-if="pollTrueCount != 0">
                         <div class="w-full rounded-full">
@@ -124,9 +162,14 @@ onMounted(() => {
                     </div>
                 </div>
                 <div class="border p-6 rounded shadow border-l-8 border-red-400 hover:border-2 hover:border-l-8" @click="setValue(false)">
-                    <div>
-                        <input type="radio" class="" id="no" v-model="pollForm.vote" :value="false" name="selection"></input>
-                        <label for="no" class="ml-2">NO</label>
+                    <div class="flex">
+                        <div class="grow">
+                            <input type="radio" class="" id="no" v-if="!initiator" v-model="pollForm.vote" :value="false" name="selection"></input>
+                            <label for="no" class="ml-2">NO</label>
+                        </div>
+                        <div class="text-red-400 text-xl" v-if="percentage == 2 || percentage == 3">
+                            {{ result }}
+                        </div>
                     </div>
                     <div class="mt-3" v-if="pollFalseCount != 0">
                         <div class="w-full rounded-full">
@@ -134,17 +177,19 @@ onMounted(() => {
                         </div>
                     </div>
                 </div>
+                <div class="rounded" v-if="pollForm.vote == false">
+                    <InputLabel for="no-reason">Explanatory Note</InputLabel>
+                    <textarea id="no-reason" name="no-reason" class="h-full w-full rounded border-gray-300"> </textarea>
+                </div>
                 <InputError :message="errors" class="mt-2" />
             </div>
 
-            <div class="mt-3">
-                <SecondaryButton class="w-full justify-center" @click="endPoll" v-if="user_id == props.initiatorID">End Poll</SecondaryButton>
+            <div class="mt-3 flex flex-row space-x-2">
+                <SecondaryButton class="w-full justify-center" @click="closeModal" v-if="initiator">Cancel Poll</SecondaryButton>
+                <PrimaryButton class="w-full justify-center" @click="endPoll" v-if="initiator">Conclude Poll</PrimaryButton>
             </div>
-            <div class="mt-3">
-                <SecondaryButton class="w-full justify-center" @click="closeModal" v-if="user_id == props.initiatorID">Cancel Poll</SecondaryButton>
-            </div>
-            <div class="mt-3">
-                <PrimaryButton class="w-full justify-center" @click="submitPollResponse">Submit</PrimaryButton>
+            <div class="mt-3" v-if="!initiator">
+                <PrimaryButton class="w-full justify-center" @click="submitPollResponse">{{sbmtBtnTxt}}</PrimaryButton>
             </div>
         </div>
     </Modal>

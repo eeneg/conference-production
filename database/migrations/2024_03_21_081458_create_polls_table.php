@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreign('conference_id')
                 ->references('id')
                 ->on('conferences');
+            $table->string('type');
             $table->string('title');
             $table->integer('agree_count');
             $table->integer('disagree_count');

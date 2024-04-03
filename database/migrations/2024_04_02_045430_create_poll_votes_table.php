@@ -16,6 +16,7 @@ return new class extends Migration
             $table->uuid('poll_id');
             $table->uuid('user_id');
             $table->boolean('vote');
+            $table->string('note')->nullable();
             $table->timestamps();
         });
     }
