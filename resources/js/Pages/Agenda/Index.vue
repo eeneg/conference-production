@@ -18,9 +18,12 @@ const props = defineProps({conference:Object})
 
 const form = useForm({
     title: null,
+    type: null,
     details: null,
     conf_id: props.conference.id
 })
+
+const pollID = ref(null)
 
 const deleteForm = useForm({
     password: null,
@@ -28,6 +31,8 @@ const deleteForm = useForm({
 })
 
 const polls = ref([])
+
+const editMode = ref(false)
 
 const createPollModal = ref(false)
 const showPollModal = ref(false)
@@ -47,6 +52,8 @@ const pollModal = () => {
     message.value = 'Create Polls Here'
     saveButtonText.value = "Save"
     createPollModal.value = true
+    form.reset()
+    editMode.value = false
 }
 
 const closePollModal = () => {
@@ -73,8 +80,12 @@ const openEditPollModal = (poll) => {
     createPollModal.value = true
     form.title = poll.title
     form.details = poll.details
+    form.type = poll.type
+    pollID.value = poll.id
+    editMode.value = true
     closePollModalList()
 }
+
 
 const closeDeleteModal = () => {
     confirmingPollDeletion.value = false
@@ -95,7 +106,7 @@ const getPolls = () => {
 }
 
 const submitPoll = () => {
-    form.post(route('poll.store'),{
+    form.submit('post', route('poll.store'),{
         onSuccess: () => {
             form.reset()
             createPollModal.value = false
@@ -108,6 +119,25 @@ const submitPoll = () => {
             header.value = "Error!"
             success.value = false
             message.value = "Failed to Submit"
+            responeModal.value = true
+        }
+    })
+}
+
+const updatePoll = () => {
+    form.submit('patch', route('poll.update', pollID.value),{
+        onSuccess: () => {
+            form.reset()
+            createPollModal.value = false
+            header.value = "Sucess!"
+            success.value = true
+            message.value = "Poll Updated"
+            responeModal.value = true
+        },
+        onError: () => {
+            header.value = "Error!"
+            success.value = false
+            message.value = "Failed to Update"
             responeModal.value = true
         }
     })
@@ -138,6 +168,14 @@ const deletePoll = (id) => {
             console.log(e)
         }
     })
+}
+
+const submit = () => {
+    if(editMode.value){
+        updatePoll()
+    }else{
+        submitPoll()
+    }
 }
 
 const openVotingPollModal = (id, concluded) => {
@@ -190,7 +228,7 @@ onMounted(() => {
                 </div>
                 <div class="flex">
                     <div class="pl-5 pr-6 mt-3 grow">
-                        asd
+                        {{ props.conference.agenda }}
                     </div>
                 </div>
             </div>
@@ -218,11 +256,20 @@ onMounted(() => {
                     </div>
                 </div>
 
-                <div class="mt-3 mb-3 mr-3 pr-6 pl-5">
+                <div class="mt-3 mb-3 mr-3 pr-6 pl-5 space-y-3">
                     <div class="">
                         <InputLabel for="title">Title</InputLabel>
                         <TextInput id="title" class="w-full" v-model="form.title"> </TextInput>
                         <InputError :message="form.errors.title" class="mt-2" />
+                    </div>
+                    <div class="">
+                        <InputLabel for="title">Type</InputLabel>
+                        <select class="border-gray-300 rounded w-full mt-1" v-model="form.type">
+                            <option selected :value="null" disabled>Select</option>
+                            <option :value="'nominal'">Nominal</option>
+                            <option :value="'majority'">Majority</option>
+                        </select>
+                        <InputError :message="form.errors.type" class="mt-2" />
                     </div>
                     <div class="mt-2">
                         <InputLabel for="details">Details</InputLabel>
@@ -230,7 +277,7 @@ onMounted(() => {
                         <InputError :message="form.errors.details" class="mt-2" />
                     </div>
                     <div class="mt-2">
-                        <PrimaryButton @click="submitPoll">{{saveButtonText}}</PrimaryButton>
+                        <PrimaryButton @click="submit">{{saveButtonText}}</PrimaryButton>
                     </div>
                 </div>
 
@@ -268,6 +315,9 @@ onMounted(() => {
                     <div class="border rounded flex mb-2" v-for="poll in polls">
                         <div class="flex items-center justify-center w-64 border-r p-2">
                             {{ poll.title }}
+                        </div>
+                        <div class="flex items-center justify-center w-64 border-r p-2 capitalize">
+                            {{ poll.type }}
                         </div>
                         <div class="flex items-center justify-center w-64 p-2 border-r">
                             {{ (poll.result == "") || (poll.result == null) ? "No Result" : poll.result }}
