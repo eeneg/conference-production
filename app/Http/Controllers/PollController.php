@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Events\PollSetActiveEvent;
 use App\Events\PollVoteSubmittedEvent;
+use App\Events\PollConcludedEvent;
 use App\Models\Poll;
 use App\Models\Conference;
 use App\Models\PollVote;
@@ -48,7 +49,7 @@ class PollController extends Controller
     }
 
     public function getPoll($id){
-        return Poll::find($id)->only('id', 'title', 'details');
+        return Poll::find($id)->only('id', 'title', 'details', 'type');
     }
 
     public function submitPollResponse(Request $request){
@@ -88,12 +89,18 @@ class PollController extends Controller
             $res = 'Impasse';
         }
 
-        Poll::find($request->poll_id)->update([
+        if($count['tr'] == 0 && $count['fa'] == 0){
+            abort(403, 'Cant conclude empty poll');
+        }
+
+        $poll = Poll::find($request->poll_id)->update([
             'agree_count' => $count['tr'],
             'disagree_count' => $count['fa'],
             'result' => $res,
             'concluded' => true
         ]);
+
+        broadcast(new PollConcludedEvent(Poll::find($request->poll_id)));
     }
 
     public function countPollVotes($poll_id){

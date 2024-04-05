@@ -29,3 +29,7 @@ Broadcast::channel('poll', function ($user) {
 Broadcast::channel('poll-vote', function ($user) {
     return Auth::check();
 });
+
+Broadcast::channel('poll-result', function ($user) {
+    return Auth::check();
+});

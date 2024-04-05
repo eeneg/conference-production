@@ -28,6 +28,7 @@ const pollForm = useForm({
 const showModal = ref(props.showPollModal)
 const pollTitle = ref('')
 const pollDetails = ref('')
+const pollType = ref('')
 
 const pollTrueCount = ref(0)
 const pollFalseCount = ref(0)
@@ -39,6 +40,7 @@ const getPoll = () => {
     .then(({data}) => {
         pollTitle.value = data.title
         pollDetails.value = data.details
+        pollType.value = data.type
     })
     .catch(e => {
         console.log(e)
@@ -117,6 +119,7 @@ const endPoll = () => {
         closeModal()
     })
     .catch(e => {
+        errors.value = e.response.data.message
         console.log(e)
     })
 }
@@ -144,7 +147,11 @@ onMounted(() => {
                 {{ pollDetails }}
             </p>
 
-            <div class="mt-6 space-y-3">
+            <p class="mt-5 capitalize">
+                Type: {{ pollType }}
+            </p>
+
+            <div class="mt-3 space-y-3">
                 <div class="border p-6 rounded shadow border-l-8 border-green-400 hover:border-2 hover:border-l-8" @click="setValue(true)">
                     <div class="flex">
                         <div class="grow">
@@ -177,7 +184,7 @@ onMounted(() => {
                         </div>
                     </div>
                 </div>
-                <div class="rounded" v-if="pollForm.vote == false">
+                <div class="rounded" v-if="pollForm.vote == false && !initiator">
                     <InputLabel for="no-reason">Explanatory Note</InputLabel>
                     <textarea id="no-reason" name="no-reason" class="h-full w-full rounded border-gray-300"> </textarea>
                 </div>

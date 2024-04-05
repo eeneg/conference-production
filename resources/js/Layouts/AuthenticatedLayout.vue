@@ -9,6 +9,7 @@ import { Link, usePage } from '@inertiajs/vue3';
 import { InboxIcon } from '@heroicons/vue/20/solid';
 import ChatBox from '@/Components/Chat/ChatBox.vue';
 import Poll from '@/Components/Poll.vue';
+import PollResult from '@/Components/PollResult.vue';
 
 const showingNavigationDropdown = ref(false);
 
@@ -18,9 +19,13 @@ const showPollModal = ref(false)
 const pollID = ref(null)
 const initiatorID = ref(null)
 
+const showPollResultModal = ref(false)
+
 const newMessageCount = ref(0)
 
 const chat = ref(false)
+
+const poll = ref(null)
 
 const goChat = (bool) => {
     chat.value = bool
@@ -45,6 +50,13 @@ const openPollModal = (e) => {
     showPollModal.value = e.value
     pollID.value = e.poll_id
     initiatorID.value = e.initiatorID
+    if(showPollModal.value == true){
+        showPollResultModal.value = false
+    }
+}
+
+const closeResModal = (e) => {
+    showPollResultModal.value = e
 }
 
 onMounted(() => {
@@ -54,6 +66,11 @@ onMounted(() => {
     });
     window.Echo.private('poll').listen('PollSetActiveEvent', (e) => {
         openPollModal(e)
+    });
+    window.Echo.private('poll-result').listen('PollConcludedEvent', (e) => {
+        showPollModal.value = false
+        poll.value = e.poll
+        showPollResultModal.value = true
     });
 })
 
@@ -243,6 +260,8 @@ onMounted(() => {
 
             <!-- poll modal -->
             <Poll v-if="showPollModal" :show="showPollModal" :pollID="pollID" :initiatorID="initiatorID"/>
+
+            <PollResult @close="closeResModal($event)" v-if="showPollResultModal" :showModal="showPollResultModal" :poll="poll"/>
 
         </div>
     </div>
