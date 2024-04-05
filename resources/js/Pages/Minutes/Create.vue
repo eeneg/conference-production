@@ -69,7 +69,6 @@
         router.visit(route('minutes.show',form.id), {
             method: 'get',
             onSuccess: e => {
-                console.log(e)
                 var f = document.getElementById('i')
                 f.contentWindow.document.write(e.props.content)
                 setTimeout(function () {
@@ -108,6 +107,10 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Minutes Form <br> {{ props.conf_title }}</h2>
         </div>
     </header>
+
+    <iframe id="i" hidden>
+
+    </iframe>
 
     <div class="py-5">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
