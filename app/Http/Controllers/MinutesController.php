@@ -52,6 +52,8 @@ class MinutesController extends Controller
     public function show(string $id)
     {
         $mins = Minutes::find($id);
+
+        return $mins;
     }
 
     /**
