@@ -8,7 +8,7 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import { InboxIcon } from '@heroicons/vue/20/solid';
 import ChatBox from '@/Components/Chat/ChatBox.vue';
-import Poll from '@/Components/Poll.vue';
+import Poll from '@/Components/Poll/Poll.vue';
 import PollResult from '@/Components/PollResult.vue';
 
 const showingNavigationDropdown = ref(false);

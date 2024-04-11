@@ -1,11 +1,11 @@
 <script setup>
-import Modal from './Modal.vue'
+import Modal from '@/Components/Modal.vue'
 import { useForm, usePage } from '@inertiajs/vue3';
 import { ref } from 'vue';
-import PrimaryButton from './PrimaryButton.vue';
-import SecondaryButton from './SecondaryButton.vue';
-import InputLabel from './InputLabel.vue';
-import InputError from './InputError.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
+import SecondaryButton from '@/Components/SecondaryButton.vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import InputError from '@/Components/InputError.vue';
 import { onMounted } from 'vue';
 import axios from 'axios';
 

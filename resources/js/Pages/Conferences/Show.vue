@@ -1,8 +1,8 @@
 <script setup>
-//import ChatBox from '@/Components/ChatBox.vue'
 import { Head } from '@inertiajs/vue3'
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
+import PollBody from '@/Components/Poll/PollBody.vue';
 import { ChevronUpIcon } from '@heroicons/vue/20/solid'
 import { ref } from 'vue'
 import { computed } from 'vue'
@@ -39,8 +39,13 @@ const reembed = (attachment) => embed.value = embed.value === attachment ? null 
     <Head :title="title" />
 
     <header class="bg-white shadow">
-        <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{conf.title}}</h2>
+        <div class="flex px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="grow">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{conf.title}}</h2>
+            </div>
+            <div class="flex flex-row-reverse">
+                <PollBody :conference="props.conf"/>
+            </div>
         </div>
     </header>
 
