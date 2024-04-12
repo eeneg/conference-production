@@ -7,6 +7,7 @@ use App\Models\Storage;
 use App\Models\Category;
 use App\Models\File;
 use App\Services\FileContentService;
+use App\Services\FileUploadedService;
 use Inertia\Inertia;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,8 @@ class FileController extends Controller
 {
 
     public function __construct(
-        private FileContentService $fileContentService
+        private FileContentService $fileContentService,
+        private FileUploadedService $fileUploadedService
     ){}
 
     /**
@@ -93,7 +95,7 @@ class FileController extends Controller
             FileStorage::putFileAs('public/File_Uploads/'. $request->storage_id, $request->file[0], str_replace(' ','_',$request->file[0]->hashName()));
             $this->fileContentService->handle($tr->id);
             $this->attachCategory($tr->id, $request->category_id);
-
+            $this->fileUploadedService->handle($tr->id);
     }
 
     public function attachCategory($id, $categories){

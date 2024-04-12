@@ -47,7 +47,7 @@ const pollUpdated = () => {
 
 <template>
     <div class="flex space-x-2">
-        <SecondaryButton @click="openPollListModal">View Poll</SecondaryButton>
+        <SecondaryButton @click="openPollListModal">View Polls</SecondaryButton>
         <PrimaryButton @click="createPoll">Add Poll</PrimaryButton>
     </div>
     <div>

@@ -1,13 +1,14 @@
 <script setup>
     import FindFileLayout from '@/Layouts/FindFileLayout.vue';
+    import FileVersioncontrol from '@/Components/FileVersionControl/FileVersionControl.vue'
     import Modal from '@/Components/Modal.vue';
     import TextInput from '@/Components/TextInput.vue';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
     import ComboBox from '@/Components/ComboBox.vue';
     import DangerButton from '@/Components/DangerButton.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
-    import { ArrowDownTrayIcon, DocumentIcon, BookOpenIcon, TrashIcon } from '@heroicons/vue/20/solid';
     import InputLabel from '@/Components/InputLabel.vue';
+    import { ArrowDownTrayIcon, DocumentIcon, BookOpenIcon, TrashIcon } from '@heroicons/vue/20/solid';
     import { useForm } from '@inertiajs/vue3';
     import { ref, nextTick, onMounted } from 'vue';
     import { router } from '@inertiajs/vue3'
@@ -125,7 +126,7 @@
                         </div>
                     </div>
                     <div class="flex flex-row-reverse mt-3 pl-5 pr-5 space-x-2">
-                        <div class="ml-2">
+                        <div class="ml-3">
                             <SecondaryButton @click="reset">Reset</SecondaryButton>
                         </div>
                         <div role="status"  v-if="loading">
@@ -155,7 +156,7 @@
                                 </div>
                                 <div class="grow">
                                     <InputLabel value="Category"/>
-                                    <ComboBox @passData="getCategoryId($event)" :data="props.category" ref="combobox"></ComboBox>
+                                    <ComboBox @passData="getCategoryId($event)" :data="props.category"></ComboBox>
                                 </div>
                             </div>
                             <div class="flex items-center justify-center pr-6 pl-6 mt-1">
@@ -170,7 +171,7 @@
                             </div>
                         </form>
                     </div>
-                    <div class="grow pl-5 pr-5 pb-5 text-sm">
+                    <div class="grow pl-5 pr-5 pb-5 text-sm min-h-80">
                         <div class="border rounded p-2 pl-2 mt-2" v-for="file in files.data">
                             <div class="flex">
                                 <div class="flex items-center p-1 justify-center sm:text-sm">
@@ -196,14 +197,15 @@
                                     </div>
                                 </div>
                                 <div class="mt-2">
-                                    <div class="flex items-center justify-center float-right">
+                                    <div class="flex items-center justify-center float-right space-x-1">
+                                        <FileVersioncontrol :file_id="file.id"/>
                                         <button @click="deleteModal(file.id)">
-                                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-red-300 hover:bg-red-400 text-red-900 mr-1">
+                                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-red-300 hover:bg-red-400 text-red-900">
                                                 <TrashIcon class="w-5 h-5 fill-black " aria-hidden="true" />
                                             </div>
                                         </button>
                                         <a :href="route('file.download',{ id:file.id })">
-                                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-green-300 hover:bg-green-400 text-red-900 mr-1">
+                                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-green-300 hover:bg-green-400 text-red-900">
                                                 <ArrowDownTrayIcon class="w-5 h-5 stroke-gray-900 fill-black " aria-hidden="true" />
                                             </div>
                                         </a>

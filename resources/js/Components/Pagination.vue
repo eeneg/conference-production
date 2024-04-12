@@ -23,7 +23,7 @@
           </p>
         </div>
         <div>
-          <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+          <nav v-if="data.total != 0" class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
             <!-- Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" -->
             <Link
                 class="relative hidden items-center px-4 py-2 text-sm font-medium text-gray-500 focus:z-20 md:inline-flex"
