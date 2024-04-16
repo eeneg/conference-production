@@ -16,7 +16,8 @@ class FileSearchController extends Controller
 {
     public function index(){
         return Inertia::render('Files/Show', [
-            'files' => File::with('category')->with('storage')
+            'files' => File::where('latest', true)
+                ->with('category')->with('storage')
                 ->orderBy('created_at', 'desc')
                 ->paginate(15),
             'storage' => Storage::all(),
@@ -28,7 +29,8 @@ class FileSearchController extends Controller
     {
         $files = File::search($request->search)
             ->query(function($query) use ($request){
-                $query->with('storage')
+                $query->where('latest', true)
+                    ->with('storage')
                     ->with('category')
                     ->when($request->storage != null, function($query) use ($request){
                         $query->where('storage_id', $request->storage);

@@ -20,7 +20,7 @@
 
     const files = ref(props.files)
 
-    const combobox = ref()
+    const combobox = ref([])
 
     const search_button_text = ref("SEARCH")
 
@@ -92,7 +92,7 @@
 
     const reset = () => {
         form.reset()
-        combobox.value.reset()
+        combobox.value = []
         router.visit(route('file.index'),{
             onStart: e => loading.value = true,
             onSuccess: e => loading.value = false

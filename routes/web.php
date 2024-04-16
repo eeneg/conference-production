@@ -14,6 +14,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FileSearchController;
 use App\Http\Controllers\AgendaController;
 use App\Http\Controllers\PollController;
+use App\Http\Controllers\FileVersionController;
 use App\Http\Middleware\IsAdmin;
 use App\Models\Minutes;
 use App\Models\Message;
@@ -90,6 +91,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/allChat', function(){
         return Message::all();
     })->name('chat.all');
+
+    Route::resource('fileVersion', FileVersionController::class);
 });
 
 Route::resource('users', UserController::class)->middleware([IsAdmin::class]);

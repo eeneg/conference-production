@@ -8,12 +8,14 @@ import DropdownLink from '../DropdownLink.vue'
 import { BarsArrowUpIcon, PaperClipIcon } from '@heroicons/vue/20/solid';
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
+import axios from 'axios';
 
-const props = defineProps({file_id:String})
+const props = defineProps({file_id:String, files:Object})
 
 const showFileVersions = ref(false)
 const openFileVerionsModal = () => {
     showFileVersions.value = true
+    getFileVersions()
 }
 const closeFileVersionModal = () => {
     showFileVersions.value = false
@@ -21,13 +23,27 @@ const closeFileVersionModal = () => {
 
 const form = useForm({
     'file_id':props.file_id,
+    'latest': false,
     'file': null
 })
-
 const getFile = (e) => {
     form.file = e.target.files[0]
 }
 
+const fileVersions = ref([])
+const loading = ref(false)
+const getFileVersions = () => {
+    loading.value = true
+    axios.get(route('fileVersion.index', {id:props.file_id}))
+    .then(({data}) => {
+        fileVersions.value = data
+        loading.value = false
+    })
+    .catch(e => {
+        console.log(e)
+        loading.value = false
+    })
+}
 
 </script>
 
@@ -50,55 +66,76 @@ const getFile = (e) => {
                 </p>
             </div>
 
-            <div class="pl-6 pr-6 flex">
-                <div class="w-full">
-                    <InputLabel>Upload new file</InputLabel>
-                    <input type="file" v-on:change="getFile($event)" class="mt-1" accept="application/pdf"/>
-                    <PrimaryButton class="float-right">Upload</PrimaryButton>
+            <div class="pl-6 pr-6">
+                <div class="flex flex-col">
+                    <form @submit.prevent="form.post(route('fileVersion.store'))">
+
+                        <div class="">
+                            <InputLabel>Upload new file version</InputLabel>
+                            <input type="file" v-on:change="getFile($event)" class="mt-1" accept="application/pdf"/>
+                        </div>
+                        <div class="mt-4">
+                            <InputLabel>Set File as Latest Version?</InputLabel>
+                            <input type="checkbox" v-model="form.latest" class="mt-1" accept="application/pdf"/>
+                        </div>
+                        <div class="mt-4">
+                            <PrimaryButton :disabled="form.processing">Upload</PrimaryButton>
+                            <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
+                                <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
+                            </Transition>
+                        </div>
+
+                    </form>
                 </div>
             </div>
 
-            <div class="pl-6 pr-6 flex flex-col mt-2">
-                <div class="flex py-2 pl-1 border rounded mt-1" v-for="asd in 10">
-                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-300 hover:bg-indigo-400 text-black-900">
-                        <PaperClipIcon class="w-4 h-4 fill-black " aria-hidden="true" />
+            <div class="pl-6 pr-6">
+                <div class="flex flex-col mt-4 max-h-64 overflow-auto">
+                    <div class="flex py-2 pl-1 border rounded mt-1 justify-center" v-if="loading">
+                        <svg aria-hidden="true" class="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-indigo-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
+                        <span class="sr-only">Loading...</span>
                     </div>
-                    <div class="flex items-center grow">
-                        <p class="text-lg w-60 truncate float-left ml-2">Sample File Name.pdf asdas dsadas asd asdas das asd asds asda d</p>
-                    </div>
-                    <div class="flex items-center grow">
-                        12/12/2024
-                    </div>
-                    <div class="flex items-center justify-center float-right mr-1 space-x-1">
-                        <Dropdown align="right" width="48">
-                            <template #trigger>
-                                <span class="inline-flex rounded-md">
-                                    <button
-                                        type="button"
-                                        class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-gray-700 focus:outline-none"
-                                    >
-                                        <svg
-                                            class="ml-2 -mr-0.5 h-4 w-4"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20"
-                                            fill="currentColor"
+                    <div class="flex py-2 pl-1 border rounded mt-1" v-for="file in fileVersions">
+                        <div class="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-300 hover:bg-indigo-400 text-black-900">
+                            <PaperClipIcon class="w-4 h-4 fill-black " aria-hidden="true" />
+                        </div>
+                        <div class="flex items-center grow">
+                            <p class="text-lg w-60 truncate float-left ml-2">{{file.file_name}}</p>
+                        </div>
+                        <div class="flex items-center grow">
+                            {{file.date}}
+                        </div>
+                        <div class="flex items-center justify-center float-right mr-1 space-x-1">
+                            <Dropdown align="right" width="48">
+                                <template #trigger>
+                                    <span class="inline-flex rounded-md">
+                                        <button
+                                            type="button"
+                                            class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-gray-700 focus:outline-none"
                                         >
-                                            <path
-                                                fill-rule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                clip-rule="evenodd"
-                                            />
-                                        </svg>
-                                    </button>
-                                </span>
-                            </template>
+                                            <svg
+                                                class="ml-2 -mr-0.5 h-4 w-4"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 20 20"
+                                                fill="currentColor"
+                                            >
+                                                <path
+                                                    fill-rule="evenodd"
+                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                    clip-rule="evenodd"
+                                                />
+                                            </svg>
+                                        </button>
+                                    </span>
+                                </template>
 
-                            <template #content>
-                                <DropdownLink>Delete</DropdownLink>
-                                <DropdownLink>View</DropdownLink>
-                                <DropdownLink>Set Latest</DropdownLink>
-                            </template>
-                        </Dropdown>
+                                <template #content>
+                                    <DropdownLink :href="'#'">View</DropdownLink>
+                                    <DropdownLink :href="'#'">Set Latest</DropdownLink>
+                                    <DropdownLink :href="'#'">Delete</DropdownLink>
+                                </template>
+                            </Dropdown>
+                        </div>
                     </div>
                 </div>
             </div>
