@@ -11,5 +11,7 @@ class FileCategory extends Pivot
 {
     use HasFactory, HasUuids;
 
+    protected $table = 'file_categories';
+
     protected $fillable = ['file_id', 'category_id'];
 }

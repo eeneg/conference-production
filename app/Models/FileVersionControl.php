@@ -11,5 +11,5 @@ class FileVersionControl extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = ['control_id', 'file_id', 'version'];
+    protected $fillable = ['control_id', 'file_id'];
 }

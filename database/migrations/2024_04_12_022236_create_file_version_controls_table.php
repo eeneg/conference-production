@@ -13,9 +13,8 @@ return new class extends Migration
     {
         Schema::create('file_version_controls', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('control_id')->unique();
+            $table->uuid('control_id');
             $table->uuid('file_id')->unique();
-            $table->integer('version');
             $table->timestamps();
         });
     }

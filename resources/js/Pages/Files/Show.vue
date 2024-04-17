@@ -59,6 +59,7 @@
                 success = true
                 message = "Submitted Successfuly"
                 confirmingFileDeletion.value = false
+                reset()
            },
            onError: () => {
                 header = "Error!"
@@ -231,8 +232,8 @@
                         <embed :src="'/storage/'+path" style="width: 100%; height: 100%;"  type="application/pdf">
                     </div>
 
-                    <div class="mt-6 flex justify-end">
-                        <SecondaryButton @click="closeModal"> Cancel </SecondaryButton>
+                    <div class="mt-6 flex">
+                        <SecondaryButton @click="closeModal"> Close </SecondaryButton>
                     </div>
                 </div>
             </Modal>
