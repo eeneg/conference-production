@@ -8,12 +8,14 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Laravel\Scout\Searchable;
 use Ramsey\Uuid\Uuid;
 use App\Models\Message;
+use App\Models\Note;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class User extends Authenticatable
@@ -64,6 +66,11 @@ class User extends Authenticatable
         return $this->belongsToMany(Role::class, 'user_roles', 'user_id', 'role_id')->using(UserRole::class);
     }
 
+    public function note(): HasOne
+    {
+        return $this->hasOne(Note::class);
+    }
+
     public function messages()
     {
         return $this->hasMany(Message::class, 'sender_id')->orderBy('created_at');
@@ -89,6 +96,7 @@ class User extends Authenticatable
             'id' => $this->getKey(),
             'name' => $this->name,
             'email' => $this->email,
+            'role' => $this->roles()->first() ? $this->roles()->first()->title : ''
         ];
     }
 

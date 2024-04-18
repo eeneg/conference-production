@@ -1,7 +1,5 @@
 <script setup>
-    import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     import { Head, useForm, router } from '@inertiajs/vue3';
-    import InputLabel from '@/Components/InputLabel.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import InputError from '@/Components/InputError.vue';
     import { QuillEditor } from '@vueup/vue-quill';
@@ -9,6 +7,7 @@
     import SecondaryButton from '@/Components/SecondaryButton.vue';
     import Modal from '@/Components/Modal.vue';
     import '@vueup/vue-quill/dist/vue-quill.snow.css';
+    import _ from 'lodash'
 
     const props = defineProps({id: String, content: {type: String, required: false}, conf_title: String})
     const modalShow = ref(false)
@@ -40,20 +39,20 @@
 
     const form = useForm({
         id: props.id,
-        content: props.content ? props.content : null
+        content: props.content ? props.content : ''
     })
 
     const minutesEdited = () => {
         edited = true
     }
 
+    const inputSave = _.debounce(() => {
+        submit()
+    }, 400)
+
     const submit = () => {
         form.post(route('minutes.store'), {
             onSuccess: () => {
-                header = "Success!"
-                success = true
-                message = "Submitted Successfuly"
-                modalShow.value = true
                 edited = false
             },
             onErrorCaptured: () => {
@@ -122,10 +121,16 @@
                             <div>
                                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Minutes</h2>
                             </div>
+                            <div class="grow pr-2">
+                                <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out float-right">
+                                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
+                                </Transition>
+                            </div>
                             <div
                                 class="group"
                                 :class="{'has-tooltip':edited}"
                             >
+
                                 <span class='tooltip rounded shadow-lg p-1 bg-gray-800 -mt-9 -ml-7 text-white'>Save first to print</span>
                                 <PrimaryButton
                                     type="button"
@@ -143,7 +148,7 @@
 
                             <InputError :message="form.errors.content" class="mt-2" />
 
-                            <QuillEditor theme="snow" :toolbar="toolbarOptions" @textChange="minutesEdited" v-model:content="form.content" contentType="html" style="min-height: 500px;max-height: 500px; overflow-y: auto;"/>
+                            <QuillEditor @input="inputSave" theme="snow" :toolbar="toolbarOptions" @textChange="minutesEdited" v-model:content="form.content" contentType="html" style="min-height: 500px;max-height: 500px; overflow-y: auto;"/>
 
                         </div>
 

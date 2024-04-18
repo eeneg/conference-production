@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use App\Models\Storage as StorageModel;
+use App\Models\Note;
 use Throwable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -103,7 +104,8 @@ class ConferenceController extends Controller
                 ->orderBy('category_order')
                 ->orderBy('file_order')
                 ->get()
-                ->groupBy('category')
+                ->groupBy('category'),
+            'note' => Note::where('user_id', auth()->user()->id)->where('conference_id', $conference->id)->select('note')->first()
         ]);
     }
 

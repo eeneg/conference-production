@@ -1,5 +1,6 @@
 <script setup>
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, usePage } from '@inertiajs/vue3';
+import Modal from '@/Components/Modal.vue';
 import Pagination from '@/Components/Pagination.vue'
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
@@ -11,7 +12,11 @@ import { router } from '@inertiajs/vue3'
 import NavLink from '@/Components/NavLink.vue';
 import moment from 'moment'
 import SecondaryButton from '@/Components/SecondaryButton.vue';
-import { nextTick } from 'vue';
+import { nextTick, ref } from 'vue';
+import axios from 'axios';
+
+const role = usePage().props.auth.role;
+const user = usePage().props.auth.user;
 
 const props = defineProps({
     upcoming: Object,
@@ -47,6 +52,74 @@ const conferenceForm = () => {
 const formatDate = (date) => {
     return moment(date).format('L')
 }
+
+const addAttendance = (conference_id, date) => {
+    if(role == 'administrator' && date == moment().format('yyyy-MM-D').toString()){
+        axios.post(route('attendance.store'), {conference_id: conference_id, user_id: user.id})
+        .then(e => {
+            console.log('attendance added')
+        })
+        .catch(e => {
+            console.log('attendance not added! Something went Wrong!')
+        })
+    }
+}
+
+const userAttendance = ref({})
+const attendanceModal = ref(false)
+const conf_id = ref(null)
+const openAttendanceModal = (conference_id) => {
+    attendanceModal.value = true
+    conf_id.value = conference_id
+    getAttendance()
+}
+const closeAttendanceModal = () => {
+    attendanceModal.value = false
+}
+const getAttendance = () => {
+    axios.get(route('attendance.index', {conference_id: conf_id.value}))
+    .then(({data}) => {
+        userAttendance.value = data
+    })
+    .catch(e => {
+        console.log('attendance not added! Something went Wrong!')
+    })
+}
+
+const deleteAttendance = (user_id) => {
+    axios.delete(route('attendance.index', {id: user_id}))
+    .then(({data}) => {
+        getAttendance()
+    })
+    .catch(e => {
+        console.log('attendance not added! Something went Wrong!')
+    })
+}
+
+const boardMembers = ref({})
+const searchBoardMembers = ref(null)
+const searching = ref(false)
+const searchBM = () => {
+    searching.value = true
+    axios.get(route('search.bm', {search: searchBoardMembers.value}))
+    .then(({data}) => {
+        searching.value = false
+        boardMembers.value = data
+    })
+    .catch(e => {
+        console.log('Search went Wrong!')
+    })
+}
+const manualAddAttendance = (id) => {
+    axios.post(route('attendance.store'), {conference_id: conf_id.value, user_id: id})
+    .then(e => {
+        getAttendance()
+        console.log('attendance added')
+    })
+    .catch(e => {
+        console.log('attendance not added! Something went Wrong!')
+    })
+}
 </script>
 
 <template>
@@ -60,7 +133,7 @@ const formatDate = (date) => {
 
     <div class="py-5">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+            <div class="bg-white shadow-sm sm:rounded-lg">
                 <div class="flex flex-row">
                     <div class="pl-6 pr-6 mt-3 grow">
                         <header>
@@ -136,7 +209,7 @@ const formatDate = (date) => {
                                         <template #content>
                                             <DropdownLink :href="route('conferences.edit', {'id' : conf.id})">Edit</DropdownLink>
                                             <DropdownLink :href="route('agenda.index', {'id' : conf.id})">Agenda</DropdownLink>
-                                            <DropdownLink :href="route('conferences.show', conf.id)">View</DropdownLink>
+                                            <DropdownLink @click="addAttendance(conf.id, conf.date)" :href="route('conferences.show', conf.id)">View</DropdownLink>
                                         </template>
                                     </Dropdown>
                                 </td>
@@ -153,7 +226,7 @@ const formatDate = (date) => {
 
     <div class="py-5">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
+            <div class="bg-white shadow-sm sm:rounded-lg">
                 <div class="pl-6 pr-6 mt-3">
                     <header>
                         <h2 class="text-lg font-medium text-gray-900">Finished Conferences</h2>
@@ -202,36 +275,41 @@ const formatDate = (date) => {
                                     <NavLink :href="route('minutes.create', {'id' : conf.id})">Minutes</NavLink>
                                 </td>
                                 <td class="p-2 text-center border-b border-slate-100">
-                                    <Dropdown align="right" width="48">
-                                        <template #trigger>
-                                            <span class="inline-flex rounded-md">
-                                                <button
-                                                    type="button"
-                                                    class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-gray-700 focus:outline-none"
-                                                >
-                                                    Action
-                                                    <svg
-                                                        class="ml-2 -mr-0.5 h-4 w-4"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        viewBox="0 0 20 20"
-                                                        fill="currentColor"
+                                    <div class="relative">
+                                        <Dropdown align="right" width="48">
+                                            <template #trigger>
+                                                <span class="inline-flex rounded-md">
+                                                    <button
+                                                        type="button"
+                                                        class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-gray-700 focus:outline-none"
                                                     >
-                                                        <path
-                                                            fill-rule="evenodd"
-                                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                            clip-rule="evenodd"
-                                                        />
-                                                    </svg>
-                                                </button>
-                                            </span>
-                                        </template>
+                                                        Action
+                                                        <svg
+                                                            class="ml-2 -mr-0.5 h-4 w-4"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                            viewBox="0 0 20 20"
+                                                            fill="currentColor"
+                                                        >
+                                                            <path
+                                                                fill-rule="evenodd"
+                                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                                clip-rule="evenodd"
+                                                            />
+                                                        </svg>
+                                                    </button>
+                                                </span>
+                                            </template>
 
-                                        <template #content>
-                                            <DropdownLink :href="route('conferences.edit', {'id' : conf.id})">Edit</DropdownLink>
-                                            <DropdownLink :href="route('agenda.index', {'id' : conf.id})">Agenda</DropdownLink>
-                                            <DropdownLink :href="route('conferences.show', conf.id)">View</DropdownLink>
-                                        </template>
-                                    </Dropdown>
+                                            <template #content>
+                                                <DropdownLink :href="route('conferences.edit', {'id' : conf.id})">Edit</DropdownLink>
+                                                <DropdownLink :href="route('agenda.index', {'id' : conf.id})">Agenda</DropdownLink>
+                                                <DropdownLink :href="route('conferences.show', conf.id)">View</DropdownLink>
+                                                <div @click="openAttendanceModal(conf.id)" class="cursor-pointer block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                                    Attendance
+                                                </div>
+                                            </template>
+                                        </Dropdown>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
@@ -243,5 +321,68 @@ const formatDate = (date) => {
             </div>
         </div>
     </div>
+
+    <Modal :show="attendanceModal" :maxWidth="'4xl'" @close="closeAttendanceModal">
+        <div class="p-6">
+
+            <h2 class="text-lg font-medium text-black-500">
+                Attendance
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-600">
+                Manage Attendace
+            </p>
+
+            <div class="mt-2 flex flex-col">
+                <div>
+                    <InputLabel for="search">Add Employee to Attendance</InputLabel>
+                </div>
+                <div class="flex space-x-3">
+                    <div class="grow content-center">
+                        <TextInput id="search" v-model="searchBoardMembers" name="search" class="w-full" />
+                    </div>
+                    <div class="content-center">
+                        <PrimaryButton class="h-full" @click="searchBM()">Search</PrimaryButton>
+                    </div>
+                </div>
+                <div v-if="searching">
+                    Searching...
+                </div>
+                <div class="flex flex-col max-h-64 mt-2 overflow-y-auto">
+                    <div class="flex w-full p-2 mt-2 rounded" :class="{'bg-gray-200' : i % 2 == 0}" v-for="(bm, i) in boardMembers">
+                        <div class="basis-1/2 content-center">
+                            {{ bm.name }}
+                        </div>
+                        <div class="basis-1/2 content-center">
+                            {{ bm.email }}
+                        </div>
+                        <div class="content-center">
+                            <SecondaryButton @click="manualAddAttendance(bm.id)">Add</SecondaryButton>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-4">
+                <InputLabel for="search">Attendance</InputLabel>
+            </div>
+            <div class="flex flex-col max-h-64 overflow-y-auto">
+                <div class="flex w-full p-2 mt-2 rounded" :class="{'bg-gray-200' : i % 2 == 0}" v-for="(attendance, i) in userAttendance">
+                    <div class="basis-1/2 content-center">
+                        {{ attendance.name }}
+                    </div>
+                    <div class="basis-1/2 content-center pl-2">
+                        {{ attendance.email }}
+                    </div>
+                    <div class="content-center">
+                        <SecondaryButton @click="deleteAttendance(attendance.id)">Delete</SecondaryButton>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 flex">
+                <SecondaryButton @click="closeAttendanceModal"> Close </SecondaryButton>
+            </div>
+        </div>
+    </Modal>
 
 </template>

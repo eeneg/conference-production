@@ -1,17 +1,20 @@
 <script setup>
-import { Head } from '@inertiajs/vue3'
+import { Head, useForm } from '@inertiajs/vue3'
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue'
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
+import { QuillEditor } from '@vueup/vue-quill';
+import InputLabel from '@/Components/InputLabel.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 import PollBody from '@/Components/Poll/PollBody.vue';
 import { ChevronUpIcon } from '@heroicons/vue/20/solid'
-import { ref } from 'vue'
-import { computed } from 'vue'
-
+import { ref, computed } from 'vue'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
+import _ from 'lodash'
 
 const props = defineProps({
     conf: Object,
     attachments: Object,
+    note: Object,
 })
 
 const tabs = [
@@ -19,6 +22,26 @@ const tabs = [
     'Attachments',
     'Notes',
 ]
+
+var toolbarOptions = [
+    ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+    ['blockquote', 'code-block', 'image'],
+
+    [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+    [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+    [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+    [{ 'direction': 'rtl' }],                         // text direction
+
+    [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+    [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+    [{ 'font': [] }],
+    [{ 'align': [] }],
+
+    ['clean']                                         // remove formatting button
+];
 
 const URL = window.URL
 
@@ -33,6 +56,26 @@ const action = computed(() => embed.value?.is_video || embed.value?.is_audio ? '
 const title = computed(() => embed.value?.is_previewable ? `${action.value} ${embed.value.file_name}` : `Conferences ${props.conf.title}`)
 
 const reembed = (attachment) => embed.value = embed.value === attachment ? null : attachment
+
+const form = useForm({
+    conference_id: props.conf.id,
+    note: props.note == null ? '<p>Sample Note</p><p><br></p><ul><li>Sample Note Item 1</li><li>Sample Note item 2</li></ul>' : props.note.note
+})
+
+const saveNote = () => {
+    form.post(route('note.store'),{
+        onSuccess: () => {
+
+        },
+        onError: () => {
+
+        }
+    })
+}
+
+const inputSave = _.debounce(() => {
+    saveNote()
+}, 400)
 </script>
 
 <template>
@@ -136,10 +179,6 @@ const reembed = (attachment) => embed.value = embed.value === attachment ? null 
                                                         </a>
                                                     </p>
                                                 </div>
-
-                                                <div class="text-3xl font-bold text-yellow-500">
-                                                    NOTES::TODO ADD HERE <!-- // TODO -->
-                                                </div>
                                             </div>
                                         </template>
                                     </div>
@@ -179,25 +218,27 @@ const reembed = (attachment) => embed.value = embed.value === attachment ? null 
                         </TabPanel>
 
                         <TabPanel class="rounded-xl">
-                            <div class="flex gap-3 my-2">
-                                <div class="flex flex-col gap-2">
-                                    <button
-                                        class="w-full max-w-xs px-3 py-2 text-sm italic font-bold text-left text-gray-700 uppercase bg-white rounded-md hover:bg-indigo-100"
-                                    >
-                                        General Notes
-                                    </button>
-                                    <template v-for="(attachments) in attachments">
-                                        <button
-                                            v-for="attachment in attachments"
-                                            class="w-full max-w-xs px-3 py-2 text-sm font-medium text-left text-gray-700 bg-white rounded-md hover:bg-indigo-100"
-                                        >
-                                            {{ attachment.file_name }}
-                                        </button>
-                                    </template>
-                                </div>
-
-                                <div class="text-3xl font-bold text-yellow-500">
-                                    NOTES::TODO VIEW HERE<!-- // TODO -->
+                            <div class="mt-4 w-full mx-auto">
+                                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                                    <div class="p-6 mt-3">
+                                        <div class="flex flex-col">
+                                            <div class="flex justify-between">
+                                                <InputLabel>Note</InputLabel>
+                                                <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
+                                                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
+                                                </Transition>
+                                            </div>
+                                            <div>
+                                                <QuillEditor @input="inputSave()" theme="snow" v-model:content="form.note" :toolbar="toolbarOptions" contentType="html" style="min-height: 500px;max-height: 500px; overflow-y: auto;"/>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4">
+                                            <PrimaryButton @click="saveNote()">Save</PrimaryButton>
+                                            <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
+                                                <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
+                                            </Transition>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </TabPanel>

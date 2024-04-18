@@ -1,7 +1,7 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import AssignUserRoleLayout from '@/Layouts/AssignUserRoleLayout.vue';
+import DeleteUserForm from '../Profile/Partials/DeleteUserForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
 import { Head, usePage } from '@inertiajs/vue3';
 

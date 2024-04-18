@@ -13,11 +13,15 @@ use App\Http\Controllers\ReferenceController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\FileSearchController;
 use App\Http\Controllers\AgendaController;
+use App\Http\Controllers\ConferenceAttendanceController;
 use App\Http\Controllers\PollController;
 use App\Http\Controllers\FileVersionController;
+use App\Http\Controllers\NoteController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\IsAdmin;
 use App\Models\Minutes;
 use App\Models\Message;
+use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Http;
@@ -43,9 +47,7 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -87,12 +89,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/getUserPoll/{poll_id}/{user_id}', [PollController::class, 'getUserPoll']);
 
     Route::resource('agenda', AgendaController::class);
+    Route::resource('attendance', ConferenceAttendanceController::class);
+    Route::get('/searchUserBoardMember', [ConferenceAttendanceController::class, 'searchBM'])->name('search.bm');
 
     Route::get('/allChat', function(){
         return Message::all();
     })->name('chat.all');
 
     Route::resource('fileVersion', FileVersionController::class);
+    Route::resource('note', NoteController::class);
 });
 
 Route::resource('users', UserController::class)->middleware([IsAdmin::class]);

@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import Logo from '@/Components/Logo.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
@@ -104,9 +104,7 @@ onMounted(() => {
                             <!-- Logo -->
                             <div class="flex items-center shrink-0">
                                 <Link :href="route('dashboard')">
-                                    <ApplicationLogo
-                                        class="block w-auto text-gray-800 fill-current h-9"
-                                    />
+                                    <Logo :w="'w-14'" :h="'h-14'"/>
                                 </Link>
                             </div>
 
