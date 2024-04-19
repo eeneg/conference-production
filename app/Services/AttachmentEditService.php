@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Attachment;
-use App\Models\PdfContent;
+use App\Models\Conference;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -13,63 +13,30 @@ class AttachmentEditService {
 
     public function handle($attachments, $conf) : void{
 
-        $request_categories = [];
+        $old_attachments = [];
+        $new_attachments = [];
 
-        $request_file = [];
 
-        if($attachments && count($attachments) > 0){
-
-            foreach($attachments as $key => $data){
-
-                array_push($request_categories, $data['category']);
-
-                foreach($data['files'] as $key => $file){
-                    $file['file_order'] = $key;
-                    $file['details'] = $file['file_details'];
-                    if(isset($file['id'])){
-                        array_push($request_file, $file['id']);
-                        Attachment::find($file['id'])->update($file);
-                    }else{
-                        $new_file = [
-                            'category'          => $data['category'],
-                            'category_order'    => $data['category_order'],
-                            'file_name'         => str_replace(' ','_',$file['file']->getClientOriginalName()),
-                            'path'              => 'Conference_Attachments/' . str_replace(' ', '_', $conf->id . '/' . $data['category'] . '/' . $file['file']->getClientOriginalName()),
-                            'details'           => $file['file_details'],
-                            'storage_id'        => $file['storage_id'],
-                            'file_order'        => $file['file_order'],
-                        ];
-                        $newFile = $conf->attachment()->create($new_file);
-                        array_push($request_file, $newFile->id);
-                        Storage::putFileAs('public/Conference_Attachments/' . $conf->id . '/' . str_replace(' ', '_', $data['category']), $file['file'], str_replace(' ', '_', $file['file']->getClientOriginalName()));
-                    }
+        foreach($attachments as $items){
+            foreach($items['files'] as $key => $files){
+                if(array_key_exists('conference_id', $files)){
+                    $files['file_order'] = $key + 1;
+                    array_push($old_attachments, $files['id']);
+                    Attachment::find($files['id'])->update($files);
+                }else{
+                    array_push($new_attachments, [
+                        'file_id'           => $files['id'],
+                        'category'          => $items['category'],
+                        'category_order'    => $items['category_order'],
+                        'file_order'        => $key + 1,
+                    ]);
                 }
             }
-
         }
 
-        $existing_categories = $conf->attachment->pluck('category')->unique()->values();
+        Attachment::whereNotIn('id', $old_attachments)->delete();
 
-        $files = Attachment::where('conference_id', $conf->id)->whereNotIn('id', $request_file)->get();
-
-        if(count($files)){
-            PdfContent::whereHasMorph('contentable', [Attachment::class],
-                function (Builder $query) {
-                    $query->whereNotIn('id', $request_file);
-                })
-                ->get('id')
-                ->each
-                ->delete();
-
-            Attachment::where('conference_id', $conf->id)->whereNotIn('id', $request_file)
-                ->get('id')
-                ->each
-                ->delete();
-        }
-
-        foreach(array_diff($existing_categories->toArray(), $request_categories) as $folders){
-            Storage::deleteDirectory('public/Conference_Attachments/'. $conf->id . '/' . $folders);
-        }
+        Conference::find($conf->id)->attachment()->createMany($new_attachments);
 
     }
 

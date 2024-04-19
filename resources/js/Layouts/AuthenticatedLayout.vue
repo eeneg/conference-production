@@ -119,7 +119,7 @@ onMounted(() => {
                                 <NavLink :href="route('conferences.index')" :active="route().current('conferences.*')">
                                     Conferences
                                 </NavLink>
-                                <NavLink :href="route('attachment.index')" :active="route().current('attachment.*')">
+                                <NavLink :href="route('file.index')" :active="route().current('file.*')">
                                     Find Files
                                 </NavLink>
                                 <NavLink :href="route('files.index')" :active="route().current('files.*')">

@@ -17,6 +17,9 @@ const props = defineProps({
     note: Object,
 })
 
+
+console.log(props.attachments)
+
 const tabs = [
     'Agenda',
     'Attachments',
@@ -55,7 +58,10 @@ const action = computed(() => embed.value?.is_video || embed.value?.is_audio ? '
 
 const title = computed(() => embed.value?.is_previewable ? `${action.value} ${embed.value.file_name}` : `Conferences ${props.conf.title}`)
 
-const reembed = (attachment) => embed.value = embed.value === attachment ? null : attachment
+const reembed = (attachment) =>{
+    embed.value = embed.value === attachment ? null : attachment
+    console.log(attachment)
+}
 
 const form = useForm({
     conference_id: props.conf.id,
@@ -136,13 +142,13 @@ const inputSave = _.debounce(() => {
                                             <div class="pl-3 space-y-1">
                                                 <button
                                                     v-for="attachment in attachments"
-                                                    @click="reembed(attachment)"
+                                                    @click="reembed(attachment.file)"
                                                     aria-current="page"
                                                     :class="['block px-3 py-1 text-sm font-medium rounded-md w-full text-left text-gray-700 hover:bg-indigo-100',
                                                         attachment.id === embed?.id ? 'bg-white' : ''
                                                     ]"
                                                 >
-                                                    {{ attachment.file_name }}
+                                                    {{ attachment.file.file_name }}
                                                 </button>
                                             </div>
                                         </DisclosurePanel>

@@ -54,7 +54,6 @@
     const closeModal = () => {
         modalShow.value = false
     }
-
 </script>
 
 <style>

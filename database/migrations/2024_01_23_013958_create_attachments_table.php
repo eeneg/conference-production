@@ -17,16 +17,10 @@ return new class extends Migration
             $table->foreign('conference_id')
                 ->references('id')
                 ->on('conferences');
-            $table->uuid('storage_id');
-            $table->foreign('storage_id')
-                ->references('id')
-                ->on('storages');
+            $table->uuid('file_id');
             $table->string('category');
             $table->integer('category_order');
             $table->integer('file_order');
-            $table->string('file_name');
-            $table->string('path');
-            $table->string('details')->nullable();
             $table->timestamps();
         });
     }

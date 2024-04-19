@@ -47,6 +47,14 @@ class FileSearchController extends Controller
         return $files;
     }
 
+    public function searchFileAsAttachment(Request $request){
+        $files = File::search($request->search)
+            ->orderBy('created_at', 'desc')
+            ->paginate(5);
+
+        return $files;
+    }
+
     public function downloadFile(File $file){
         return StorageDownload::download($file->path, $file->file_name);
     }

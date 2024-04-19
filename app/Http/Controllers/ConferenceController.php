@@ -6,7 +6,6 @@ use App\Jobs\ProcessAttachment;
 use App\Models\Attachment;
 use App\Models\PdfContent;
 use App\Models\Conference;
-use App\Services\AttachmentService;
 use App\Services\AttachmentEditService;
 use App\Services\FileHandleService;
 use Illuminate\Http\Request;
@@ -23,7 +22,6 @@ class ConferenceController extends Controller
 {
 
     public function __construct(
-        private AttachmentService $attachmentService,
         private AttachmentEditService $editService,
         private FileHandleService $fileHandleService,
     ){}
@@ -73,7 +71,7 @@ class ConferenceController extends Controller
                     'status' => $request->status
                 ]);
 
-                $attachments = $this->fileHandleService->fileHandle($request->attachments, $conf->id);
+                $attachments = $this->fileHandleService->fileHandle($request->attachments);
 
                 Conference::find($conf->id)->attachment()->createMany($attachments);
 
@@ -88,8 +86,6 @@ class ConferenceController extends Controller
 
         }
 
-        $this->attachmentService->job($conf->id);
-
     }
 
     /**
@@ -101,6 +97,7 @@ class ConferenceController extends Controller
             'conf' => $conference->append('agenda_markdown'),
             'attachments' => $conference
                 ->attachment()
+                ->with('file')
                 ->orderBy('category_order')
                 ->orderBy('file_order')
                 ->get()
@@ -116,7 +113,12 @@ class ConferenceController extends Controller
     {
         $conf = Conference::find($id);
 
-        $e = Attachment::where('conference_id', $conf->id)->orderBy('category_order', 'ASC')->get()->groupBy('category')
+        $e = Attachment::leftJoin('files', 'attachments.file_id', '=', 'files.id')
+        ->select('attachments.id', 'attachments.conference_id', 'files.id as file_id', 'files.file_name', 'files.path', 'attachments.category', 'attachments.category_order', 'attachments.file_order')
+        ->where('conference_id', $conf->id)
+        ->orderBy('attachments.category_order', 'ASC')
+        ->get()
+        ->groupBy('category')
         ->map(function($e){
             return collect($e)->sortBy('file_order');
         });
@@ -131,14 +133,13 @@ class ConferenceController extends Controller
 
                 array_push($attachment['files'], [
                     'id'                => $file->id,
+                    'file_id'           => $file->file_id,
                     'conference_id'     => $file->conference_id,
                     'category'          => $file->category,
                     'category_order'    => $file->category_order,
                     'file_order'        => $file->file_order,
-                    'name'              => $file->file_name,
+                    'file_name'         => $file->file_name,
                     'path'              => $file->path,
-                    'file_details'      => $file->details,
-                    'storage_id'        => $file->storage_id,
                 ]);
 
             };
@@ -167,14 +168,11 @@ class ConferenceController extends Controller
             'status' => 'required',
         ]);
 
-
         try{
 
             $conf = Conference::find($id);
 
             $this->editService->handle($request['attachments'], $conf);
-
-            $this->attachmentService->job($conf->id);
 
             $conf->update([
                 'title' => $request->title,
@@ -203,16 +201,6 @@ class ConferenceController extends Controller
         ]);
 
         $conf = Conference::find($request->id);
-
-        $files = Storage::deleteDirectory('public/Conference_Attachments/' . $conf->id);
-
-        PdfContent::whereHasMorph('contentable', [Attachment::class],
-            function (Builder $query) use ($conf) {
-                $query->where('id', $conf->id);
-            })
-            ->get('id')
-            ->each
-            ->delete();
 
         Attachment::where('conference_id', $conf->id)
             ->get('id')

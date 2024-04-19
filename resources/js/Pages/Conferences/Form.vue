@@ -7,10 +7,11 @@
     import '@vueup/vue-quill/dist/vue-quill.snow.css';
     import draggable from 'vuedraggable'
     import { useForm } from '@inertiajs/vue3';
-    import { XCircleIcon } from '@heroicons/vue/20/solid';
+    import { XCircleIcon,EyeIcon } from '@heroicons/vue/20/solid';
     import Modal from '@/Components/Modal.vue';
     import {nextTick, ref} from 'vue';
     import DangerButton from '@/Components/DangerButton.vue';
+    import _ from 'lodash';
     import SecondaryButton from '@/Components/SecondaryButton.vue';
 
     const props = defineProps({conf: Object, edit: Boolean, storage:Object})
@@ -69,19 +70,13 @@
     const submitData = (e) => {
 
         var checkFile = []
-        var storage_id = []
 
         form.attachments.forEach(function(e){
             checkFile.push(e.files.length > 0 ? 1 : 0)
-            if(e.files.length > 0){
-                e.files.forEach(function(f){
-                    storage_id.push(f.storage_id != null ? 1 : 0)
-                })
-            }
         })
 
-        if(checkFile.includes(0) || storage_id.includes(0)){
-            alert("Category Files and Storage Location Cannot be Empty")
+        if(checkFile.includes(0)){
+            alert("Category Cannot be Empty")
         }else{
             emit('passData', form);
         }
@@ -91,37 +86,20 @@
     }
 
     const addCategory = (cat) => {
+        var order = categories.length
         if (cat && !categories.includes(cat)) {
-            form.attachments.push({category: cat, category_order: form.attachments.length, files:[]})
+            form.attachments.push({category: cat, category_order: order, files:[]})
             categories.push(cat)
             category = ''
-        }else{
+        }else if(categories.includes(cat)){
             header = "Error!"
             message = "Duplicate Category Title"
             modalShow.value = true
+        }else{
+            header = "Error!"
+            message = "Invalid Category Title"
+            modalShow.value = true
         }
-    }
-
-    const getFiles = ($event, index) => {
-        let files = $event.target.files
-
-        files.forEach(function(e, i){
-            let hasSameFileName = false
-            form.attachments[index].files.forEach(function(existingFiles){
-                if(existingFiles.name == e.name ){
-                    hasSameFileName = true
-                }
-            })
-            console.log(hasSameFileName)
-            if(hasSameFileName == false){
-                form.attachments[index].files.push({file: e, name: e.name, file_details: null, storage_id: null, file_order: form.attachments[index].files.length})
-            }else{
-                header = "Error!"
-                message = "Duplicate Files."
-                modalShow.value = true
-                document.getElementById('fileUpload').value = []
-            }
-        })
     }
 
     const closeModal = () => {
@@ -157,8 +135,6 @@
             return $e;
         })
 
-        document.getElementById('fileUpload').value = []
-
     }
 
     const confirmConferenceDeletion = () => {
@@ -177,6 +153,52 @@
         deleteForm.id = props.conf.id
         emit('deleteConf', deleteForm);
         passwordInput.value.focus()
+    }
+
+    const formSearch = useForm({
+        search: null,
+        page: 1
+    })
+    const fileSearchRes = ref([])
+    const searchFileOnEnter = () => {
+        axios.post(route('file.attachment'), formSearch)
+        .then(({data}) => {
+            fileSearchRes.value = data.data
+        })
+        .catch(e => {
+            console.log(e)
+        })
+    }
+    const searchFileOnScroll = () => {
+        axios.post(route('file.attachment'), formSearch)
+        .then(({data}) => {
+            data.data.forEach(e => {
+                fileSearchRes.value.push(e)
+            })
+        })
+        .catch(e => {
+            console.log(e)
+        })
+    }
+    const onScroll = _.debounce(({ target: { scrollTop, clientHeight, scrollHeight }}) => {
+        if (scrollTop + clientHeight >= scrollHeight) {
+            formSearch.page = formSearch.page + 1
+            searchFileOnScroll()
+        }
+    }, 300)
+
+    const refreshPage = () => {
+        formSearch.page = 1
+    }
+
+    const pdfModalShow = ref(false)
+    const path = ref(null)
+    const openPDFModal = (file) => {
+        path.value = file.slice(7)
+        pdfModalShow.value = true
+    }
+    const closePDFModal = () => {
+        pdfModalShow.value =false
     }
 </script>
 
@@ -270,6 +292,84 @@
 
                 </div>
 
+                <div class="pr-6 pl-6 mt-5 mb-5">
+                    <div class="flex flex-col space-y-5">
+                        <div class="basis basis-full">
+                            <form @submit.prevent="searchFileOnEnter" class="">
+                                <InputLabel value="File Name/Content/Date" for="search" />
+                                <div class="basis basis-full flex flex-row space-x-2">
+                                    <div class="relative rounded-md shadow-sm basis basis-full">
+                                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                            <span class="text-gray-500 sm:text-sm">
+                                                <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                                    <path d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"/>
+                                                </svg>
+                                            </span>
+                                        </div>
+                                        <TextInput id="search_file" @input="refreshPage()" @keyup.enter="searchFileOnEnter" type="search" class="w-full pl-9" v-model="formSearch.search"/>
+                                    </div>
+                                    <div class="flex items-center justify-center basis">
+                                        <PrimaryButton class="items-center justify-center h-full">
+                                            <span class="text-gray-500 sm:text-sm mr-2">
+                                                <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+                                                    <path d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"/>
+                                                </svg>
+                                            </span>
+                                            Search
+                                        </PrimaryButton>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="basis basis-full">
+                            <div class="flex p-1 rounded" v-if="fileSearchRes.length > 0">
+                                <div class="basis-1/3 pl-1">
+                                    File Name
+                                </div>
+                                <div class="basis-1/3 pl-1">
+                                    Title
+                                </div>
+                                <div class="basis-1/3 pl-1">
+                                    Date
+                                </div>
+                                <div class="pr-3">
+                                    View
+                                </div>
+                            </div>
+                            <draggable
+                                @start="drag=true"
+                                @end="drag=false"
+                                class="max-h-40 overflow-auto cursor-pointer"
+                                group="files"
+                                :list="fileSearchRes"
+                                v-on:scroll="onScroll($event)"
+                                itemKey="id">
+                                <template #item="{element, index}">
+                                    <div class="flex p-1 rounded hover:border hover:border-2 hover:border-slate-950" :class="{'bg-slate-200':index % 2 === 0}">
+                                        <div class="basis-1/3 pl-1 content-center">
+                                            {{element.file_name}}
+                                        </div>
+                                        <div class="basis-1/3 pl-1 content-center">
+                                            {{ element.title }}
+                                        </div>
+                                        <div class="basis-1/3 pl-1 content-center">
+                                            {{ element.date }}
+                                        </div>
+                                        <div>
+                                            <button
+                                                class="p-2 hover:border hover:border-2 hover:border-slate-900"
+                                                 @click="openPDFModal(element.path)"
+                                            >
+                                                <EyeIcon class="h-4"></EyeIcon>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </template>
+                            </draggable>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="pr-6 pl-6">
                     <div class="grid grid-cols-2 gap-4">
 
@@ -277,58 +377,35 @@
 
                             <p class="text-center p-2">{{ (i + 1) + '.' }} {{ formatCategory(attachments.category )}}</p>
 
-                            <hr>
+                            <hr class="">
 
                             <div class="p-2">
-
-                                <input
-                                    type="file"
-                                    class="block p-2 w-full text-sm text-slate-500
-                                    file:mr-4 file:py-2 file:px-4
-                                    file:rounded-full file:border-0
-                                    file:text-sm file:font-semibold
-                                    file:bg-grey-50 file:text-grey-700
-                                    hover:file:bg-green-100"
-                                    id="fileUpload"
-                                    v-on:change="getFiles($event, i)"
-                                    accept="application/pdf">
 
                                 <draggable
                                     v-model="form.attachments[i].files"
                                     @start="drag=true"
                                     @end="drag=false"
+                                    :group="{name:'files', pull:false}"
                                     class="max-h-64 overflow-auto"
-                                    item-key="id">
-                                    <template #item="{element, index}">
+                                    itemKey="id">
+                                <template #item="{element, index}">
                                         <div class="flex flex-row border">
                                             <div class="basis w-10 p-2 border-r-2 text-center">
                                                 {{ index + 1}}
                                             </div>
 
                                             <div class="basis basis-full text-center whitespace-normal break-all cursor-ns-resize p-2">
-                                                <p class="text-blue-500">File name:</p> {{ edit == true ? element.name : element.file.name  }}
-
-                                                <input
-                                                v-model="form.attachments[i].files[index].file_details"
-                                                    type="text"
-                                                    name="details"
-                                                    class="font-medium text-gray-700 border-gray-300 mt-2 w-full"
-                                                    placeholder="File Details">
-
-                                                <select
-                                                    v-model="form.attachments[i].files[index].storage_id"
-                                                    name="storage_id"
-                                                    id="storage_id"
-                                                    class="border w-full text-gray-700 border-gray-300 mt-0"
-                                                    :class="{'border-red-600':form.attachments[i].files[index].storage_id == null}">
-                                                    <option :value="null" selected>Storage Location</option>
-                                                    <option :value="storage.id" v-for="storage in props.storage">{{ storage.title.charAt(0).toUpperCase() + storage.title.slice(1) }}</option>
-                                                </select>
-                                                <InputError :message="'Cannot be Empty'" v-if="form.attachments[i].files[index].storage_id == null"/>
+                                                {{ element.file_name  }}
                                             </div>
 
-                                            <div class="basis border-l-2 text-center p-2">
-                                                <button class="btn" type="button" @click="removeFile(i, index)">
+                                            <div class="basis flex border-l-2 text-center">
+                                                <button
+                                                    class="p-2"
+                                                    @click="openPDFModal(element.path)"
+                                                >
+                                                    <EyeIcon class="h-4"></EyeIcon>
+                                                </button>
+                                                <button class="p-2" type="button" @click="removeFile(i, index)">
                                                     <XCircleIcon class="h-5 w-5 text-center text-red-500"/>
                                                 </button>
                                             </div>
@@ -432,6 +509,19 @@
         </div>
     </div>
 </div>
+
+<Modal :show="pdfModalShow" :maxWidth="'4xl'" @close="closePDFModal">
+    <div class="p-6">
+
+        <div class="mt-6 h-64" style="height: 50rem;">
+            <embed :src="'/storage/'+path" style="width: 100%; height: 100%;"  type="application/pdf">
+        </div>
+
+        <div class="mt-6 flex">
+            <SecondaryButton @click="closePDFModal"> Close </SecondaryButton>
+        </div>
+    </div>
+</Modal>
 
 <Modal :show="modalShow">
     <div class="p-6">

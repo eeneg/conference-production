@@ -1,7 +1,7 @@
 <script setup>
     import TextInput from '../TextInput.vue';
     import { usePage } from '@inertiajs/vue3';
-import axios from 'axios';
+    import axios from 'axios';
     import _ from 'lodash';
     import { onMounted, ref } from 'vue'
 

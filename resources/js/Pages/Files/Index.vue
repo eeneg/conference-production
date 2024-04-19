@@ -182,7 +182,7 @@
                                     <Combobox @passData ="getCategoryId($event)" :data="props.category"></Combobox>
                                 </div>
                             </div>
-                            <InputError :message="form.errors.storage_id" class="mt-2" />
+                            <InputError :message="form.errors.category_id" class="mt-2" />
                             <div class="flex flex-nowrap overflow-x-auto p-2 space-x-2 w-full">
                             <div v-for="(cat, i) in form.category_id" class="flex flex-shrink-0 rounded-full space-x-2 px-3 py-1 text-white bg-indigo-500 mt-2">
                                 <span>{{cat.title}}</span>

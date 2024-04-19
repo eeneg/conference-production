@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/fileList', [FileSearchController::class, 'index'])->name('file.index');
     Route::post('/fileSearch', [FileSearchController::class, 'searchFile'])->name('file.search');
     Route::get('/downloadFile/{file}', [FileSearchController::class, 'downloadFile'])->name('file.download');
+    Route::post('/attachmentSearch', [FileSearchController::class, 'searchFileAsAttachment'])->name('file.attachment');
 
     Route::get('/messages/{id}', [ChatController::class, 'show'])->name('messages.show');
     Route::post('/messages', [ChatController::class, 'store'])->name('messages.store');

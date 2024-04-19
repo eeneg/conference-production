@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use App\Models\Attachment;
+use App\Models\File;
 use App\Models\Storage as StorageModel;
 
 class AttachmentController extends Controller
@@ -79,13 +79,15 @@ class AttachmentController extends Controller
         //
     }
 
-    public function download(Attachment $attachment)
+    public function download(File $attachment)
     {
-        return Storage::download("public/$attachment->path");
+        return Storage::download("$attachment->path");
     }
 
-    public function content(Attachment $attachment)
+    public function content(File $attachment)
     {
+        dd($attachment);
+
         return response()->stream(function () use ($attachment) {
             echo $attachment->getContent();
         }, 200, ['Content-Type' => $attachment->mime, 'Content-Disposition' => 'inline; filename="' . $attachment->file_name . '"']);
