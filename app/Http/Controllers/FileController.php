@@ -109,6 +109,17 @@ class FileController extends Controller
         $file->load('category')->searchable();
     }
 
+    public function renameFile(Request $request, $id){
+
+        $request->validate([
+            'file_name' => 'required'
+        ]);
+
+        $file = File::find($id);
+
+        $file->update(['file_name' => $request->file_name]);
+    }
+
     /**
      * Display the specified resource.
      */
@@ -122,7 +133,11 @@ class FileController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return Inertia::render('Files/Index', [
+            'storage' => Storage::all(),
+            'category' => Category::where("type", "1")->get(),
+            'file' => File::with(['category'])->find($id)
+        ]);
     }
 
     /**

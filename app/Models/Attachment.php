@@ -48,17 +48,6 @@ class Attachment extends Model
         return $this->belongsTo(File::class);
     }
 
-    #[SearchUsingFullText(['details', 'storage_location'])]
-    public function toSearchableArray(): array
-    {
-        return [
-            'id' => $this->getKey(),
-            'file_name' => $this->file_name,
-            'details' => $this->details,
-            'content' => $this->pdfContent->content ?? ''
-        ];
-    }
-
     // public function mime(): Attribute
     // {
     //     return Attribute::make(

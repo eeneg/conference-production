@@ -89,13 +89,7 @@
 </script>
 
 <style>
-.tooltip {
-  @apply invisible absolute;
-}
 
-.has-tooltip:hover .tooltip {
-  @apply visible z-50;
-}
 </style>
 
 <template>
@@ -122,7 +116,7 @@
                                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Minutes</h2>
                             </div>
                             <div class="grow pr-2">
-                                <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out float-right">
+                                <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
                                     <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
                                 </Transition>
                             </div>

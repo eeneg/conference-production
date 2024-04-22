@@ -15,6 +15,8 @@ class Category extends Model
 
     protected $fillable = ['title', 'details', 'type'];
 
+    protected $hidden = ['pivot'];
+
     public function files(): BelongsToMany
     {
         return $this->belongsToMany(File::class);

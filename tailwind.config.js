@@ -17,5 +17,11 @@ module.exports = {
         },
     },
 
+    screens: {
+        'sm': '385px',
+        'md': '670px',
+        'lg': '1020px'
+    },
+
     plugins: [require('@tailwindcss/forms')],
 };

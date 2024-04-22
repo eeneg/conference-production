@@ -84,13 +84,15 @@
     } from '@headlessui/vue'
     import { CheckIcon, ChevronUpDownIcon } from '@heroicons/vue/20/solid'
 
-    const props = defineProps({data:Object})
+    const props = defineProps({data:Object, selected:Object})
 
-    let selected = ref([])
+    let selected = ref(props.selected)
     const emit = defineEmits(['passData'])
     let query = ref('')
 
     const passData = () => {
+        console.log(selected.value)
+
         emit('passData', selected);
     }
 

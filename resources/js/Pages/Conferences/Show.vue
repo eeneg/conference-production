@@ -52,7 +52,7 @@ const host = location.origin
 
 const embed = ref(null)
 
-const url = computed(() => new URL(embed.value?.path ?? '', host + '/storage/').href)
+const url = computed(() => new URL((embed.value?.path ?? '').replace('public/', ''), host + '/storage/').href)
 
 const action = computed(() => embed.value?.is_video || embed.value?.is_audio ? 'Playing' : 'Previewing')
 

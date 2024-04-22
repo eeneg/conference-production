@@ -1,5 +1,4 @@
 <script setup>
-    import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
     import { Head, useForm } from '@inertiajs/vue3';
     import TextInput from '@/Components/TextInput.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
@@ -10,10 +9,12 @@
     import SecondaryButton from '@/Components/SecondaryButton.vue'
     import Modal from '@/Components/Modal.vue';
     import InputError from '@/Components/InputError.vue';
+import { onMounted } from 'vue';
 
-    const props = defineProps({storage:Object, category:Object})
+    const props = defineProps({storage:Object, category:Object, file: Object})
 
     const form = useForm({
+        id: null,
         file: {},
         title: null,
         storage_id: null,
@@ -113,6 +114,13 @@
         });
     }
 
+    onMounted(() => {
+        if(props.file != null){
+            form.category_id = props.file.category
+            Object.assign(form, props.file)
+        }
+    })
+
 </script>
 <template>
     <Head title="Attachments" />
@@ -140,7 +148,7 @@
                     <div class="space-y-6 ">
                         <div class="">
                             <InputLabel>Upload a File</InputLabel>
-                            <input v-on:change="getFiles($event, i)" type="file" id="files" class="files" accept="application/pdf"   />
+                            <input v-on:change="getFiles($event, i)" type="file" id="files" class="rounded bg-white-200" accept="application/pdf"   />
                             <InputError :message="form.errors.file" class="mt-2"/>
                             <InputError :message="submitErrorMsg" class="mt-2"/>
                         </div>
@@ -179,7 +187,7 @@
                             </div>
                             <div class="flex flex-row space-x-2">
                                 <div class="w-full">
-                                    <Combobox @passData ="getCategoryId($event)" :data="props.category"></Combobox>
+                                    <Combobox @passData ="getCategoryId($event)" :selected="props.file == null ? null : props.file.category" :data="props.category"></Combobox>
                                 </div>
                             </div>
                             <InputError :message="form.errors.category_id" class="mt-2" />

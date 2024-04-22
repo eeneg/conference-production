@@ -7,14 +7,16 @@
     import ComboBox from '@/Components/ComboBox.vue';
     import DangerButton from '@/Components/DangerButton.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
+    import InputError from '@/Components/InputError.vue';
     import InputLabel from '@/Components/InputLabel.vue';
-    import { ArrowDownTrayIcon, DocumentIcon, BookOpenIcon, TrashIcon } from '@heroicons/vue/20/solid';
+    import Dropdown from '@/Components/Dropdown.vue';
+    import DropdownLink from '@/Components/DropdownLink.vue';
+    import { ArrowDownTrayIcon, DocumentIcon, BookOpenIcon, EllipsisVerticalIcon } from '@heroicons/vue/20/solid';
     import { useForm } from '@inertiajs/vue3';
-    import { ref, nextTick, onMounted } from 'vue';
+    import { ref } from 'vue';
     import { router } from '@inertiajs/vue3'
     import Pagination from '@/Components/Pagination.vue';
     import axios from 'axios';
-
 
     const props = defineProps({files: Object, storage: Object, category: Object})
 
@@ -109,6 +111,36 @@
         path.value = file.slice(7)
         pdfModalShow.value = true
     }
+
+    const renameForm = useForm({
+        id: null,
+        file_name: null
+    })
+    const renameModal = ref(false)
+    const openRenameModal = (id, file_name) => {
+        renameForm.id = id
+        renameForm.file_name = file_name
+        renameModal.value = true
+    }
+
+    const closeRenameModal = () => {
+        renameModal.value = false
+    }
+
+    const submitRename = () => {
+        if(renameForm.file_name.match('^[^+]+\.pdf$')){
+            renameForm.submit('patch', route('file.rename', {id: renameForm.id}), {
+                onSuccess: () => {
+
+                },
+                onError: () => {
+
+                }
+            })
+        }else{
+            renameForm.errors.file_name = "Invalid File Name (add .pdf at the end of the file name)"
+        }
+    }
 </script>
 <template>
 
@@ -182,7 +214,7 @@
                     </form>
                 </div>
                 <div class="grow pl-5 pr-5 pb-5 text-sm min-h-80">
-                    <div class="border rounded p-2 pl-2 mt-2" v-for="file in files.data">
+                    <div class="border rounded p-2 pl-2 mt-2" v-for="(file, i) in files.data">
                         <div class="flex">
                             <div class="flex items-center p-1 justify-center sm:text-sm">
                                 <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-300 text-red-900">
@@ -209,21 +241,40 @@
                             <div class="mt-2">
                                 <div class="flex items-center justify-center float-right space-x-1">
                                     <FileVersioncontrol :file_id="file.id"/>
-                                    <button @click="deleteModal(file.id)">
-                                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-red-300 hover:bg-red-400 text-red-900">
-                                            <TrashIcon class="w-5 h-5 fill-black " aria-hidden="true" />
-                                        </div>
-                                    </button>
                                     <a :href="route('file.download',{ id:file.id })">
-                                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-green-300 hover:bg-green-400 text-red-900">
+                                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-green-400 hover:bg-green-500 text-red-900">
                                             <ArrowDownTrayIcon class="w-5 h-5 stroke-gray-900 fill-black " aria-hidden="true" />
                                         </div>
                                     </a>
                                     <button @click="viewFile(file.path)">
-                                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-300 hover:bg-blue-400 text-red-900">
+                                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-400 hover:bg-blue-500 text-red-900">
                                             <BookOpenIcon class="w-5 h-5 stroke-gray-900 fill-none aria-hidden" aria-hidden="true" />
                                         </div>
                                     </button>
+
+                                    <Dropdown align="right" width="48">
+                                        <template #trigger>
+                                            <button>
+                                                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-black-900">
+                                                    <EllipsisVerticalIcon class="w-5 h-5 stroke-gray-900 fill aria-hidden" aria-hidden="true" />
+                                                </div>
+                                            </button>
+                                        </template>
+
+                                        <template #content>
+                                            <ul class="py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownMenuIconButton">
+                                                <li>
+                                                    <DropdownLink :href="route('files.edit', {id: file.id})"> Edit </DropdownLink>
+                                                </li>
+                                                <li>
+                                                    <div class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out cursor-pointer" @click="openRenameModal(file.id, file.file_name)">Rename</div>
+                                                </li>
+                                                <li>
+                                                    <div class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out cursor-pointer" @click="deleteModal(file.id)">Delete</div>
+                                                </li>
+                                            </ul>
+                                        </template>
+                                    </Dropdown>
                                 </div>
                             </div>
                         </div>
@@ -289,6 +340,34 @@
                 >
                     Delete File
                 </DangerButton>
+            </div>
+        </div>
+    </Modal>
+
+    <Modal :show="renameModal" @close="closeRenameModal">
+        <div class="p-6">
+            <h2 class="text-lg font-medium text-gray-900">
+                Rename File
+            </h2>
+
+            <p class="mt-1 text-sm text-gray-600">
+                Click submit to rename file
+            </p>
+
+            <div class="flex flex-col mt-4">
+                <div class="basis-full">
+                    <InputLabel for="file_name">File Name</InputLabel>
+                    <TextInput name="file_name" id="file_name" class="w-full" v-model="renameForm.file_name"/>
+                    <InputError :message="renameForm.errors.file_name" class="mt-2" />
+                    <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out float-right">
+                        <p v-if="renameForm.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
+                    </Transition>
+                </div>
+            </div>
+
+            <div class="mt-6 flex space-x-2 justify-end">
+                <SecondaryButton @click="closeRenameModal"> Cancel </SecondaryButton>
+                <PrimaryButton @click="submitRename">Save</PrimaryButton>
             </div>
         </div>
     </Modal>
