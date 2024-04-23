@@ -13,8 +13,10 @@ class UpdateNewLatestOnDeleteService {
 
         $file_versions = FileVersionControl::where('control_id', $fv->control_id)->get('file_id');
 
-        $files = File::whereIn('id', $file_versions)->where('latest', false)->latest()->first();
+        if(count($file_versions) > 1){
+            $files = File::whereIn('id', $file_versions)->where('latest', false)->latest()->first();
 
-        $files->update(['latest' => true]);
+            $files->update(['latest' => true]);
+        }
     }
 }

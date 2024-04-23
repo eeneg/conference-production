@@ -55,11 +55,12 @@
             onSuccess: () => {
                 edited = false
             },
-            onErrorCaptured: () => {
-                header = "Error!"
-                success = false
-                message = "Failed to Submit"
+            onError: () => {
+                header.value = "Error!"
+                success.value = false
+                message.value = "Failed to Submit"
                 modalShow.value = true
+                console.log('asd')
             }
         })
     }
@@ -115,27 +116,20 @@
                             <div>
                                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">Minutes</h2>
                             </div>
-                            <div class="grow pr-2">
-                                <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
+                            <div class="grow pr-2 items-center pl-2">
+                                <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition float-right ease-in-out">
                                     <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
                                 </Transition>
                             </div>
-                            <div
-                                class="group"
-                                :class="{'has-tooltip':edited}"
-                            >
 
-                                <span class='tooltip rounded shadow-lg p-1 bg-gray-800 -mt-9 -ml-7 text-white'>Save first to print</span>
-                                <PrimaryButton
-                                    type="button"
-                                    class="has-tooltip"
-                                    :class="{'bg-gray-300 hover:bg-gray-400':edited}"
-                                    @click="printMinutes"
-                                    :disabled="edited"
-                                >
-                                    Print
-                                </PrimaryButton>
-                            </div>
+                            <PrimaryButton
+                                type="button"
+                                :class="{'bg-gray-300 hover:bg-gray-400':edited}"
+                                @click="printMinutes"
+                                :disabled="edited"
+                            >
+                                Print
+                            </PrimaryButton>
                         </div>
 
                         <div class="pr-6 pl-6 mt-3">

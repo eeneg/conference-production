@@ -96,7 +96,7 @@ const pdfModalShowClose = () => {
 <template>
    <div>
         <button @click="openFileVerionsModal">
-            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-300 hover:bg-blue-400 text-red-900">
+            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-red-900">
                 <BarsArrowUpIcon class="w-5 h-5 stroke-gray-900 fill-black aria-hidden" aria-hidden="true" />
             </div>
         </button>
@@ -153,7 +153,7 @@ const pdfModalShowClose = () => {
                         <div class="py-2 pl-1 border rounded mt-1">
                             <div class="flex rounded" v-for="file in fileVersions.latest">
                                 <div class="flex items-center justify-center">
-                                    <div class="h-8 w-8 flex items-center justify-center rounded-full bg-indigo-300 hover:bg-indigo-400 text-black-900">
+                                    <div class="h-8 w-8 flex items-center justify-center rounded-full bg-indigo-400 text-black-900">
                                         <PaperClipIcon class="w-4 h-4 fill-black " aria-hidden="true" />
                                     </div>
                                 </div>

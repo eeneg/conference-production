@@ -55,6 +55,10 @@ class File extends Model
         return $this->morphOne(PdfContent::class, 'contentable');
     }
 
+    public function fileComment(){
+        return $this->hasMany(FileComment::class);
+    }
+
     #[SearchUsingFullText(['details, content, category'])]
     public function toSearchableArray(): array
     {

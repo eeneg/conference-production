@@ -1,6 +1,6 @@
 <template>
     <div class="w-full">
-      <Combobox v-model="selected" multiple>
+      <Combobox v-model="selected" by="id" multiple>
         <div class="relative">
           <div
             class="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left border border-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-indigo-300 sm:text-sm"

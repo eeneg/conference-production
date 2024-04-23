@@ -39,7 +39,7 @@ class ReferenceController extends Controller
                 'date'          => $request->date,
                 'details'       => $request->details,
                 'file_name'     => str_replace(' ','_',$request->file[0]->getClientOriginalName()),
-                'path'          => '/Reference_Files/' . $request->category_id . '/',
+                'path'          => '/Reference_Files/' . $request->category_id . '/' . str_replace(' ','_',$request->file[0]->getClientOriginalName()),
             ]);
 
             Storage::putFileAs('public/Reference_Files/' . $request->category_id . '/', $request->file[0], str_replace(' ','_',$request->file[0]->getClientOriginalName()));
@@ -69,7 +69,7 @@ class ReferenceController extends Controller
                 'date'          => $request->date,
                 'details'       => $request->details,
                 'file_name'     => str_replace(' ','_',$request->file[0]->getClientOriginalName()),
-                'path'          => '/Reference_Files/' . $request->category_id . '/',
+                'path'          => '/Reference_Files/' . $request->category_id . '/' . str_replace(' ','_',$request->file[0]->getClientOriginalName()),
             ]);
             Storage::delete('public/Reference_Files/' . $request->category_id . '/' . str_replace(' ','_',$request->file[0]->getClientOriginalName()));
             Storage::putFileAs('public/Reference_Files/' . $request->category_id . '/', $request->file[0], str_replace(' ','_',$request->file[0]->getClientOriginalName()));
@@ -81,6 +81,10 @@ class ReferenceController extends Controller
                 'details'       => $request->details,
             ]);
         }
+    }
+
+    public function searchReference(Request $request){
+        return Reference::search($request->search)->paginate(10);
     }
 
     public function destroy($id){

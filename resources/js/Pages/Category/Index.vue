@@ -194,15 +194,22 @@
                                     <thead>
                                         <tr>
                                             <th class="border-b border-slate-300" style="width: 30%;">Title</th>
-                                            <th class="border-b border-slate-300" style="width: 30%;">Details</th>
                                             <th class="border-b border-slate-300" style="width: 30%;">Type</th>
                                             <th class="border-b border-slate-300" style="width: 10%;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="i in props.category.data" class="border-b-2 py-2">
-                                            <td class="py-2 text-wrap">{{i.title}}</td>
-                                            <td class="py-2 text-wrap">{{i.details}}</td>
+                                            <td class="py-2 text-wrap">
+                                                <div class="flex flex-col text-left">
+                                                    <div class="text-lg">
+                                                        {{ i.title }}
+                                                    </div>
+                                                    <div class="text-xs text-gray-500">
+                                                        {{ i.details }}
+                                                    </div>
+                                                </div>
+                                            </td>
                                             <td class="py-2 text-wrap">{{i.type == "1" ? "File" : "Reference"}}</td>
                                             <td class="py-2 text-wrap"><button class="border-b-2 border-b-indigo-400 hover:border-b-indigo-800" @click="fillForm(i)">Edit</button></td>
                                         </tr>

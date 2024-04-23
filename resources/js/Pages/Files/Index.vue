@@ -1,5 +1,5 @@
 <script setup>
-    import { Head, useForm } from '@inertiajs/vue3';
+    import { Head, router, useForm } from '@inertiajs/vue3';
     import TextInput from '@/Components/TextInput.vue';
     import PrimaryButton from '@/Components/PrimaryButton.vue';
     import Combobox  from '@/Components/ComboBox.vue';
@@ -9,9 +9,11 @@
     import SecondaryButton from '@/Components/SecondaryButton.vue'
     import Modal from '@/Components/Modal.vue';
     import InputError from '@/Components/InputError.vue';
-import { onMounted } from 'vue';
+    import { onMounted } from 'vue';
 
     const props = defineProps({storage:Object, category:Object, file: Object})
+
+    const editMode = ref(false)
 
     const form = useForm({
         id: null,
@@ -38,7 +40,7 @@ import { onMounted } from 'vue';
             onSuccess: () =>{
                 header = "Success!"
                 success = true
-                message = "Storage Location Submitted Successfuly"
+                message = "File Uploaded Successfuly"
                 modalShow.value = true
                 form.reset()
                 existingFileNames.value = []
@@ -64,12 +66,21 @@ import { onMounted } from 'vue';
     }
 
     const update = () => {
-        form.submit('patch', route('files.update'),{
+        form.submit('patch', route('files.update', {id:form.id}),{
             onSuccess: () =>{
-
+                header = "Success!"
+                success = true
+                message = "File Updated"
+                modalShow.value = true
+                existingFileNames.value = []
+                submitErrorMsg.value = ''
             },
-            onError: () => {
-
+            onError: (e) => {
+                header = "Error!"
+                success = false
+                message = "Something went wrong"
+                modalShow.value = true
+                console.log(e)
             }
         })
     }
@@ -86,18 +97,11 @@ import { onMounted } from 'vue';
     }
 
     const fileCheck = () => {
-        // axios.post(route('file.check'), {fileNames: fileNames, storage_id: form.storage_id, category_id: form.category_id})
-        // .then(e => {
-        //     if(e.data.check){
-        //         existingFileNames.value = e.data.file_names
-        //         submitErrorMsg.value = e.data.response
-        //     }else{
-                submit()
-        //     }
-        // })
-        // .catch(e => {
-        //     console.log(e)
-        // })
+        if(editMode.value){
+            update()
+        }else{
+            submit()
+        }
     }
 
     const closeModal = () => {
@@ -114,14 +118,19 @@ import { onMounted } from 'vue';
         });
     }
 
-    const editMode = () => {
+    const editData = () => {
         if(props.file){
             return props.file.category
         }
     }
 
+    const redirectBack = () => {
+        router.visit(route('file.index'))
+    }
+
     onMounted(() => {
         if(props.file != null){
+            editMode.value = true
             form.category_id = props.file.category
             Object.assign(form, props.file)
         }
@@ -152,7 +161,7 @@ import { onMounted } from 'vue';
                 </div>
                 <div class="mt-3 mb-3 pr-6 pl-5 grid grid-cols-2 max-[600px]:grid-cols-1">
                     <div class="space-y-6 ">
-                        <div class="">
+                        <div class="" v-if="editMode == false">
                             <InputLabel>Upload a File</InputLabel>
                             <input v-on:change="getFiles($event, i)" type="file" id="files" class="rounded bg-white-200" accept="application/pdf"   />
                             <InputError :message="form.errors.file" class="mt-2"/>
@@ -193,7 +202,7 @@ import { onMounted } from 'vue';
                             </div>
                             <div class="flex flex-row space-x-2">
                                 <div class="w-full">
-                                    <Combobox @passData ="getCategoryId($event)" :selected="editMode()" :data="props.category"></Combobox>
+                                    <Combobox @passData ="getCategoryId($event)" :selected="editData()" :data="props.category"></Combobox>
                                 </div>
                             </div>
                             <InputError :message="form.errors.category_id" class="mt-2" />
@@ -253,11 +262,27 @@ import { onMounted } from 'vue';
                     {{message}}
                 </p>
 
-                <SecondaryButton
-                    class="w-full mt-2 place-content-center"
-                    @click="closeModal">
-                        <p>OK</p>
-                </SecondaryButton>
+                <div class="flex">
+                    <div class="flex basis-full mt-2 space-x-2" v-if="editMode">
+                        <PrimaryButton
+                            class="w-full mt-2 place-content-center"
+                            @click="redirectBack()">
+                                <p>Back</p>
+                        </PrimaryButton>
+                        <SecondaryButton
+                            class="w-full mt-2 place-content-center"
+                            @click="closeModal">
+                                <p>OK</p>
+                        </SecondaryButton>
+                    </div>
+                    <div class="basis-full mt-2" v-else="editMode == false">
+                        <SecondaryButton
+                            class="w-full mt-2 place-content-center"
+                            @click="closeModal">
+                                <p>OK</p>
+                        </SecondaryButton>
+                    </div>
+                </div>
             </div>
         </Modal>
     </div>

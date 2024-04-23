@@ -6,6 +6,8 @@ use App\Jobs\ProcessAttachment;
 use App\Models\Attachment;
 use App\Models\PdfContent;
 use App\Models\Conference;
+use App\Models\Poll;
+use App\Models\PollVote;
 use App\Services\AttachmentEditService;
 use App\Services\FileHandleService;
 use Illuminate\Http\Request;
@@ -206,6 +208,14 @@ class ConferenceController extends Controller
             ->get('id')
             ->each
             ->delete();
+
+        $poll = Poll::where('conference_id', $conf->id)->first();
+
+        $pollVotes = PollVote::where('poll_id', $poll->id)->delete();
+
+        $attendance = ConferenceAttendance::where('conference_id', $conf->id)->delete();
+
+        $poll->delete();
 
         $conf->delete();
 

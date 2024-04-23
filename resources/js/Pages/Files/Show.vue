@@ -11,7 +11,8 @@
     import InputLabel from '@/Components/InputLabel.vue';
     import Dropdown from '@/Components/Dropdown.vue';
     import DropdownLink from '@/Components/DropdownLink.vue';
-    import { ArrowDownTrayIcon, DocumentIcon, BookOpenIcon, EllipsisVerticalIcon } from '@heroicons/vue/20/solid';
+    import FileComments from '@/Components/FileComments.vue';
+    import { ArrowDownTrayIcon, DocumentIcon, BookOpenIcon, EllipsisVerticalIcon, EyeIcon, ChatBubbleBottomCenterIcon } from '@heroicons/vue/20/solid';
     import { useForm } from '@inertiajs/vue3';
     import { ref } from 'vue';
     import { router } from '@inertiajs/vue3'
@@ -116,22 +117,28 @@
         id: null,
         file_name: null
     })
+    const renameFileIndex = ref(0)
     const renameModal = ref(false)
-    const openRenameModal = (id, file_name) => {
+    const openRenameModal = (id, file_name, index) => {
         renameForm.id = id
         renameForm.file_name = file_name
         renameModal.value = true
+        renameFileIndex.value = index
     }
 
     const closeRenameModal = () => {
         renameModal.value = false
     }
 
+    const resetRenameError = () => {
+        renameForm.errors.file_name = null
+    }
+
     const submitRename = () => {
         if(renameForm.file_name.match('^[^+]+\.pdf$')){
             renameForm.submit('patch', route('file.rename', {id: renameForm.id}), {
                 onSuccess: () => {
-
+                    files.value.data[renameFileIndex.value]['file_name'] = renameForm.file_name
                 },
                 onError: () => {
 
@@ -240,15 +247,16 @@
                             </div>
                             <div class="mt-2">
                                 <div class="flex items-center justify-center float-right space-x-1">
+                                    <FileComments :file_id="file.id"/>
                                     <FileVersioncontrol :file_id="file.id"/>
                                     <a :href="route('file.download',{ id:file.id })">
-                                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-green-400 hover:bg-green-500 text-red-900">
+                                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-red-900">
                                             <ArrowDownTrayIcon class="w-5 h-5 stroke-gray-900 fill-black " aria-hidden="true" />
                                         </div>
                                     </a>
                                     <button @click="viewFile(file.path)">
-                                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-400 hover:bg-blue-500 text-red-900">
-                                            <BookOpenIcon class="w-5 h-5 stroke-gray-900 fill-none aria-hidden" aria-hidden="true" />
+                                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-black-900">
+                                            <EyeIcon class="w-5 h-5 fill-black aria-hidden" aria-hidden="true" />
                                         </div>
                                     </button>
 
@@ -256,7 +264,7 @@
                                         <template #trigger>
                                             <button>
                                                 <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-black-900">
-                                                    <EllipsisVerticalIcon class="w-5 h-5 stroke-gray-900 fill aria-hidden" aria-hidden="true" />
+                                                    <EllipsisVerticalIcon class="w-5 h-5 fill-black aria-hidden" aria-hidden="true" />
                                                 </div>
                                             </button>
                                         </template>
@@ -267,7 +275,7 @@
                                                     <DropdownLink :href="route('files.edit', {id: file.id})"> Edit </DropdownLink>
                                                 </li>
                                                 <li>
-                                                    <div class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out cursor-pointer" @click="openRenameModal(file.id, file.file_name)">Rename</div>
+                                                    <div class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out cursor-pointer" @click="openRenameModal(file.id, file.file_name, i)">Rename</div>
                                                 </li>
                                                 <li>
                                                     <div class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out cursor-pointer" @click="deleteModal(file.id)">Delete</div>
@@ -357,7 +365,7 @@
             <div class="flex flex-col mt-4">
                 <div class="basis-full">
                     <InputLabel for="file_name">File Name</InputLabel>
-                    <TextInput name="file_name" id="file_name" class="w-full" v-model="renameForm.file_name"/>
+                    <TextInput @input="resetRenameError()" name="file_name" id="file_name" class="w-full" v-model="renameForm.file_name"/>
                     <InputError :message="renameForm.errors.file_name" class="mt-2" />
                     <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out float-right">
                         <p v-if="renameForm.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>

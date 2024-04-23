@@ -6,6 +6,7 @@ import { QuillEditor } from '@vueup/vue-quill';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import PollBody from '@/Components/Poll/PollBody.vue';
+import ReferencesSearch from '@/Components/ReferencesSearch.vue';
 import { ChevronUpIcon } from '@heroicons/vue/20/solid'
 import { ref, computed } from 'vue'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
@@ -18,12 +19,11 @@ const props = defineProps({
 })
 
 
-console.log(props.attachments)
-
 const tabs = [
     'Agenda',
     'Attachments',
     'Notes',
+    'References'
 ]
 
 var toolbarOptions = [
@@ -60,7 +60,6 @@ const title = computed(() => embed.value?.is_previewable ? `${action.value} ${em
 
 const reembed = (attachment) =>{
     embed.value = embed.value === attachment ? null : attachment
-    console.log(attachment)
 }
 
 const form = useForm({
@@ -243,6 +242,21 @@ const inputSave = _.debounce(() => {
                                             <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
                                                 <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
                                             </Transition>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </TabPanel>
+
+
+                        <TabPanel class="rounded-xl">
+                            <div class="mt-4 w-full mx-auto">
+                                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                                    <div class="p-6 mt-3">
+                                        <div class="flex flex-col">
+                                            <div class="flex justify-between">
+                                                <ReferencesSearch/>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

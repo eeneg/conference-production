@@ -145,7 +145,29 @@ class FileController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'title' => 'required:|unique:files,title,'.$id,
+            'storage_id' => 'required',
+            'category_id' => 'required|array',
+            'category_id.*' => 'array',
+            'category_id.*.id' => 'required|string|uuid|exists:categories,id',
+            'date' => 'required',
+            'details' => 'required',
+        ],[
+            'storage_id.required' => 'Storage Field in required',
+            'category_id.required' => 'Category Field in required',
+        ]);
+
+        $file = File::find($id);
+
+        $file->category()->syncWithPivotValues(collect($request->category_id)->map(function($e){return $e['id'];}), ['active' => true]);
+
+        $file->update([
+            'title' => $request->title,
+            'storage_id' => $request->storage_id,
+            'details' => $request->details,
+            'date' => $request->date
+        ]);
     }
 
     /**

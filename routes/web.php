@@ -18,6 +18,7 @@ use App\Http\Controllers\PollController;
 use App\Http\Controllers\FileVersionController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FileCommentController;
 use App\Http\Middleware\IsAdmin;
 use App\Models\Minutes;
 use App\Models\Message;
@@ -70,7 +71,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/file_check', [FileController::class, 'fileCheck'])->name('file.check');
     Route::patch('/file_rename/{id}', [FileController::class, 'renameFile'])->name('file.rename');
 
-
     Route::get('/fileList', [FileSearchController::class, 'index'])->name('file.index');
     Route::post('/fileSearch', [FileSearchController::class, 'searchFile'])->name('file.search');
     Route::get('/downloadFile/{file}', [FileSearchController::class, 'downloadFile'])->name('file.download');
@@ -101,6 +101,9 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('fileVersion', FileVersionController::class);
     Route::resource('note', NoteController::class);
+
+    Route::post('/referenceSearch', [ReferenceController::class, 'searchReference'])->name('reference.search');
+    Route::resource('/fileComments', FileCommentController::class);
 });
 
 Route::resource('users', UserController::class)->middleware([IsAdmin::class]);
