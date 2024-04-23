@@ -163,7 +163,7 @@
     }
 
     const getFile = (e) => {
-        form.file = e.target.files
+        form.file = e.target.files[0]
     }
 
     const fillForm = (i) => {

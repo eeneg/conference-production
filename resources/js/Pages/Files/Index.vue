@@ -109,7 +109,7 @@
     }
 
     const getFiles = (e, i) => {
-        form.file = e.target.files
+        form.file = e.target.files[0]
         fileNames = []
         existingFileNames.value = []
         submitErrorMsg.value = ''

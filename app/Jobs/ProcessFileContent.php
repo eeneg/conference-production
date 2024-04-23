@@ -44,7 +44,11 @@ class ProcessFileContent implements ShouldQueue
         $res = $py->output();
         $er = $py->errorOutput();
 
-        $file->pdfContent()->create(['content' => $res]);
+        if($res){
+            $file->pdfContent()->create(['content' => $res]);
+        }else{
+            $file->pdfContent()->create(['content' => $er]);
+        }
 
         $file->loadMorph('contentable', [PdfContent::class => 'pdfContent'])->searchable();
     }

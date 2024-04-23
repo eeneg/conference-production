@@ -12,7 +12,7 @@ import moment from 'moment';
 
 const props = defineProps({file_id:String})
 const user = usePage().props.auth.user.id
-const comments = ref({})
+const comments = ref([])
 
 const editMode = ref(false)
 

@@ -22,7 +22,7 @@ class ReferenceController extends Controller
 
         $request->validate(
             [
-                'file' => 'required',
+                'file' => 'required|mimes:pdf|max:5120',
                 'category_id' => 'required',
                 'title' => 'required|unique:references,title',
                 'date' => 'required',
@@ -38,11 +38,11 @@ class ReferenceController extends Controller
                 'title'         => $request->title,
                 'date'          => $request->date,
                 'details'       => $request->details,
-                'file_name'     => str_replace(' ','_',$request->file[0]->getClientOriginalName()),
-                'path'          => '/Reference_Files/' . $request->category_id . '/' . str_replace(' ','_',$request->file[0]->getClientOriginalName()),
+                'file_name'     => str_replace(' ','_',$request->file->getClientOriginalName()),
+                'path'          => '/Reference_Files/' . $request->category_id . '/' . str_replace(' ','_',$request->file->getClientOriginalName()),
             ]);
 
-            Storage::putFileAs('public/Reference_Files/' . $request->category_id . '/', $request->file[0], str_replace(' ','_',$request->file[0]->getClientOriginalName()));
+            Storage::putFileAs('public/Reference_Files/' . $request->category_id . '/', $request->file, str_replace(' ','_',$request->file->getClientOriginalName()));
         }
 
     }
@@ -68,11 +68,11 @@ class ReferenceController extends Controller
                 'category_id'   => $request->category_id,
                 'date'          => $request->date,
                 'details'       => $request->details,
-                'file_name'     => str_replace(' ','_',$request->file[0]->getClientOriginalName()),
-                'path'          => '/Reference_Files/' . $request->category_id . '/' . str_replace(' ','_',$request->file[0]->getClientOriginalName()),
+                'file_name'     => str_replace(' ','_',$request->file->getClientOriginalName()),
+                'path'          => '/Reference_Files/' . $request->category_id . '/' . str_replace(' ','_',$request->file->getClientOriginalName()),
             ]);
-            Storage::delete('public/Reference_Files/' . $request->category_id . '/' . str_replace(' ','_',$request->file[0]->getClientOriginalName()));
-            Storage::putFileAs('public/Reference_Files/' . $request->category_id . '/', $request->file[0], str_replace(' ','_',$request->file[0]->getClientOriginalName()));
+            Storage::delete('public/Reference_Files/' . $request->category_id . '/' . str_replace(' ','_',$request->file->getClientOriginalName()));
+            Storage::putFileAs('public/Reference_Files/' . $request->category_id . '/', $request->file, str_replace(' ','_',$request->file->getClientOriginalName()));
         }else{
             $ref->update([
                 'title'         => $request->title,

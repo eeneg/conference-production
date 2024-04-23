@@ -22,7 +22,7 @@ class File extends Model
 {
     use HasFactory, HasUuids, Searchable;
 
-    protected $fillable = ['title', 'file_name', 'storage_id', 'category_id', 'path', 'details', 'date', 'latest'];
+    protected $fillable = ['title', 'file_name', 'storage_id', 'category_id', 'path', 'details', 'date', 'latest', 'for_review'];
 
     protected $casts = ['tags' => 'array'];
 

@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/file_check', [FileController::class, 'fileCheck'])->name('file.check');
     Route::patch('/file_rename/{id}', [FileController::class, 'renameFile'])->name('file.rename');
+    Route::patch('/file_review/{id}', [FileController::class, 'setFileForReview'])->name('file.review');
 
     Route::get('/fileList', [FileSearchController::class, 'index'])->name('file.index');
     Route::post('/fileSearch', [FileSearchController::class, 'searchFile'])->name('file.search');

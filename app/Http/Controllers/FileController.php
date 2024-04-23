@@ -14,6 +14,8 @@ use Inertia\Inertia;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage as FileStorage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules\File as FileValidate;
 use Exception;
 use Throwable;
 
@@ -71,7 +73,7 @@ class FileController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required',
+            'file' => 'required|mimes:pdf|max:5120',
             'title' => 'required:|unique:files',
             'storage_id' => 'required',
             'category_id' => 'required|array',
@@ -87,15 +89,15 @@ class FileController extends Controller
         $tr = DB::Transaction(function($e) use ($request) {
             $file = File::create([
                 'title'         => $request->title,
-                'file_name'     => str_replace(' ','_',$request->file[0]->getClientOriginalName()),
-                'path'          => 'public/File_Uploads/'. $request->storage_id .'/'. str_replace(' ','_',$request->file[0]->hashName()),
+                'file_name'     => str_replace(' ','_',$request->file->getClientOriginalName()),
+                'path'          => 'public/File_Uploads/'. $request->storage_id .'/'. str_replace(' ','_',$request->file->hashName()),
                 'storage_id'    => $request->storage_id,
                 'details'       => $request->details,
                 'date'          => $request->date,
             ]);
             return $file;
         });
-            FileStorage::putFileAs('public/File_Uploads/'. $request->storage_id, $request->file[0], str_replace(' ','_',$request->file[0]->hashName()));
+            FileStorage::putFileAs('public/File_Uploads/'. $request->storage_id, $request->file, str_replace(' ','_',$request->file->hashName()));
             $this->fileContentService->handle($tr->id);
             $this->attachCategory($tr->id, $request->category_id);
             $this->fileUploadedService->handle($tr->id);
@@ -168,6 +170,14 @@ class FileController extends Controller
             'details' => $request->details,
             'date' => $request->date
         ]);
+    }
+
+    public function setFileForReview(Request $request, String $id){
+        $file = File::find($id);
+
+        $file->update(['for_review' => $request->status]);
+
+        return redirect(route('file.index'));
     }
 
     /**

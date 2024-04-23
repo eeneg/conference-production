@@ -215,9 +215,6 @@ onMounted(() => {
                         <ResponsiveNavLink :href="route('conferences.index')" :active="route().current('conferences.index')">
                             Conferences
                         </ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('attachment.index')" :active="route().current('attachment.index')">
-                            Find Attachments
-                        </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('files.index')" :active="route().current('files.index')">
                             File Upload
                         </ResponsiveNavLink>

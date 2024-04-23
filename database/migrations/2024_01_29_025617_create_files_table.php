@@ -22,6 +22,7 @@ return new class extends Migration
             $table->date('date');
             $table->string('path');
             $table->string('details');
+            $table->boolean('for_review')->default(false);
             $table->boolean('latest')->default(true);
             $table->timestamps();
         });

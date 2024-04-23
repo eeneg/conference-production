@@ -12,14 +12,14 @@
     import Dropdown from '@/Components/Dropdown.vue';
     import DropdownLink from '@/Components/DropdownLink.vue';
     import FileComments from '@/Components/FileComments.vue';
-    import { ArrowDownTrayIcon, DocumentIcon, BookOpenIcon, EllipsisVerticalIcon, EyeIcon, ChatBubbleBottomCenterIcon } from '@heroicons/vue/20/solid';
+    import { ArrowDownTrayIcon, DocumentIcon, BookOpenIcon, EllipsisVerticalIcon, EyeIcon, ChatBubbleBottomCenterIcon, CheckIcon } from '@heroicons/vue/20/solid';
     import { useForm } from '@inertiajs/vue3';
     import { ref } from 'vue';
     import { router } from '@inertiajs/vue3'
     import Pagination from '@/Components/Pagination.vue';
     import axios from 'axios';
 
-    const props = defineProps({files: Object, storage: Object, category: Object})
+    const props = defineProps({files: Object, storage: Object, category: Object, for_review:Object})
 
     const files = ref(props.files)
 
@@ -109,7 +109,9 @@
     }
 
     const viewFile = (file) => {
-        path.value = file.slice(7)
+        file_id.value = file.id
+        review_status.value = file.for_review == true ? false : true
+        path.value = file.path.slice(7)
         pdfModalShow.value = true
     }
 
@@ -147,6 +149,29 @@
         }else{
             renameForm.errors.file_name = "Invalid File Name (add .pdf at the end of the file name)"
         }
+    }
+
+    const file_id = ref(null)
+    const review_status = ref(false)
+    const reviewForm = useForm({
+        status: null
+    })
+    const setFileForReview = () => {
+        reviewForm.submit('patch', route('file.review', file_id.value),{
+            onSuccess: () => {
+                router.visit(route('file.index'), {
+                    only: ['files', 'for_review'],
+                })
+            },
+            onError: () => {
+
+            }
+        })
+    }
+    const endForReview = (id) => {
+        file_id.value = id
+        reviewForm.status = false
+        setFileForReview()
     }
 </script>
 <template>
@@ -220,8 +245,51 @@
                         </div>
                     </form>
                 </div>
-                <div class="grow pl-5 pr-5 pb-5 text-sm min-h-80">
-                    <div class="border rounded p-2 pl-2 mt-2" v-for="(file, i) in files.data">
+                <div class="grow pl-5 pr-5 text-sm mt-2 mb-4" v-if="for_review">
+                    <div class="max-h-40 overflow-auto">
+                        <div class="border rounded p-2 pl-2 mt-2 group bg-indigo-100" v-for="(file, i) in for_review">
+                            <div class="flex">
+                                <div class="flex items-center p-1 justify-center sm:text-sm">
+                                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-300 text-red-900">
+                                        <DocumentIcon class="w-5 h-5 stroke-gray-900 fill-none " aria-hidden="true" />
+                                    </div>
+                                </div>
+                                <div class="grow p-1 text-sm">
+                                    <div class="flex ml-2">
+                                        <p class="text-lg truncate float-left text-black-900">{{ file.file_name }}</p>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <div class="flex items-center justify-center float-right space-x-1">
+                                        <div class="hidden group-hover:block">
+                                            <FileComments :file_id="file.id"/>
+                                        </div>
+                                        <div class="hidden group-hover:block">
+                                            <FileVersioncontrol :file_id="file.id"/>
+                                        </div>
+                                        <a class="hidden group-hover:block" :href="route('file.download',{ id:file.id })">
+                                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-red-900">
+                                                <ArrowDownTrayIcon class="w-5 h-5 stroke-gray-900 fill-black " aria-hidden="true" />
+                                            </div>
+                                        </a>
+                                        <button class="hidden group-hover:block" @click="viewFile(file)">
+                                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-black-900">
+                                                <EyeIcon class="w-5 h-5 fill-black aria-hidden" aria-hidden="true" />
+                                            </div>
+                                        </button>
+                                        <button class="" @click="endForReview(file.id)">
+                                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-black-900">
+                                                <CheckIcon class="w-5 h-5 fill-black aria-hidden" aria-hidden="true" />
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grow pl-5 pr-5 pb-5 text-sm min-h-80" group="file">
+                    <div class="border rounded p-2 pl-2 mt-2 group" v-for="(file, i) in files.data">
                         <div class="flex">
                             <div class="flex items-center p-1 justify-center sm:text-sm">
                                 <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-300 text-red-900">
@@ -247,14 +315,18 @@
                             </div>
                             <div class="mt-2">
                                 <div class="flex items-center justify-center float-right space-x-1">
-                                    <FileComments :file_id="file.id"/>
-                                    <FileVersioncontrol :file_id="file.id"/>
-                                    <a :href="route('file.download',{ id:file.id })">
+                                    <div class="hidden group-hover:block">
+                                        <FileComments :file_id="file.id"/>
+                                    </div>
+                                    <div class="hidden group-hover:block">
+                                        <FileVersioncontrol :file_id="file.id"/>
+                                    </div>
+                                    <a class="hidden group-hover:block" :href="route('file.download',{ id:file.id })">
                                         <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-red-900">
                                             <ArrowDownTrayIcon class="w-5 h-5 stroke-gray-900 fill-black " aria-hidden="true" />
                                         </div>
                                     </a>
-                                    <button @click="viewFile(file.path)">
+                                    <button class="hidden group-hover:block" @click="viewFile(file)">
                                         <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-black-900">
                                             <EyeIcon class="w-5 h-5 fill-black aria-hidden" aria-hidden="true" />
                                         </div>
@@ -295,7 +367,16 @@
         </div>
         <Modal :show="pdfModalShow" :maxWidth="'4xl'" @close="closeModal">
             <div class="p-6">
-
+                <div class="" v-if="review_status">
+                    <InputLabel>Set for Review</InputLabel>
+                    <div class="flex space-x-2 mt-2">
+                        <input type="checkbox" v-model="reviewForm.status"/> 
+                        <InputLabel for="latest">Yes</InputLabel>
+                    </div>
+                    <div class="mt-2">
+                        <PrimaryButton @click="setFileForReview()">Submit</PrimaryButton>
+                    </div>
+                </div>
                 <div class="mt-6 h-64" style="height: 50rem;">
                     <embed :src="'/storage/'+path" style="width: 100%; height: 100%;"  type="application/pdf">
                 </div>
