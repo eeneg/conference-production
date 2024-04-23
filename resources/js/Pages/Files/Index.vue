@@ -114,6 +114,12 @@ import { onMounted } from 'vue';
         });
     }
 
+    const editMode = () => {
+        if(props.file){
+            return props.file.category
+        }
+    }
+
     onMounted(() => {
         if(props.file != null){
             form.category_id = props.file.category
@@ -187,7 +193,7 @@ import { onMounted } from 'vue';
                             </div>
                             <div class="flex flex-row space-x-2">
                                 <div class="w-full">
-                                    <Combobox @passData ="getCategoryId($event)" :selected="props.file == null ? null : props.file.category" :data="props.category"></Combobox>
+                                    <Combobox @passData ="getCategoryId($event)" :selected="editMode()" :data="props.category"></Combobox>
                                 </div>
                             </div>
                             <InputError :message="form.errors.category_id" class="mt-2" />
