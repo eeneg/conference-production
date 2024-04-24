@@ -246,7 +246,10 @@
                     </form>
                 </div>
                 <div class="grow pl-5 pr-5 text-sm mt-2 mb-4" v-if="for_review">
-                    <div class="max-h-40 overflow-auto">
+                    <div class="mt-2">
+                        <h2 class="text-lg font-bold">For Review</h2>
+                    </div>
+                    <div class="max-h-40 overflow-auto border border-slate-300 p-1 rounded">
                         <div class="border rounded p-2 pl-2 mt-2 group bg-indigo-100" v-for="(file, i) in for_review">
                             <div class="flex items-center">
                                 <div class="flex items-center p-1 justify-center sm:text-sm">
@@ -287,6 +290,9 @@
                     </div>
                 </div>
                 <div class="grow pl-5 pr-5 pb-5 text-sm min-h-80" group="file">
+                    <div>
+                        <h2 class="text-lg font-bold">Files</h2>
+                    </div>
                     <div class="border rounded p-2 pl-2 mt-2 group" v-for="(file, i) in files.data">
                         <div class="flex">
                             <div class="flex items-center p-1 justify-center sm:text-sm">
