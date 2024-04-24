@@ -173,6 +173,9 @@
         reviewForm.status = false
         setFileForReview()
     }
+    const reloadLatest = (e) => {
+        search()
+    }
 </script>
 <template>
 
@@ -249,7 +252,7 @@
                     <div class="mt-2">
                         <h2 class="text-lg font-bold">For Review</h2>
                     </div>
-                    <div class="max-h-40 overflow-auto border border-slate-300 p-1 rounded">
+                    <div class="max-h-40 overflow-auto rounded">
                         <div class="border rounded p-2 pl-2 mt-2 group bg-indigo-100" v-for="(file, i) in for_review">
                             <div class="flex items-center">
                                 <div class="flex items-center p-1 justify-center sm:text-sm">
@@ -267,7 +270,7 @@
                                         <FileComments :file_id="file.id"/>
                                     </div>
                                     <div class="hidden group-hover:block">
-                                        <FileVersioncontrol :file_id="file.id"/>
+                                        <FileVersioncontrol @refreshData="reloadLatest($event)" :file_id="file.id"/>
                                     </div>
                                     <a class="hidden group-hover:block" :href="route('file.download',{ id:file.id })">
                                         <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-red-900">
@@ -323,7 +326,7 @@
                                         <FileComments :file_id="file.id"/>
                                     </div>
                                     <div class="hidden group-hover:block">
-                                        <FileVersioncontrol :file_id="file.id"/>
+                                        <FileVersioncontrol @refreshData="reloadLatest($event)" :file_id="file.id"/>
                                     </div>
                                     <a class="hidden group-hover:block" :href="route('file.download',{ id:file.id })">
                                         <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-red-900">

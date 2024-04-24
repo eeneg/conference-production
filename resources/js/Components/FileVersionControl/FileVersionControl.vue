@@ -6,13 +6,15 @@ import InputLabel from '../InputLabel.vue';
 import TextInput from '../TextInput.vue';
 import InputError from '../InputError.vue';
 import Dropdown from '../Dropdown.vue';
-import DropdownLink from '../DropdownLink.vue'
+import FileComments from '../FileComments.vue';
 import { BarsArrowUpIcon, PaperClipIcon } from '@heroicons/vue/20/solid';
 import { ref } from 'vue';
 import { useForm } from '@inertiajs/vue3';
 import axios from 'axios';
 
 const props = defineProps({file_id:String, files:Object})
+
+const emit = defineEmits(['refreshData'])
 
 const showFileVersions = ref(false)
 const openFileVerionsModal = () => {
@@ -62,7 +64,17 @@ const getFileVersions = () => {
 const setLatest = (id) => {
     axios.patch(route('fileVersion.update', {id:id}))
     .then(e => {
-        console.log(e)
+        loading.value = true
+        axios.get(route('fileVersion.index', {id:id}))
+        .then(({data}) => {
+            fileVersions.value = data
+            loading.value = false
+        })
+        .catch(e => {
+            console.log(e)
+            loading.value = false
+        })
+        emit('refreshData')
     })
     .catch(e => {
         console.log(e)
@@ -72,7 +84,7 @@ const setLatest = (id) => {
 const deleteFileVersion = (id) => {
     axios.delete(route('fileVersion.destroy', {id:id}))
     .then(e => {
-        console.log(e)
+        getFileVersions()
     })
     .catch(e => {
         console.log(e)
@@ -202,20 +214,6 @@ const pdfModalShowClose = () => {
 
                                                 View
                                             </div>
-                                            <div
-                                                class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                                v-if="file.latest == false"
-                                                @click="setLatest(file.id)"
-                                                >
-                                                Set Latest
-                                            </div>
-                                            <div
-                                                class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-                                                v-if="file.latest == false"
-                                                @click="deleteFileVersion(file.id)"
-                                                >
-                                                Delete
-                                            </div>
                                         </template>
                                     </Dropdown>
                                 </div>
@@ -315,8 +313,14 @@ const pdfModalShowClose = () => {
                     <embed :src="'/storage/'+path" style="width: 100%; height: 100%;"  type="application/pdf">
                 </div>
 
-                <div class="mt-6 flex">
-                    <SecondaryButton @click="pdfModalShowClose"> Close </SecondaryButton>
+                <div class="mt-6 flex justify-between">
+                    <div>
+                        <SecondaryButton @click="pdfModalShowClose"> Close </SecondaryButton>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <p>Comments</p>
+                        <FileComments :file_id="props.file_id"/>
+                    </div>
                 </div>
             </div>
         </Modal>
