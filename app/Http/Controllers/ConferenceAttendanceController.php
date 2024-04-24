@@ -21,7 +21,7 @@ class ConferenceAttendanceController extends Controller
 
     public function store(Request $request){
         $att = ConferenceAttendance::where('conference_id', $request->conference_id)->where('user_id', $request->user_id)->first();
-        if($att == null){
+        if($att == null && auth()->user()->roles->first()->title == 'board member'){
             return ConferenceAttendance::create(['conference_id' => $request->conference_id, 'user_id' => $request->user_id]);
         }
     }

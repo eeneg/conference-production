@@ -48,7 +48,8 @@ class FileVersionController extends Controller
             'storage_id'    => $old_file->storage_id,
             'details'       => $old_file->details,
             'date'          => $old_file->date,
-            'latest'        => $request->latest
+            'latest'        => $request->latest,
+            'for_review'    => $old_file->for_review
         ]);
 
         FileVersionControl::create([

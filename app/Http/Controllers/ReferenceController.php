@@ -22,7 +22,7 @@ class ReferenceController extends Controller
 
         $request->validate(
             [
-                'file' => 'required|mimes:pdf|max:5120',
+                'file' => 'required|mimes:pdf',
                 'category_id' => 'required',
                 'title' => 'required|unique:references,title',
                 'date' => 'required',

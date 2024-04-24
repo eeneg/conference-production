@@ -248,7 +248,7 @@
                 <div class="grow pl-5 pr-5 text-sm mt-2 mb-4" v-if="for_review">
                     <div class="max-h-40 overflow-auto">
                         <div class="border rounded p-2 pl-2 mt-2 group bg-indigo-100" v-for="(file, i) in for_review">
-                            <div class="flex">
+                            <div class="flex items-center">
                                 <div class="flex items-center p-1 justify-center sm:text-sm">
                                     <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-300 text-red-900">
                                         <DocumentIcon class="w-5 h-5 stroke-gray-900 fill-none " aria-hidden="true" />
@@ -259,30 +259,28 @@
                                         <p class="text-lg truncate float-left text-black-900">{{ file.file_name }}</p>
                                     </div>
                                 </div>
-                                <div class="mt-2">
-                                    <div class="flex items-center justify-center float-right space-x-1">
-                                        <div class="hidden group-hover:block">
-                                            <FileComments :file_id="file.id"/>
-                                        </div>
-                                        <div class="hidden group-hover:block">
-                                            <FileVersioncontrol :file_id="file.id"/>
-                                        </div>
-                                        <a class="hidden group-hover:block" :href="route('file.download',{ id:file.id })">
-                                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-red-900">
-                                                <ArrowDownTrayIcon class="w-5 h-5 stroke-gray-900 fill-black " aria-hidden="true" />
-                                            </div>
-                                        </a>
-                                        <button class="hidden group-hover:block" @click="viewFile(file)">
-                                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-black-900">
-                                                <EyeIcon class="w-5 h-5 fill-black aria-hidden" aria-hidden="true" />
-                                            </div>
-                                        </button>
-                                        <button class="" @click="endForReview(file.id)">
-                                            <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-black-900">
-                                                <CheckIcon class="w-5 h-5 fill-black aria-hidden" aria-hidden="true" />
-                                            </div>
-                                        </button>
+                                <div class="flex items-center justify-center float-right space-x-1">
+                                    <div class="hidden group-hover:block">
+                                        <FileComments :file_id="file.id"/>
                                     </div>
+                                    <div class="hidden group-hover:block">
+                                        <FileVersioncontrol :file_id="file.id"/>
+                                    </div>
+                                    <a class="hidden group-hover:block" :href="route('file.download',{ id:file.id })">
+                                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-red-900">
+                                            <ArrowDownTrayIcon class="w-5 h-5 stroke-gray-900 fill-black " aria-hidden="true" />
+                                        </div>
+                                    </a>
+                                    <button class="hidden group-hover:block" @click="viewFile(file)">
+                                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-black-900">
+                                            <EyeIcon class="w-5 h-5 fill-black aria-hidden" aria-hidden="true" />
+                                        </div>
+                                    </button>
+                                    <button class="" @click="endForReview(file.id)">
+                                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-400 hover:bg-indigo-500 text-black-900">
+                                            <CheckIcon class="w-5 h-5 fill-black aria-hidden" aria-hidden="true" />
+                                        </div>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -370,7 +368,7 @@
                 <div class="" v-if="review_status">
                     <InputLabel>Set for Review</InputLabel>
                     <div class="flex space-x-2 mt-2">
-                        <input type="checkbox" v-model="reviewForm.status"/> 
+                        <input type="checkbox" v-model="reviewForm.status"/>
                         <InputLabel for="latest">Yes</InputLabel>
                     </div>
                     <div class="mt-2">

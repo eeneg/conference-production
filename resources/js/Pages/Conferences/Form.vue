@@ -339,7 +339,7 @@
                             <draggable
                                 @start="drag=true"
                                 @end="drag=false"
-                                class="max-h-40 overflow-auto cursor-pointer"
+                                class="max-h-96 overflow-auto cursor-pointer"
                                 group="files"
                                 :list="fileSearchRes"
                                 v-on:scroll="onScroll($event)"
@@ -357,7 +357,7 @@
                                         </div>
                                         <div>
                                             <button
-                                                class="p-2 hover:border hover:border-2 hover:border-slate-900"
+                                                class="p-2 hover:border rounded rounded-full hover:border-2 hover:border-slate-900"
                                                  @click="openPDFModal(element.path)"
                                             >
                                                 <EyeIcon class="h-4"></EyeIcon>

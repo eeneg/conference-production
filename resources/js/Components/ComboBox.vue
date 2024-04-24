@@ -91,7 +91,6 @@
     let query = ref('')
 
     const passData = () => {
-        console.log(selected.value)
         emit('passData', selected);
     }
 

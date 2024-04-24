@@ -98,7 +98,7 @@ const inputSave = _.debounce(() => {
     </header>
 
     <div class="py-5">
-        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div class="mx-auto max-w-14xl sm:px-12 lg:px-16">
             <div class="overflow-hidden sm:rounded-lg">
                 <TabGroup>
                     <TabList class="flex flex-row py-3 space-x-3 bg-white rounded-lg p">

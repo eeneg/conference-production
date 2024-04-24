@@ -73,7 +73,7 @@ class FileController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'file' => 'required|mimes:pdf|max:5120',
+            'file' => 'required|mimes:pdf',
             'title' => 'required:|unique:files',
             'storage_id' => 'required',
             'category_id' => 'required|array',
@@ -98,9 +98,9 @@ class FileController extends Controller
             return $file;
         });
             FileStorage::putFileAs('public/File_Uploads/'. $request->storage_id, $request->file, str_replace(' ','_',$request->file->hashName()));
-            $this->fileContentService->handle($tr->id);
             $this->attachCategory($tr->id, $request->category_id);
             $this->fileUploadedService->handle($tr->id);
+            $this->fileContentService->handle($tr->id);
     }
 
     public function attachCategory($id, $categories){
