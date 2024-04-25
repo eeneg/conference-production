@@ -2,19 +2,18 @@
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { router, useForm, usePage } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { useForm, usePage } from '@inertiajs/vue3';
 
     const props = defineProps({
         roles: Object,
-        currentRole: Object
+        currentRole: Object,
+        fromProfile: Boolean,
+        user_id: String,
     })
-
-    const user = usePage().props.auth.user
 
     const form = useForm({
         role_id: null,
-        user_id: user.id
+        user_id: props.user_id
     })
 
     const clearSelectedRole = () => {
@@ -33,7 +32,7 @@ import { ref } from 'vue';
             </p>
         </header>
 
-        <form @submit.prevent="form.post(route('profile.assignRole'))" class="mt-6 space-y-6">
+        <form @submit.prevent="fromProfile ? form.post(route('profile.assignRole')) : form.post(route('user.role'))" class="mt-6 space-y-6">
             <div>
                 <select name="role" id="role" v-model="form.role_id" class="border w-full rounded text-gray-700 border-gray-300">
                     <option :value="role.id" v-for="role in props.roles">{{ role.title.charAt(0).toUpperCase() + role.title.slice(1) }}</option>

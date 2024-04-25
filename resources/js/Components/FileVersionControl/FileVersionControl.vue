@@ -54,6 +54,7 @@ const getFileVersions = () => {
     .then(({data}) => {
         fileVersions.value = data
         loading.value = false
+        form.file_id = data.latest[0].id
     })
     .catch(e => {
         console.log(e)

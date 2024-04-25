@@ -9,7 +9,7 @@ use App\Models\File;
 use App\Models\FileVersionControl;
 use App\Services\FileContentService;
 use App\Services\FileUploadedService;
-use App\Services\UpdateNewLatestOnDeleteService;
+use App\Services\DeleteAllFileVersions;
 use Inertia\Inertia;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
@@ -25,7 +25,7 @@ class FileController extends Controller
     public function __construct(
         private FileContentService $fileContentService,
         private FileUploadedService $fileUploadedService,
-        private UpdateNewLatestOnDeleteService $updateNewLatestOnDeleteService,
+        private DeleteAllFileVersions $deleteAllFileVersions,
     ){}
 
     /**
@@ -185,29 +185,29 @@ class FileController extends Controller
      */
     public function destroy(string $id)
     {
-        $f = File::find($id);
+        // $f = File::find($id);
 
-        if($f->latest == true){
-            $this->updateNewLatestOnDeleteService->handle($id);
-        }
+        // $fv = FileVersionControl::where('file_id', $id)->first();
 
-        $fv = FileVersionControl::where('file_id', $id)->first();
+        // if($fv){
+        //     $fv->delete();
+        // }
 
-        if($fv){
-            $fv->delete();
-        }
+        // if(count(FileStorage::files('public/File_Uploads/'.$f->storage_id)) == 1){
+        //     FileStorage::deleteDirectory('public/File_Uploads/'.$f->storage_id);
+        // }else{
+        //     FileStorage::delete($f->path);
+        // }
 
-        if(count(FileStorage::files('public/File_Uploads/'.$f->storage_id)) == 1){
-            FileStorage::deleteDirectory('public/File_Uploads/'.$f->storage_id);
-        }else{
-            FileStorage::delete($f->path);
-        }
+        // $f->category()->detach();
 
-        $f->category()->detach();
+        // $f->pdfContent()->delete();
 
-        $f->pdfContent()->delete();
+        // $f->delete();
 
-        $f->delete();
+        // if($f->latest == true){
+        //     $this->deleteAllFileVersions->handle($id);
+        // }
 
     }
 }

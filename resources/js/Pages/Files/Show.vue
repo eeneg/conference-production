@@ -46,39 +46,8 @@
         category: []
     })
 
-    const deleteForm = useForm({
-        id: null,
-    })
-
-    const deleteModal = (id) => {
-        confirmingFileDeletion.value = true
-        deleteForm.id = id
-    }
-
-    const deleteFile = () => {
-        deleteForm.submit('delete', route('files.destroy', deleteForm.id),{
-           onSuccess: () => {
-                header = "Success!"
-                success = true
-                message = "Submitted Successfuly"
-                confirmingFileDeletion.value = false
-                reset()
-           },
-           onError: () => {
-                header = "Error!"
-                success = false
-                message = "Failed to Submit"
-                confirmingFileDeletion.value = false
-           }
-        })
-    }
-
     const getCategoryId = (id) => {
         form.category = id.value.map(e => e.id)
-    }
-
-    const closeDeleteModal = () => {
-        confirmingFileDeletion.value = false
     }
 
     const search = () => {
@@ -251,8 +220,9 @@
                 <div class="grow pl-5 pr-5 text-sm mt-2 mb-4" v-if="for_review">
                     <div class="mt-2">
                         <h2 class="text-lg font-bold">For Review</h2>
+                        <hr>
                     </div>
-                    <div class="max-h-40 overflow-auto rounded">
+                    <div class="max-h-80 overflow-auto rounded">
                         <div class="border rounded p-2 pl-2 mt-2 group bg-indigo-100" v-for="(file, i) in for_review">
                             <div class="flex items-center">
                                 <div class="flex items-center p-1 justify-center sm:text-sm">
@@ -295,6 +265,7 @@
                 <div class="grow pl-5 pr-5 pb-5 text-sm min-h-80" group="file">
                     <div>
                         <h2 class="text-lg font-bold">Files</h2>
+                        <hr>
                     </div>
                     <div class="border rounded p-2 pl-2 mt-2 group" v-for="(file, i) in files.data">
                         <div class="flex">
@@ -356,9 +327,6 @@
                                                 <li>
                                                     <div class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out cursor-pointer" @click="openRenameModal(file.id, file.file_name, i)">Rename</div>
                                                 </li>
-                                                <li>
-                                                    <div class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out cursor-pointer" @click="deleteModal(file.id)">Delete</div>
-                                                </li>
                                             </ul>
                                         </template>
                                     </Dropdown>
@@ -411,32 +379,6 @@
                 @click="closeModal">
                             <p>OK</p>
             </SecondaryButton>
-        </div>
-    </Modal>
-
-    <Modal :show="confirmingFileDeletion" @close="closeDeleteModal">
-        <div class="p-6">
-            <h2 class="text-lg font-medium text-gray-900">
-                Are you sure you want to delete this File?
-            </h2>
-
-            <p class="mt-1 text-sm text-gray-600">
-                Once its deleted, all of its resources and data will be permanently deleted. Please
-                enter your password to confirm you would like to permanently delete the File.
-            </p>
-
-            <div class="mt-6 flex justify-end">
-                <SecondaryButton @click="closeDeleteModal"> Cancel </SecondaryButton>
-
-                <DangerButton
-                    class="ml-3"
-                    :class="{ 'opacity-25': deleteForm.processing }"
-                    :disabled="deleteForm.processing"
-                    @click="deleteFile"
-                >
-                    Delete File
-                </DangerButton>
-            </div>
         </div>
     </Modal>
 

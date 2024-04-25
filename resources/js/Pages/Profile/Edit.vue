@@ -1,10 +1,11 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
 import AssignRoleFormVue from '@/Layouts/AssignUserRoleLayout.vue'
-import { Head } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
+
+const user = usePage().props.auth.user
 
 defineProps({
     mustVerifyEmail: {
@@ -45,6 +46,8 @@ defineProps({
                 <AssignRoleFormVue
                     :roles="roles"
                     :currentRole="currentRole"
+                    :fromProfile=true
+                    :user_id="user.id"
                     class="max-w-xl"
                 />
             </div>

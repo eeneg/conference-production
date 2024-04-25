@@ -12,16 +12,24 @@ class ConferenceAttendanceController extends Controller
     public function index(Request $request){
         $attendance = ConferenceAttendance::where('conference_id', $request->conference_id)->get('user_id');
 
-        return User::whereIn('id', $attendance)
-            ->with(['roles' => function($query){
-                $query->first();
-            }])
-            ->get();
+        return [
+            'present' =>
+                User::whereIn('id', $attendance)
+                ->with(['roles' => function($query){
+                    $query->where('title', 'user');
+                }])
+                ->get(),
+            'absent' =>
+                User::whereNotIn('id', $attendance)
+                ->whereHas('roles', function (Builder $query) {
+                    $query->where('title', 'board member');
+                })->get()
+        ];
     }
 
     public function store(Request $request){
         $att = ConferenceAttendance::where('conference_id', $request->conference_id)->where('user_id', $request->user_id)->first();
-        if($att == null && auth()->user()->roles->first()->title == 'board member'){
+        if($att == null && User::find($request->user_id)->roles->first()->title == 'board member'){
             return ConferenceAttendance::create(['conference_id' => $request->conference_id, 'user_id' => $request->user_id]);
         }
     }
@@ -36,7 +44,7 @@ class ConferenceAttendanceController extends Controller
         return User::search($request->search)
         ->query(fn (Builder $query) => $query
             ->whereHas('roles', function (Builder $query) {
-                $query->where('title', '=', 'board member');
+                $query->where('title', 'board member');
             })
         )
         ->get();

@@ -105,6 +105,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/referenceSearch', [ReferenceController::class, 'searchReference'])->name('reference.search');
     Route::resource('/fileComments', FileCommentController::class);
+
+    Route::post('/userRole', [UserController::class, 'attachRole'])->name('user.role');
 });
 
 Route::resource('users', UserController::class)->middleware([IsAdmin::class]);

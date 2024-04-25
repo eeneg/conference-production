@@ -50,6 +50,8 @@ const role = usePage().props.auth.role;
                 <AssignUserRoleLayout
                     :roles="roles"
                     :currentRole="currentRole"
+                    :fromProfile=false
+                    :user_id="user.id"
                     class="max-w-xl"/>
             </div>
 

@@ -82,7 +82,7 @@ const getAttendance = () => {
         userAttendance.value = data
     })
     .catch(e => {
-        console.log('attendance not added! Something went Wrong!')
+        console.log('Something went Wrong!')
     })
 }
 
@@ -92,7 +92,7 @@ const deleteAttendance = (user_id) => {
         getAttendance()
     })
     .catch(e => {
-        console.log('attendance not added! Something went Wrong!')
+        console.log('Something went Wrong!')
     })
 }
 
@@ -117,7 +117,7 @@ const manualAddAttendance = (id) => {
         console.log('attendance added')
     })
     .catch(e => {
-        console.log('attendance not added! Something went Wrong!')
+        console.log('Attendance not added! Something went Wrong!')
     })
 }
 </script>
@@ -229,7 +229,7 @@ const manualAddAttendance = (id) => {
 
     <div class="py-5">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <div class="bg-white shadow-sm sm:rounded-lg">
+            <div class="bg-white shadow-sm sm:rounded-lg pt-1">
                 <div class="pl-6 pr-6 mt-3">
                     <header>
                         <h2 class="text-lg font-medium text-gray-900">Finished Conferences</h2>
@@ -365,11 +365,11 @@ const manualAddAttendance = (id) => {
                     </div>
                 </div>
             </div>
-            <div class="mt-4">
-                <InputLabel for="search">Attendance</InputLabel>
+            <div class="mt-6">
+                <h2 for="search" class="text-lg text-green-800">Present</h2>
             </div>
             <div class="flex flex-col max-h-64 overflow-y-auto">
-                <div class="flex w-full p-2 mt-2 rounded" :class="{'bg-gray-200' : i % 2 == 0}" v-for="(attendance, i) in userAttendance">
+                <div class="flex w-full p-2 mt-2 rounded" :class="{'bg-gray-200' : i % 2 == 0}" v-for="(attendance, i) in userAttendance.present">
                     <div class="basis-1/2 content-center">
                         {{ attendance.name }}
                     </div>
@@ -381,6 +381,23 @@ const manualAddAttendance = (id) => {
                     </div>
                 </div>
             </div>
+            <div class="mt-6">
+                <h2 for="search" class="text-lg text-red-800">Absent</h2>
+            </div>
+            <div class="flex flex-col max-h-64 overflow-y-auto">
+                <div class="flex w-full p-2 mt-2 rounded" :class="{'bg-gray-200' : i % 2 == 0}" v-for="(attendance, i) in userAttendance.absent">
+                    <div class="basis-1/2 content-center">
+                        {{ attendance.name }}
+                    </div>
+                    <div class="basis-1/2 content-center pl-2">
+                        {{ attendance.email }}
+                    </div>
+                    <div class="content-center">
+                        <SecondaryButton @click="manualAddAttendance(attendance.id)">Add</SecondaryButton>
+                    </div>
+                </div>
+            </div>
+
 
             <div class="mt-6 flex">
                 <SecondaryButton @click="closeAttendanceModal"> Close </SecondaryButton>

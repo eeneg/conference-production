@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\UserRole;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
@@ -83,26 +84,11 @@ class UserController extends Controller
 
     public function attachRole(Request $request){
 
-        $request->validate([
-            'password' => ['required', 'current-password'],
-        ]);
-
         $user = User::find($request->user_id);
         $role = Role::find($request->role_id);
 
-        $this->detachRole($request->user_id, $role_id);
-
+        $user->roles()->detach();
         $user->roles()->attach($role->id);
-
-    }
-
-    public function detachRole($user_id, $role_id){
-
-        $exist = UserRole::where('user_id', $user_id)->where($role_id, 'role_id')->get();
-
-        if($exist->count() > 0){
-            $user->roles()->dettach($role_id);
-        }
 
     }
 

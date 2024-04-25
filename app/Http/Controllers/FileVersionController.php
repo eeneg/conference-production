@@ -32,14 +32,18 @@ class FileVersionController extends Controller
 
     public function store(Request $request){
 
-        $old_file = File::find($request->file_id);
-
-        $fv = FileVersionControl::where('file_id', $old_file->id)->first();
-
         $request->validate([
             'file' => 'required',
             'title' => 'required:|unique:files',
         ]);
+
+        $old_file = File::find($request->file_id);
+
+        $fv = FileVersionControl::where('file_id', $old_file->id)->first();
+
+        if($request->latest){
+            $this->replaceLatestFile($old_file);
+        }
 
         $file = File::create([
             'title'         => $request->title,
@@ -60,10 +64,6 @@ class FileVersionController extends Controller
         FileStorage::putFileAs('public/File_Uploads/'. $file->storage_id, $request->file, str_replace(' ','_',$request->file->hashName()));
         $this->fileContentService->handle($file->id);
         $this->attachCategory($file->id, $old_file->id);
-
-        if($request->latest){
-            $this->replaceLatestFile($old_file);
-        }
     }
 
     public function attachCategory($id, $oldID){

@@ -14,7 +14,7 @@ createInertiaApp({
     resolve: name => {
         const pages = import.meta.glob('./Pages/**/*.vue', { eager: true })
         let page = pages[`./Pages/${name}.vue`]
-        if(name == 'Welcome' || name == 'Auth/Login' || name == 'Auth/ForgotPassword'){
+        if(name == 'Welcome' || name == 'Auth/Login' || name == 'Auth/ForgotPassword' || name == 'Auth/Register'){
             page.default.layout = page.default.layout
         }else{
             page.default.layout = AuthenticatedLayout
