@@ -23,6 +23,7 @@ class StorageController extends Controller
         $request->validate([
             'title' => 'required|unique:storages,title',
             'location' => 'required',
+            'details' => 'required',
         ]);
 
         Storage::create($request->all());
@@ -34,6 +35,7 @@ class StorageController extends Controller
         $request->validate([
             'title' => 'required|unique:storages,title',
             'location' => 'required',
+            'details' => 'required',
         ]);
 
         $storage = Storage::find($request->id);
