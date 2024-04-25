@@ -39,6 +39,7 @@ const submitFileVersion = () => {
         onSuccess: () => {
             form.reset()
             getFileVersions()
+            emit('refreshData')
         },
         onError: (e) => {
             console.log(e)
