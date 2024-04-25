@@ -232,7 +232,7 @@
                                 </div>
                                 <div class="grow p-1 text-sm">
                                     <div class="flex ml-2">
-                                        <p class="text-lg truncate float-left text-black-900">{{ file.file_name }}</p>
+                                        <p class="text-lg max-w-96 truncate float-left text-black-900">{{ file.file_name }}</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center justify-center float-right space-x-1">
@@ -276,7 +276,7 @@
                             </div>
                             <div class="grow p-1 text-sm">
                                 <div class="flex ml-2">
-                                    <p class="text-lg truncate float-left text-indigo-800">{{ file.file_name }}</p>
+                                    <p class="text-lg max-w-96 truncate float-left text-indigo-800">{{ file.file_name }}</p>
                                 </div>
                                 <div class="flex ml-2">
                                     <p class="">Category: </p>
