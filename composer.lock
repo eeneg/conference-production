@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4e27ca6df610445bf15aa37eb2a5b29e",
+    "content-hash": "635b515af4e4e805b8ab730308c31ebc",
     "packages": [
         {
             "name": "brick/math",
@@ -2049,16 +2049,16 @@
         },
         {
             "name": "laravel/reverb",
-            "version": "v1.0.0-beta8",
+            "version": "v1.0.0-beta9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/reverb.git",
-                "reference": "78d8db37d4f7cdad187c0205c1490e1b5df0eb93"
+                "reference": "46d768c88755ba17224c3f3dcdddf24b0e4fe4f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/reverb/zipball/78d8db37d4f7cdad187c0205c1490e1b5df0eb93",
-                "reference": "78d8db37d4f7cdad187c0205c1490e1b5df0eb93",
+                "url": "https://api.github.com/repos/laravel/reverb/zipball/46d768c88755ba17224c3f3dcdddf24b0e4fe4f8",
+                "reference": "46d768c88755ba17224c3f3dcdddf24b0e4fe4f8",
                 "shasum": ""
             },
             "require": {
@@ -2125,9 +2125,9 @@
             ],
             "support": {
                 "issues": "https://github.com/laravel/reverb/issues",
-                "source": "https://github.com/laravel/reverb/tree/v1.0.0-beta8"
+                "source": "https://github.com/laravel/reverb/tree/v1.0.0-beta9"
             },
-            "time": "2024-04-22T15:25:03+00:00"
+            "time": "2024-04-25T07:20:24+00:00"
         },
         {
             "name": "laravel/sanctum",
@@ -11440,8 +11440,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.1"
+        "php": "^8.2"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }

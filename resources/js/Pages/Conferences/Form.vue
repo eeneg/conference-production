@@ -49,6 +49,7 @@
         agenda: '',
         date: '',
         status: 'pending',
+        video_conf_url: null,
         attachments: []
     })
 
@@ -249,7 +250,20 @@
                     </div>
 
                 </div>
-                <div class="pr-6 pl-6">
+                <div class="pr-6 pl-6 mt-2">
+                    <InputLabel for="video_conf_url" value="Video Conference URL"/>
+
+                    <TextInput
+                        id="video_conf_url"
+                        type="text"
+                        v-model="form.video_conf_url"
+                        class="mt-1 block w-full"
+                    >
+                    </TextInput>
+
+                    <InputError :message="form.errors.title" class="mt-2" />
+                </div>
+                <div class="pr-6 pl-6 mt-2">
 
                     <InputLabel for="agenda" value="Agenda"/>
 

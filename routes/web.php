@@ -95,6 +95,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('agenda', AgendaController::class);
     Route::resource('attendance', ConferenceAttendanceController::class);
     Route::get('/searchUserBoardMember', [ConferenceAttendanceController::class, 'searchBM'])->name('search.bm');
+    Route::get('/getVideoConfURL/{id}', [ConferenceController::class, 'getVideoConfURL'])->name('conf.url');
 
     Route::get('/allChat', function(){
         return Message::all();

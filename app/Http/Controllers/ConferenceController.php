@@ -70,7 +70,8 @@ class ConferenceController extends Controller
                     'title' => $request->title,
                     'agenda' => $request->agenda,
                     'date' => $request->date,
-                    'status' => $request->status
+                    'status' => $request->status,
+                    'video_conf_url' => $request->video_conf_url
                 ]);
 
                 $attachments = $this->fileHandleService->fileHandle($request->attachments);
@@ -181,6 +182,7 @@ class ConferenceController extends Controller
                 'agenda' => $request->agenda,
                 'date' => $request->date,
                 'status' => $request->status,
+                'video_conf_url' => $request->video_conf_url
             ]);
 
         }catch(Throwable $e){
@@ -191,6 +193,10 @@ class ConferenceController extends Controller
 
         }
 
+    }
+
+    public function getVideoConfURL(Request $request, $id){
+        return Conference::find($id)->video_conf_url;
     }
 
     /**

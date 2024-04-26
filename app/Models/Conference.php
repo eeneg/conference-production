@@ -17,7 +17,7 @@ class Conference extends Model
 {
     use HasFactory, HasUuids, Searchable;
 
-    protected $fillable = ['title', 'agenda', 'date', 'attachments', 'status'];
+    protected $fillable = ['title', 'agenda', 'date', 'attachments', 'status', 'video_conf_url'];
 
     public function poll() : HasMany {
         return $this->hasMany(Poll::class);

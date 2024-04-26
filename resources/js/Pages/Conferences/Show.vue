@@ -11,6 +11,7 @@ import { ChevronUpIcon } from '@heroicons/vue/20/solid'
 import { ref, computed } from 'vue'
 import '@vueup/vue-quill/dist/vue-quill.snow.css'
 import _ from 'lodash'
+import axios from 'axios';
 
 const props = defineProps({
     conf: Object,
@@ -78,6 +79,15 @@ const saveNote = () => {
     })
 }
 
+const getURL = () => {
+    axios.get(route('conf.url', props.conf.id))
+    .then(({data}) => {
+        navigator.clipboard.writeText(data);
+    })
+    .catch(e => {
+        console.log('fail')
+    })
+}
 const inputSave = _.debounce(() => {
     saveNote()
 }, 400)
@@ -90,8 +100,10 @@ const inputSave = _.debounce(() => {
         <div class="flex px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="grow">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{conf.title}}</h2>
+                <p class="text-sm cursor-pointer text-blue-900 hover:underline" @click="getURL()">click to copy Video Conference URL here</p>
+
             </div>
-            <div class="flex flex-row-reverse">
+            <div class="flex flex-row-reverse space-x-2 items-center">
                 <PollBody :conference="props.conf"/>
             </div>
         </div>
