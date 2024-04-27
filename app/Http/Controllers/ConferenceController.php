@@ -8,6 +8,7 @@ use App\Models\PdfContent;
 use App\Models\Conference;
 use App\Models\Poll;
 use App\Models\PollVote;
+use App\Models\ConferenceAttendance;
 use App\Services\AttachmentEditService;
 use App\Services\FileHandleService;
 use Illuminate\Http\Request;
