@@ -34,6 +34,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        Auth::logoutOtherDevices($request->password);
+
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
@@ -45,8 +47,6 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
-        Auth::logoutOtherDevices($request->password);
 
         $request->session()->regenerateToken();
 
