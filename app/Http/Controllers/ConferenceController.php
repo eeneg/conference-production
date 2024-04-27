@@ -217,11 +217,16 @@ class ConferenceController extends Controller
 
         $poll = Poll::where('conference_id', $conf->id)->first();
 
-        $pollVotes = PollVote::where('poll_id', $poll->id)->delete();
+        if($poll){
+            $pollVotes = PollVote::where('poll_id', $poll->id)->delete();
+            $poll->delete();
+        }
 
-        $attendance = ConferenceAttendance::where('conference_id', $conf->id)->delete();
+        $attendance = ConferenceAttendance::where('conference_id', $conf->id)->first();
 
-        $poll->delete();
+        if($attendance){
+            $attendance = ConferenceAttendance::where('conference_id', $conf->id)->delete();
+        }
 
         $conf->delete();
 
