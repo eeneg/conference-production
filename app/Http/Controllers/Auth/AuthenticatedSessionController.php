@@ -46,6 +46,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->invalidate();
 
+        Auth::logoutOtherDevices($request->password);
+
         $request->session()->regenerateToken();
 
         return redirect('/');
