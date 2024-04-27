@@ -48,9 +48,9 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified', 'auth.session'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::post('/profile', [ProfileController::class, 'assignRole'])->name('profile.assignRole');
@@ -108,9 +108,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('/fileComments', FileCommentController::class);
 
     Route::post('/userRole', [UserController::class, 'attachRole'])->name('user.role');
+    Route::resource('users', UserController::class)->middleware([IsAdmin::class]);
 });
 
-Route::resource('users', UserController::class)->middleware([IsAdmin::class]);
 
 
 require __DIR__.'/auth.php';

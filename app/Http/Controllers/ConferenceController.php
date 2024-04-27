@@ -8,6 +8,7 @@ use App\Models\PdfContent;
 use App\Models\Conference;
 use App\Models\Poll;
 use App\Models\PollVote;
+use App\Models\ConferenceAttendance;
 use App\Services\AttachmentEditService;
 use App\Services\FileHandleService;
 use Illuminate\Http\Request;
@@ -217,11 +218,17 @@ class ConferenceController extends Controller
 
         $poll = Poll::where('conference_id', $conf->id)->first();
 
-        $pollVotes = PollVote::where('poll_id', $poll->id)->delete();
+        if($poll){
+            $pollVotes = PollVote::where('poll_id', $poll->id)->delete();
+            $poll->delete();
+        }
 
-        $attendance = ConferenceAttendance::where('conference_id', $conf->id)->delete();
+        $attendance = ConferenceAttendance::where('conference_id', $conf->id)->first();
 
-        $poll->delete();
+        if($attendance){
+            $attendance = ConferenceAttendance::where('conference_id', $conf->id)->delete();
+        }
+        
 
         $conf->delete();
 

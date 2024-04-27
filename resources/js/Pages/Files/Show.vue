@@ -52,7 +52,6 @@
 
     const search = () => {
         search_button_text.value = "LOADING..."
-
         axios.post(route('file.search'), form)
         .then(({data}) => {
             files.value = data
