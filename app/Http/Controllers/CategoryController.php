@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Category;
 use App\Models\File;
+use App\Models\FileCategory;
 
 class CategoryController extends Controller
 {
@@ -42,7 +43,7 @@ class CategoryController extends Controller
 
     public function checkCategoryRelation($id){
 
-        $files = File::where('category_id', $id)->count() == 0;
+        $files = FileCategory::where('category_id', $id)->count() == 0;
 
         return $files;
 
