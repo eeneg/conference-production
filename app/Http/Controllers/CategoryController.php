@@ -31,7 +31,7 @@ class CategoryController extends Controller
     public function update(Request $request){
 
         $request->validate([
-            'title' => 'required|unique:categories,title',
+            'title' => 'required|unique:categories,title,'.$request->id,
             'type' => 'required'
         ]);
 
