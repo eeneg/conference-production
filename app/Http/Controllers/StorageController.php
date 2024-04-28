@@ -33,7 +33,7 @@ class StorageController extends Controller
     public function update(Request $request){
 
         $request->validate([
-            'title' => 'required|unique:storages,title',
+            'title' => 'required|unique:storages,title,'.$request->id,
             'location' => 'required',
             'details' => 'required',
         ]);
@@ -48,7 +48,7 @@ class StorageController extends Controller
 
         $files = File::where('storage_id', $id)->count() == 0;
 
-        return $files && $attachments;
+        return $files;
 
     }
 

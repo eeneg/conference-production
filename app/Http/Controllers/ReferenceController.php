@@ -50,8 +50,8 @@ class ReferenceController extends Controller
     public function update(Request $request, string $id){
         $request->validate(
             [
-                'category_id' => 'required|unique:references,title',
-                'title' => 'required',
+                'title' => 'required|unique:references,title,'.$id,
+                'category_id' => 'required',
                 'date' => 'required',
                 'details' => 'required'
             ],
