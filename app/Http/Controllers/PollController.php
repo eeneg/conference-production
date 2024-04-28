@@ -22,6 +22,7 @@ class PollController extends Controller
         $request->validate([
             'title' => 'required',
             'type' => 'required',
+            'details' => 'required',
         ]);
 
         Conference::find($request->conf_id)->poll()->create([
@@ -35,6 +36,7 @@ class PollController extends Controller
         $request->validate([
             'title' => 'required',
             'type' => 'required',
+            'details' => 'required',
         ]);
 
         Poll::find($poll_id)->update([
