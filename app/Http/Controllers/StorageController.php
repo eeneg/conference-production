@@ -48,7 +48,7 @@ class StorageController extends Controller
 
         $files = File::where('storage_id', $id)->count() == 0;
 
-        return $files && $attachments;
+        return $files;
 
     }
 
