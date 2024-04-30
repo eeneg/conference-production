@@ -79,10 +79,11 @@ const saveNote = () => {
     })
 }
 
+const conf_url = ref(props.conf.video_conf_url)
 const getURL = () => {
     axios.get(route('conf.url', props.conf.id))
     .then(({data}) => {
-        navigator.clipboard.writeText(data);
+        conf_url.value = data
     })
     .catch(e => {
         console.log('fail')
@@ -100,8 +101,14 @@ const inputSave = _.debounce(() => {
         <div class="flex px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="grow">
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{conf.title}}</h2>
-                <p class="text-sm cursor-pointer text-blue-900 hover:underline" @click="getURL()">click to copy Video Conference URL here</p>
-
+                <div class="flex">
+                    <p class="text-sm text-blue-900 cursor-pointer" @click="getURL()">
+                        Conference URL: 
+                    </p>
+                    <p class="text-sm text-blue-900 ml-2" @click="getURL()">
+                        {{ conf_url }}
+                    </p>
+                </div>
             </div>
             <div class="flex flex-row-reverse space-x-2 items-center">
                 <PollBody :conference="props.conf"/>

@@ -52,7 +52,6 @@
 
     const search = () => {
         search_button_text.value = "LOADING..."
-
         axios.post(route('file.search'), form)
         .then(({data}) => {
             files.value = data
@@ -148,29 +147,19 @@
 </script>
 <template>
 
-    <Head title="Search"/>
-
+    <Head title="Find Files" />
     <header class="bg-white shadow">
         <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
-            <h2 v-if="props.type == 1" class="text-xl font-semibold leading-tight text-gray-800">Search Attachments</h2>
-            <h2 v-if="props.type == 2" class="text-xl font-semibold leading-tight text-gray-800">Search Files</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Search Files</h2>
+            <p class="mt-1 text-sm text-gray-600">
+                Searches Files via File Name, Storage, Content and Category (e.g. Ordinances, Resolutions)
+            </p>
         </div>
     </header>
 
     <div class="py-5">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                <div class="flex flex-row">
-                    <div class="pl-5 pr-6 mt-3 grow">
-                        <header>
-                            <h2 class="text-lg font-medium text-gray-900">Search Files</h2>
-
-                            <p class="mt-1 text-sm text-gray-600">
-                                Searches Files via File Name, Storage, Content and Category (e.g. Ordinances, Resolutions)
-                            </p>
-                        </header>
-                    </div>
-                </div>
                 <div class="flex flex-row-reverse mt-3 pl-5 pr-5 space-x-2">
                     <div class="ml-3">
                         <SecondaryButton @click="reset">Reset</SecondaryButton>
@@ -286,10 +275,6 @@
                                     <p class="">Storage: </p>
                                     <p class="text-md ml-2 truncate text-gray-500">{{ file.storage.title }}</p>
                                 </div>
-                                <div class="flex ml-2">
-                                    <p class="">Details: </p>
-                                    <p class="text-md ml-2 truncate text-gray-500">{{ file.details }}</p>
-                                </div>
                             </div>
                             <div class="mt-2">
                                 <div class="flex items-center justify-center float-right space-x-1">
@@ -340,28 +325,29 @@
                 </div>
             </div>
         </div>
-        <Modal :show="pdfModalShow" :maxWidth="'4xl'" @close="closeModal">
-            <div class="p-6">
-                <div class="" v-if="review_status">
-                    <InputLabel>Set for Review</InputLabel>
-                    <div class="flex space-x-2 mt-2">
-                        <input type="checkbox" v-model="reviewForm.status"/>
-                        <InputLabel for="latest">Yes</InputLabel>
-                    </div>
-                    <div class="mt-2">
-                        <PrimaryButton @click="setFileForReview()">Submit</PrimaryButton>
-                    </div>
-                </div>
-                <div class="mt-6 h-64" style="height: 50rem;">
-                    <embed :src="'/storage/'+path" style="width: 100%; height: 100%;"  type="application/pdf">
-                </div>
+    </div>
 
-                <div class="mt-6 flex">
-                    <SecondaryButton @click="closeModal"> Close </SecondaryButton>
+    <Modal :show="pdfModalShow" :maxWidth="'4xl'" @close="closeModal">
+        <div class="p-6">
+            <div class="" v-if="review_status">
+                <InputLabel>Set for Review</InputLabel>
+                <div class="flex space-x-2 mt-2">
+                    <input type="checkbox" v-model="reviewForm.status"/>
+                    <InputLabel for="latest">Yes</InputLabel>
+                </div>
+                <div class="mt-2">
+                    <PrimaryButton @click="setFileForReview()">Submit</PrimaryButton>
                 </div>
             </div>
-        </Modal>
-    </div>
+            <div class="mt-6" style="height: 40rem;">
+                <embed :src="'/storage/'+path" style="width: 100%; height: 100%;"  type="application/pdf">
+            </div>
+
+            <div class="mt-6 flex">
+                <SecondaryButton @click="closeModal"> Close </SecondaryButton>
+            </div>
+        </div>
+    </Modal>
 
     <Modal :show="responseModal">
         <div class="p-6">

@@ -86,8 +86,6 @@ class AttachmentController extends Controller
 
     public function content(File $attachment)
     {
-        dd($attachment);
-
         return response()->stream(function () use ($attachment) {
             echo $attachment->getContent();
         }, 200, ['Content-Type' => $attachment->mime, 'Content-Disposition' => 'inline; filename="' . $attachment->file_name . '"']);

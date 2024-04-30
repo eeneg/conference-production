@@ -128,6 +128,27 @@
         router.visit(route('file.index'))
     }
 
+    const testForm = useForm({
+        files: []
+    })
+    const getTestFiles = (e) => {
+        Array.from(e.target.files).forEach(e => {
+            testForm.files.push(e)
+        })
+        console.log(testForm.files)
+    }
+    const testUpload = () => {
+        testForm.submit('post', route('test.index'),{
+            files:true,
+            onSuccess: (e) => {
+                console.log(e)
+            },
+            onError: (e) => {
+                console.log(e)
+            }
+        })
+    }
+
     onMounted(() => {
         if(props.file != null){
             editMode.value = true
@@ -138,7 +159,7 @@
 
 </script>
 <template>
-    <Head title="Attachments" />
+    <Head title="Files" />
     <header class="bg-white shadow">
         <div class="px-4 py-6 mx-auto max-w-7xl sm:px-6 lg:px-8">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Files</h2>
@@ -157,6 +178,8 @@
                                 Upload files
                             </p>
                         </header>
+                        <input v-on:change="getTestFiles($event)" type="file" accept="application/pdf" multiple/>
+                        <PrimaryButton @click="testUpload()">save</PrimaryButton>
                     </div>
                 </div>
                 <div class="mt-3 mb-3 pr-6 pl-5 grid grid-cols-2 max-[600px]:grid-cols-1">
