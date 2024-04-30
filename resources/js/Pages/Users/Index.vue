@@ -8,10 +8,10 @@ import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import { nextTick } from 'vue';
 
-    const props = defineProps({users: Object})
+    const props = defineProps({users: Object, search:String})
 
     const form = useForm({
-        search: ''
+        search: props.search
     })
 
     const roleForm = useForm({

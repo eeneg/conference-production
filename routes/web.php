@@ -74,7 +74,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::patch('/file_review/{id}', [FileController::class, 'setFileForReview'])->name('file.review');
 
     Route::get('/fileList', [FileSearchController::class, 'index'])->name('file.index');
-    Route::post('/fileSearch', [FileSearchController::class, 'searchFile'])->name('file.search');
+    Route::get('/fileSearch', [FileSearchController::class, 'searchFile'])->name('file.search');
     Route::get('/downloadFile/{file}', [FileSearchController::class, 'downloadFile'])->name('file.download');
     Route::post('/attachmentSearch', [FileSearchController::class, 'searchFileAsAttachment'])->name('file.attachment');
 

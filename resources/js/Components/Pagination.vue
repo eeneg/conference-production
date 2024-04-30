@@ -9,33 +9,32 @@
           <p class="text-sm text-gray-700">
             Showing
             {{ ' ' }}
-            <span class="font-medium">{{ data.from }}</span>
+            <span class="font-medium">{{ props.data.from }}</span>
             {{ ' ' }}
             to
             {{ ' ' }}
-            <span class="font-medium">{{ data.to }}</span>
+            <span class="font-medium">{{ props.data.to }}</span>
             {{ ' ' }}
             of
             {{ ' ' }}
-            <span class="font-medium">{{ data.total }}</span>
+            <span class="font-medium">{{ props.data.total }}</span>
             {{ ' ' }}
             results
           </p>
         </div>
         <div>
           <nav v-if="data.total != 0" class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
-            <!-- Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" -->
             <Link
                 class="relative hidden items-center px-4 py-2 text-sm font-medium text-gray-500 focus:z-20 md:inline-flex"
-                v-for="(link, index, key) in data.links"
+                v-for="(link, index, key) in props.data.links"
                 :key="key"
-                :href="(link.url ?? '#')"
+                :href="(link.url ? link.url.replace('query', 'search') : '#')"
                 :preserve-scroll="true"
                 :class="{'z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600' : link.active == true, 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0' : link.active == false }"
             >
                 <ChevronLeftIcon v-if="index == 0" class="h-5 w-5" aria-hidden="true" />
-                {{ index != 0 && index != last_index - 1 ? link.label : '' }}
-                <ChevronRightIcon v-if="index == last_index - 1" class="h-5 w-5" aria-hidden="true" />
+                {{ index != 0 && index != props.data.links.length - 1 ? link.label : '' }}
+                <ChevronRightIcon v-if="index == props.data.links.length - 1" class="h-5 w-5" aria-hidden="true" />
             </Link>
           </nav>
         </div>
@@ -47,12 +46,6 @@
 
     import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/20/solid'
     import { Link } from '@inertiajs/vue3';
-
-    const items = [
-        { id: 1, title: 'Back End Developer', department: 'Engineering', type: 'Full-time', location: 'Remote' },
-        { id: 2, title: 'Front End Developer', department: 'Engineering', type: 'Full-time', location: 'Remote' },
-        { id: 3, title: 'User Interface Designer', department: 'Design', type: 'Full-time', location: 'Remote' },
-    ]
 
     const props = defineProps({data: Object})
 
