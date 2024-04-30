@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('conferences', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
             $table->string('title')->unique();
-            $table->string('video_conf_url');
+            $table->string('video_conf_url')->nullable();
             $table->longText('agenda')->nullable();
             $table->date('date');
             $table->string('status');

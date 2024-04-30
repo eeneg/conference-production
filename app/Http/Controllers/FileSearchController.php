@@ -55,6 +55,9 @@ class FileSearchController extends Controller
 
     public function searchFileAsAttachment(Request $request){
         $files = File::search($request->search)
+            ->query(function($query) use ($request){
+                $query->where('latest', true);
+            })
             ->orderBy('created_at', 'desc')
             ->paginate(15);
 

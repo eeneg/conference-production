@@ -228,7 +228,6 @@ class ConferenceController extends Controller
         if($attendance){
             $attendance = ConferenceAttendance::where('conference_id', $conf->id)->delete();
         }
-        
 
         $conf->delete();
 

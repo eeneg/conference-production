@@ -85,7 +85,6 @@ class FileController extends Controller
             'storage_id.required' => 'Storage Field in required',
             'category_id.required' => 'Category Field in required',
         ]);
-
         $tr = DB::Transaction(function($e) use ($request) {
             $file = File::create([
                 'title'         => $request->title,
