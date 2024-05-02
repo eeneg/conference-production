@@ -34,7 +34,7 @@ const props = defineProps({conference:Object})
                     </div>
                 </div>
                 <div class="flex">
-                    <div class="pl-5 pr-6 mt-3 grow">
+                    <div class="pl-5 pr-6 pb-6 mt-3 grow">
                         <div class="max:h-screen" v-html="props.conference.agenda">
 
                         </div>

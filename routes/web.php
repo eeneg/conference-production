@@ -19,7 +19,6 @@ use App\Http\Controllers\FileVersionController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileCommentController;
-use App\Http\Controllers\TestController;
 use App\Http\Middleware\IsAdmin;
 use App\Models\Minutes;
 use App\Models\Message;
@@ -110,10 +109,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
 
     Route::post('/userRole', [UserController::class, 'attachRole'])->name('user.role');
     Route::resource('users', UserController::class)->middleware([IsAdmin::class]);
-
-    Route::resource('test', TestController::class);
 });
-
 
 
 require __DIR__.'/auth.php';

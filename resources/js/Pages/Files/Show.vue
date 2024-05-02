@@ -18,6 +18,7 @@
     import { router } from '@inertiajs/vue3'
     import Pagination from '@/Components/Pagination.vue';
     import axios from 'axios';
+    import _ from 'lodash';
 
     const props = defineProps({files: Object, storage: Object, category: Object, for_review:Object})
 
@@ -43,7 +44,8 @@
     const form = useForm({
         search: props.search,
         storage: null,
-        category: []
+        category: [],
+        page: 1
     })
 
     const getCategoryId = (id) => {
@@ -52,7 +54,8 @@
 
     const search = () => {
         search_button_text.value = "LOADING..."
-        axios.post(route('file.search'), form)
+        form.page = 1
+        axios.get(route('file.search',form))
         .then(({data}) => {
             files.value = data
             search_button_text.value = "SEARCH"
@@ -61,6 +64,31 @@
             search_button_text.value = "SEARCH"
         })
     }
+
+    const searchFileOnScroll = () => {
+        search_button_text.value = "LOADING..."
+        axios.get(route('file.search',form))
+        .then(({data}) => {
+            search_button_text.value = "SEARCH"
+            if(data.data.length == 0){
+                form.page = form.page - 1
+            }
+            data.data.forEach(e => {
+                files.value.data.push(e)
+            })
+        })
+        .catch(e => {
+            search_button_text.value = "SEARCH"
+            console.log(e)
+        })
+    }
+
+    const onScroll = _.debounce(({ target: { scrollTop, clientHeight, scrollHeight }}) => {
+        if ((form.search != null || form.storage || form.category != []) && scrollTop + clientHeight >= scrollHeight) {
+            form.page = form.page + 1
+            searchFileOnScroll()
+        }
+    }, 300)
 
     const reset = () => {
         form.reset()
@@ -251,7 +279,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="grow pl-5 pr-5 pb-5 text-sm min-h-80" group="file">
+                <div class="grow pl-5 pr-5 pb-5 text-sm min-h-20 max-h-screen overflow-auto" @scroll="onScroll" group="file">
                     <div>
                         <h2 class="text-lg font-bold">Files</h2>
                         <hr>
@@ -320,9 +348,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="p-6">
+                <!-- <div class="p-6">
                     <Pagination :data="files"></Pagination>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
