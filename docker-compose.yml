@@ -9,6 +9,7 @@ services:
                 WWWGROUP: '${WWWGROUP}'
         image: sail-8.2/app
         extra_hosts:
+            - "laravel.test:127.0.0.1"
             - 'host.docker.internal:host-gateway'
         ports:
             - "80:80"
@@ -21,6 +22,7 @@ services:
             LARAVEL_SAIL: 1
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
+            - './nginx/ssl:/etc/nginx/ssl'
             - '.:/var/www/html'
         networks:
             - conference
