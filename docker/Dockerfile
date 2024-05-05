@@ -57,6 +57,7 @@ RUN crontab -l | { cat; echo "* * * * * /usr/bin/php /var/www/html/artisan sched
 COPY start-container /usr/local/bin/start-container
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY php.ini /etc/php/8.2/cli/conf.d/99-sail.ini
+COPY /etc/letsencrypt/live/legistechsolutions.com/*.pem /etc/ssl/private/
 RUN chmod +x /usr/local/bin/start-container
 
 EXPOSE 8000
