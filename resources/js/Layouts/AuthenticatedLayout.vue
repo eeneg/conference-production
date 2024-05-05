@@ -119,7 +119,7 @@ onMounted(() => {
                                 <NavLink :href="route('conferences.index')" :active="route().current('conferences.*')">
                                     Conferences
                                 </NavLink>
-                                <NavLink :href="route('file.index')" :active="route().current('file.*')">
+                                <NavLink :href="route('file.index')" :active="route().current('file.index')">
                                     Find Files
                                 </NavLink>
                                 <NavLink :href="route('files.index')" :active="route().current('files.*')">
@@ -214,6 +214,9 @@ onMounted(() => {
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('conferences.index')" :active="route().current('conferences.index')">
                             Conferences
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('file.index')" :active="route().current('file.index')">
+                            Find Files
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('files.index')" :active="route().current('files.index')">
                             File Upload
