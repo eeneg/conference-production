@@ -279,12 +279,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="grow pl-5 pr-5 pb-5 text-sm min-h-20 max-h-screen overflow-auto" @scroll="onScroll" group="file">
+                <div class="grow pl-5 pr-5 pb-20 text-sm min-h-20 max-h-screen overflow-auto" @scroll="onScroll" group="file">
                     <div>
                         <h2 class="text-lg font-bold">Files</h2>
                         <hr>
                     </div>
-                    <div class="border rounded p-2 pl-2 mt-2 group" v-for="(file, i) in files.data">
+                    <div class="border rounded pr-2 pl-2 mt-2 group" v-for="(file, i) in files.data">
                         <div class="flex">
                             <div class="flex items-center p-1 justify-center sm:text-sm">
                                 <div class="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-300 text-red-900">
@@ -348,9 +348,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="p-6">
-                    <Pagination :data="files"></Pagination>
-                </div> -->
             </div>
         </div>
     </div>
