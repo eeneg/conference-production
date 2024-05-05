@@ -1,5 +1,6 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, router } from '@inertiajs/vue3';
+import { onMounted } from 'vue';
 
 defineProps({
     canLogin: {
@@ -17,6 +18,7 @@ defineProps({
         required: true,
     },
 });
+
 </script>
 
 <template>

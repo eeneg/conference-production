@@ -10,5 +10,5 @@ class PollVote extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = ['poll_id', 'user_id', 'vote'];
+    protected $fillable = ['poll_id', 'user_id', 'vote', 'note'];
 }

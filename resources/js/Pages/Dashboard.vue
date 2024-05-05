@@ -1,10 +1,8 @@
 <script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import { UserGroupIcon, DocumentTextIcon, FolderIcon, BuildingLibraryIcon, ArrowTopRightOnSquareIcon } from '@heroicons/vue/20/solid';
 import moment from 'moment';
 import _ from 'lodash';
-import { onMounted, ref } from 'vue';
 
 const props = defineProps({
         user_count:Number,
@@ -16,19 +14,6 @@ const props = defineProps({
         monthly_sessions:Object
     })
 
-const maxMonthlySession = ref(0)
-
-const bars = (month) => {
-    if(maxMonthlySession.value > props.monthly_sessions[month]){
-        maxMonthlySession.value = props.monthly_sessions[month]
-    }
-
-    return 'h-full bg-indigo-200'
-}
-
-onMounted(() => {
-
-})
 </script>
 
 <template>
@@ -119,9 +104,17 @@ onMounted(() => {
                         Conferences
                     </div>
                     <div class="flex justify-center h-60">
-                        <div class="flex flex-col text-center" v-for="i in 12">
-                            <div class="basis-full pl-4 pr-4 text-center pt-6">
-                                <div class="relative" :class="bars(moment().month(i-1).format('MMM'))">
+                        <div class="flex flex-col flex-col-reverse text-center" v-for="i in 12">
+                            <div class="w-full border-t-2">
+                                <div class="md:w-14 lg:w-24">
+                                    {{ moment().month(i-1).format('MMM') }}
+                                </div>
+                            </div>
+                            <div class="flex flex-col flex-col-reverse align-bottom pl-4 pr-4 text-center pt-6 h-60">
+                                <div 
+                                    class="relative bg-indigo-200"
+                                    :class="'h-['+Math.round((monthly_sessions[moment().month(i-1).format('MMM')]/30)*100)+'%]'" 
+                                >
                                     <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-bold">
                                         {{
                                             monthly_sessions[moment().month(i-1).format('MMM')] ?
@@ -129,11 +122,6 @@ onMounted(() => {
                                             ''
                                         }}
                                     </span>
-                                </div>
-                            </div>
-                            <div class="border-t-2 w-full">
-                                <div class="md:w-14 lg:w-24">
-                                    {{ moment().month(i-1).format('MMM') }}
                                 </div>
                             </div>
                         </div>

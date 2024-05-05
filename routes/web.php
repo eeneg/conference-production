@@ -92,6 +92,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/countPollVotes/{id}', [PollController::class, 'countPollVotes']);
     Route::post('/endPoll', [PollController::class, 'endPoll']);
     Route::get('/getUserPoll/{poll_id}/{user_id}', [PollController::class, 'getUserPoll']);
+    Route::get('/getIndividualVotes/{poll_id}', [PollController::class, 'getIndividualVotes']);
 
     Route::resource('agenda', AgendaController::class);
     Route::resource('attendance', ConferenceAttendanceController::class);

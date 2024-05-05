@@ -69,7 +69,8 @@ class PollController extends Controller
         ],[
             'poll_id'   => $request->poll_id,
             'user_id'   => $request->user_id,
-            'vote'      => $request->vote
+            'vote'      => $request->vote,
+            'note'      => $request->note
         ]);
 
         $count = $this->countPollVotes($request->poll_id);
@@ -123,6 +124,22 @@ class PollController extends Controller
         $poll = Poll::find($request->id)->update(['active' => $request->value]);
 
         broadcast(new PollSetActiveEvent($request->id, $request->initiatorID, $request->value));
+    }
+
+    public function getIndividualVotes($poll_id){
+        $poll_yes = PollVote::where('poll_id', $poll_id)
+            ->where('vote', true)
+            ->leftJoin('users', 'users.id', '=', 'poll_votes.user_id')
+            ->select('users.name')
+            ->get();
+        
+        $poll_no = PollVote::where('poll_id', $poll_id)
+            ->where('vote', false)
+            ->leftJoin('users', 'users.id', '=', 'poll_votes.user_id')
+            ->select('users.name', 'poll_votes.note')
+            ->get();
+
+        return [$poll_yes, $poll_no];
     }
 
     public function destroy(Request $request){
