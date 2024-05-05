@@ -103,7 +103,7 @@ const inputSave = _.debounce(() => {
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{conf.title}}</h2>
                 <div class="flex">
                     <p class="text-sm text-blue-900 cursor-pointer" @click="getURL()">
-                        Conference URL: 
+                        Conference URL:
                     </p>
                     <p class="text-sm text-blue-900 ml-2" @click="getURL()">
                         {{ conf_url }}
@@ -137,8 +137,10 @@ const inputSave = _.debounce(() => {
 
                     <TabPanels>
                         <TabPanel class="rounded-xl">
-                            <div class="ql-container ql-snow">
-                                <div class="prose max-w-none ql-editor ql-blank" v-html="conf.agenda"></div>
+                            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-4">
+                                <div class="py-6 px-4">
+                                    <div class="prose max-w-none" v-html="conf.agenda"></div>
+                                </div>
                             </div>
                         </TabPanel>
 

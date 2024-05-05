@@ -38,6 +38,10 @@ class Conference extends Model
         $query->whereStatus('pending');
     }
 
+    public function manualAttendance(){
+        return $this->hasMany(ManualAttendance::class);
+    }
+
     public function scopeCompleted(Builder $query) : void
     {
         $query->whereStatus('completed');

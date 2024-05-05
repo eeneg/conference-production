@@ -22,7 +22,8 @@ const initiator = user_id == props.initiatorID
 const pollForm = useForm({
     poll_id: props.pollID,
     user_id: user_id,
-    vote: null
+    vote: null,
+    note: null
 })
 
 const showModal = ref(props.showPollModal)
@@ -113,6 +114,20 @@ const getUserPoll = () => {
     })
 }
 
+const yesVotes = ref([])
+const noVotes = ref([])
+const getIndividualVotes = () => {
+    axios.get('/getIndividualVotes/'+props.pollID)
+    .then(({data}) => {
+        yesVotes.value = data[0]
+        noVotes.value = data[1]
+    })
+    .catch(e => {
+        console.log(e)
+    })
+}
+
+
 const endPoll = () => {
     axios.post('/endPoll', {poll_id: props.pollID})
     .then(({data}) => {
@@ -128,8 +143,10 @@ onMounted(() => {
     getPoll()
     getPollCount()
     getUserPoll()
+    getIndividualVotes()
     window.Echo.private('poll-vote').listen('PollVoteSubmittedEvent', (e) => {
         setPollCount(e.vote)
+        getIndividualVotes()
         sbmtBtnTxt.value = 'Submit'
     });
 })
@@ -186,9 +203,38 @@ onMounted(() => {
                 </div>
                 <div class="rounded" v-if="pollForm.vote == false && !initiator">
                     <InputLabel for="no-reason">Explanatory Note</InputLabel>
-                    <textarea id="no-reason" name="no-reason" class="h-full w-full rounded border-gray-300"> </textarea>
+                    <textarea id="no-reason" name="no-reason" class="h-full w-full rounded border-gray-300" v-model="pollForm.note"> </textarea>
                 </div>
                 <InputError :message="errors" class="mt-2" />
+            </div>
+
+            <div class="w-full mt-4">
+                <p class="text-lg text-green-700">
+                    YES:
+                </p>
+            </div>
+
+            <div class="mt-3 flex flex-col max-h-40 overflow-auto space-y-1">
+                <div class="bg-slate-200 py-1 px-3 rounded" :class="{'bg-green-200':i % 2 === 0}" v-for="(vote, i) in yesVotes">
+                    {{ vote.name }}
+                </div>
+            </div>
+            <div class="w-full mt-4">
+                <p class="text-red-700 text-lg">
+                    NO:
+                </p>
+            </div>
+            <div class="mt-4 flex flex-col max-h-40 overflow-auto space-y-1">
+                <div class="flex items-center flex-between bg-slate-200 py-1 px-3 rounded" :class="{'bg-red-200':i % 2 === 0}" v-for="(vote, i) in noVotes">
+                    <div class="flex flex-col font-bold grow">
+                        <div>
+                            {{ vote.name }}
+                        </div>
+                        <div class="text-sm text-gray-500">
+                            {{ vote.note }}
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="mt-3 flex flex-row space-x-2">

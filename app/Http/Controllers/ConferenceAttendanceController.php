@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\ConferenceAttendance;
+use App\Models\Conference;
 use App\Models\User;
 
 class ConferenceAttendanceController extends Controller
@@ -19,6 +20,8 @@ class ConferenceAttendanceController extends Controller
                     $query->where('title', 'user');
                 }])
                 ->get(),
+            'custom' =>
+                Conference::find($request->conference_id)->manualAttendance()->get(),
             'absent' =>
                 User::whereNotIn('id', $attendance)
                 ->whereHas('roles', function (Builder $query) {
@@ -34,8 +37,8 @@ class ConferenceAttendanceController extends Controller
         }
     }
 
-    public function destroy(Request $request){
-        $att = ConferenceAttendance::where('conference_id', $request->conference_id)->where('user_id', $request->user_id)->first();
+    public function delete(Request $request){
+        $att = ConferenceAttendance::where('conference_id', $request->conference_id)->where('user_id', $request->id)->first();
 
         $att->delete();
     }

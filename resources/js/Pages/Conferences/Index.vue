@@ -4,6 +4,7 @@ import Modal from '@/Components/Modal.vue';
 import Pagination from '@/Components/Pagination.vue'
 import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
+import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
@@ -71,6 +72,7 @@ const conf_id = ref(null)
 const openAttendanceModal = (conference_id) => {
     attendanceModal.value = true
     conf_id.value = conference_id
+    costumAttendanceForm.conf_id = conference_id
     getAttendance()
 }
 const closeAttendanceModal = () => {
@@ -87,7 +89,7 @@ const getAttendance = () => {
 }
 
 const deleteAttendance = (user_id) => {
-    axios.delete(route('attendance.index', {id: user_id}))
+    axios.post(route('attendance.delete'), {id: user_id, conference_id:conf_id.value})
     .then(({data}) => {
         getAttendance()
     })
@@ -118,6 +120,33 @@ const manualAddAttendance = (id) => {
     })
     .catch(e => {
         console.log('Attendance not added! Something went Wrong!')
+    })
+}
+
+const costumAttendanceForm = useForm({
+    id: null,
+    name:null,
+    conf_id: null
+})
+const customAttendanceAdd = () => {
+    costumAttendanceForm.submit('post', route('manualAttendance.store'),{
+        onSuccess: (e) => {
+            getAttendance()
+        },
+        onError: (e) => {
+            console.log(e)
+        }
+    })
+}
+
+const deleteCustomAttendance = (id) => {
+    costumAttendanceForm.submit('delete', route('manualAttendance.destroy', id),{
+        onSuccess: (e) => {
+            getAttendance()
+        },
+        onError: (e) => {
+            console.log(e)
+        }
     })
 }
 </script>
@@ -351,12 +380,12 @@ const manualAddAttendance = (id) => {
                 <div v-if="searching">
                     Searching...
                 </div>
-                <div class="flex flex-col max-h-64 mt-2 overflow-y-auto">
+                <div class="flex flex-col min-h-5 max-h-64 mt-2 overflow-y-auto">
                     <div class="flex w-full p-2 mt-2 rounded" :class="{'bg-gray-200' : i % 2 == 0}" v-for="(bm, i) in boardMembers">
-                        <div class="basis-1/2 content-center">
+                        <div class="basis-1/2 content-center truncate pr-9">
                             {{ bm.name }}
                         </div>
-                        <div class="basis-1/2 content-center">
+                        <div class="basis-1/2 content-center truncate pr-9">
                             {{ bm.email }}
                         </div>
                         <div class="content-center">
@@ -365,15 +394,49 @@ const manualAddAttendance = (id) => {
                     </div>
                 </div>
             </div>
-            <div class="mt-6">
+            <div class="mt-2">
+                <h2 for="search" class="text-lg text-green-800">Custom Attendance</h2>
+            </div>
+            <div class="flex flex-col">
+                <div>
+                    <InputLabel for="manual">Name</InputLabel>
+                </div>
+                <div class="flex flex-col">
+                    <div class="flex space-x-3">
+                        <div class="grow content-center">
+                            <TextInput class="w-full" v-model="costumAttendanceForm.name" placeholder="attendance for users without an account"></TextInput>
+                        </div>
+                        <div class="">
+                            <PrimaryButton class="h-full" @click="customAttendanceAdd()">Add</PrimaryButton>
+                        </div>
+                    </div>
+                    <div>
+                        <InputError :message="costumAttendanceForm.errors.name" class="mt-2" />
+                        <Transition enter-from-class="opacity-0" leave-to-class="opacity-0" class="transition ease-in-out">
+                            <p v-if="costumAttendanceForm.recentlySuccessful" class="text-sm text-gray-600">Success.</p>
+                        </Transition>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col max-h-64 overflow-y-auto">
+                <div class="flex w-full p-2 mt-2 rounded bg-indigo-100" :class="{'bg-indigo-300' : i % 2 == 0}" v-for="(attendance, i) in userAttendance.custom">
+                    <div class="basis-full content-center truncate pr-9">
+                        {{ attendance.name }}
+                    </div>
+                    <div class="content-center">
+                        <SecondaryButton @click="deleteCustomAttendance(attendance.id)">Delete</SecondaryButton>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-2">
                 <h2 for="search" class="text-lg text-green-800">Present</h2>
             </div>
             <div class="flex flex-col max-h-64 overflow-y-auto">
                 <div class="flex w-full p-2 mt-2 rounded" :class="{'bg-gray-200' : i % 2 == 0}" v-for="(attendance, i) in userAttendance.present">
-                    <div class="basis-1/2 content-center">
+                    <div class="basis-1/2 content-center truncate pr-9">
                         {{ attendance.name }}
                     </div>
-                    <div class="basis-1/2 content-center pl-2">
+                    <div class="basis-1/2 content-center pl-2 truncate pr-9">
                         {{ attendance.email }}
                     </div>
                     <div class="content-center">
@@ -399,8 +462,10 @@ const manualAddAttendance = (id) => {
             </div>
 
 
-            <div class="mt-6 flex">
-                <SecondaryButton @click="closeAttendanceModal"> Close </SecondaryButton>
+            <div class="mt-6 flex items-center">
+                <div class="grow">
+                    <SecondaryButton @click="closeAttendanceModal"> Close </SecondaryButton>
+                </div>
             </div>
         </div>
     </Modal>

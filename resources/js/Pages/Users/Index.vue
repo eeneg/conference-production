@@ -6,12 +6,16 @@ import TextInput from '@/Components/TextInput.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import { nextTick } from 'vue';
+import { PlusCircleIcon, XCircleIcon } from '@heroicons/vue/20/solid';
+import Modal from '@/Components/Modal.vue';
+import ResponseModal from '@/Components/ResponseModal.vue';
+import { nextTick, ref } from 'vue';
+import InputError from '@/Components/InputError.vue';
 
-    const props = defineProps({users: Object})
+    const props = defineProps({users: Object, search:String})
 
     const form = useForm({
-        search: ''
+        search: props.search
     })
 
     const roleForm = useForm({
@@ -48,6 +52,48 @@ import { nextTick } from 'vue';
         router.visit(route('users.edit', id))
     }
 
+    const modalShow = ref(false)
+    const userForm = useForm({
+        email:null,
+        name:null,
+        password:null,
+        password_confirmation: null
+    })
+
+    const headers = ref(null)
+    const message = ref(null)
+    const success = ref(false)
+    const responseModalProp = ref(false)
+    const registerUser = () => {
+        userForm.submit('post', route('users.store'), {
+            onSuccess: (e) => {
+                headers.value = "Success"
+                message.value = "User Successfully Registered!"
+                success.value = true
+                responseModalProp.value = true
+                userForm.reset()
+            },
+            onError: (e) => {
+                headers.value = "Error"
+                message.value = "Something went wrong!"
+                success.value = false
+                responseModalProp.value = true
+                console.log(e)
+            }
+        })
+    }
+    const addUserModal = () => {
+        userForm.reset()
+        modalShow.value = true
+    }
+    const closeAdduserModal = () => {
+        userForm.reset()
+        modalShow.value = false
+    }
+    const closeResponseModal = () => {
+        responseModalProp.value = false
+    }
+
 </script>
 
 <template>
@@ -62,14 +108,19 @@ import { nextTick } from 'vue';
     <div class="py-5">
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                <div class="pl-6 pr-6 mt-3 grow">
-                    <header>
-                        <h2 class="text-lg font-medium text-gray-900">Users</h2>
+                <div class="pl-6 pr-6 mt-3 grow flex justify-between">
+                    <div>
+                        <header>
+                            <h2 class="text-lg font-medium text-gray-900">Users</h2>
 
-                        <p class="mt-1 text-sm text-gray-600">
-                            List of all users.
-                        </p>
-                    </header>
+                            <p class="mt-1 text-sm text-gray-600">
+                                List of all users.
+                            </p>
+                        </header>
+                    </div>
+                    <div class="py-2">
+                        <PrimaryButton @click="addUserModal()">Add <PlusCircleIcon class="h-5 w-5"/></PrimaryButton>
+                    </div>
                 </div>
                 <form @submit.prevent="search" class="flex flex-row mt-1 space-y-6">
                     <div class="p-6 grow">
@@ -122,5 +173,76 @@ import { nextTick } from 'vue';
                 </div>
             </div>
         </div>
+
+        <Modal :show="modalShow">
+            <div class="p-6">
+                <div class="flex justify-between">
+                    <div>
+                        <h2 class="text-lg font-medium">
+                            Add User
+                        </h2>
+
+                        <p class="mt-1 text-sm text-gray-600">
+                            Fill in the form to Register a new User
+                        </p>
+                    </div>
+                    <div class="hover:cursor-pointer" @click="closeAdduserModal()">
+                        <XCircleIcon class="h-5"/>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <div class="flex mt-2">
+                        <div class="w-full">
+                            <InputLabel>Email</InputLabel>
+                            <TextInput v-model="userForm.email" class="w-full"/>
+                            <InputError :message="userForm.errors.email" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <div class="flex mt-2">
+                        <div class="w-full">
+                            <InputLabel>Name</InputLabel>
+                            <TextInput v-model="userForm.name" class="w-full"/>
+                            <InputError :message="userForm.errors.name" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <div class="flex mt-2">
+                        <div class="w-full">
+                            <InputLabel>Password</InputLabel>
+                            <TextInput 
+                                v-model="userForm.password" 
+                                class="mt-2 block w-full"
+                                type="password"
+                                autocomplete="new-password"
+                            />
+                            <InputError :message="userForm.errors.password" class="mt-2" />
+                        </div>
+                    </div>
+
+                    <div class="flex mt-2">
+                        <div class="w-full">
+                            <InputLabel>Confirm Password</InputLabel>
+                            <TextInput 
+                                v-model="userForm.password_confirmation" 
+                                class="mt-2 block w-full"
+                                type="password"
+                                autocomplete="new-password"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <PrimaryButton
+                    class="w-full mt-6 place-content-center"
+                    @click="registerUser()">
+                                <p>Submit</p>
+                </PrimaryButton>
+            </div>
+        </Modal>
+
+        <ResponseModal @closeResponseModal="closeResponseModal()" :header="headers" :message="message" :success="success" :responseModalProp="responseModalProp"/>
+
     </div>
 </template>

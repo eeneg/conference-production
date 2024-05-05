@@ -38,10 +38,10 @@ class FileSearchController extends Controller
                 $query->where('latest', true)
                     ->with('storage')
                     ->with('category')
-                    ->when($request->storage != null, function($query) use ($request){
+                    ->when($request->storage, function($query) use ($request){
                         $query->where('storage_id', $request->storage);
                     })
-                    ->when(count($request->category) > 0, function($query) use ($request){
+                    ->when($request->category, function($query) use ($request){
                         $query->whereHas('category', function($query) use ($request){
                             $query->whereIn('categories.id', $request->category);
                         });

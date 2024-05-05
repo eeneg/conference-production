@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\UserRole;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
@@ -19,6 +20,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         return Inertia::render('Users/Index', [
+            'search' => $request->search,
             'users' => User::search($request->search)->paginate(10)
         ]);
     }
@@ -36,7 +38,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255|unique:'.User::class,
+            'email' => 'required|string|email|max:255|unique:'.User::class,
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        //Assign Default USER role
+        $user->roles()->attach(Role::where('title', 'user')->first()->id);
     }
 
     /**

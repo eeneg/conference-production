@@ -19,7 +19,7 @@ use App\Http\Controllers\FileVersionController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileCommentController;
-use App\Http\Controllers\TestController;
+use App\Http\Controllers\ManualAttendanceController;
 use App\Http\Middleware\IsAdmin;
 use App\Models\Minutes;
 use App\Models\Message;
@@ -43,7 +43,6 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
@@ -74,7 +73,7 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::patch('/file_review/{id}', [FileController::class, 'setFileForReview'])->name('file.review');
 
     Route::get('/fileList', [FileSearchController::class, 'index'])->name('file.index');
-    Route::post('/fileSearch', [FileSearchController::class, 'searchFile'])->name('file.search');
+    Route::get('/fileSearch', [FileSearchController::class, 'searchFile'])->name('file.search');
     Route::get('/downloadFile/{file}', [FileSearchController::class, 'downloadFile'])->name('file.download');
     Route::post('/attachmentSearch', [FileSearchController::class, 'searchFileAsAttachment'])->name('file.attachment');
 
@@ -92,9 +91,11 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/countPollVotes/{id}', [PollController::class, 'countPollVotes']);
     Route::post('/endPoll', [PollController::class, 'endPoll']);
     Route::get('/getUserPoll/{poll_id}/{user_id}', [PollController::class, 'getUserPoll']);
+    Route::get('/getIndividualVotes/{poll_id}', [PollController::class, 'getIndividualVotes']);
 
     Route::resource('agenda', AgendaController::class);
     Route::resource('attendance', ConferenceAttendanceController::class);
+    Route::post('/deleteAttendance', [ConferenceAttendanceController::class, 'delete'])->name('attendance.delete');
     Route::get('/searchUserBoardMember', [ConferenceAttendanceController::class, 'searchBM'])->name('search.bm');
     Route::get('/getVideoConfURL/{id}', [ConferenceController::class, 'getVideoConfURL'])->name('conf.url');
 
@@ -111,9 +112,8 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::post('/userRole', [UserController::class, 'attachRole'])->name('user.role');
     Route::resource('users', UserController::class)->middleware([IsAdmin::class]);
 
-    Route::resource('test', TestController::class);
+    Route::resource('manualAttendance', ManualAttendanceController::class);
 });
-
 
 
 require __DIR__.'/auth.php';
