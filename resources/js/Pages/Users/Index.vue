@@ -71,6 +71,7 @@ import InputError from '@/Components/InputError.vue';
                 message.value = "User Successfully Registered!"
                 success.value = true
                 responseModalProp.value = true
+                userForm.reset()
             },
             onError: (e) => {
                 headers.value = "Error"
@@ -182,7 +183,7 @@ import InputError from '@/Components/InputError.vue';
                         </h2>
 
                         <p class="mt-1 text-sm text-gray-600">
-                            Fill-up form to Register a new User
+                            Fill in the form to Register a new User
                         </p>
                     </div>
                     <div class="hover:cursor-pointer" @click="closeAdduserModal()">
@@ -210,7 +211,12 @@ import InputError from '@/Components/InputError.vue';
                     <div class="flex mt-2">
                         <div class="w-full">
                             <InputLabel>Password</InputLabel>
-                            <TextInput v-model="userForm.password" class="w-full"/>
+                            <TextInput 
+                                v-model="userForm.password" 
+                                class="mt-2 block w-full"
+                                type="password"
+                                autocomplete="new-password"
+                            />
                             <InputError :message="userForm.errors.password" class="mt-2" />
                         </div>
                     </div>
@@ -218,7 +224,12 @@ import InputError from '@/Components/InputError.vue';
                     <div class="flex mt-2">
                         <div class="w-full">
                             <InputLabel>Confirm Password</InputLabel>
-                            <TextInput v-model="userForm.password_confirmation" class="w-full"/>
+                            <TextInput 
+                                v-model="userForm.password_confirmation" 
+                                class="mt-2 block w-full"
+                                type="password"
+                                autocomplete="new-password"
+                            />
                         </div>
                     </div>
                 </div>
@@ -228,9 +239,6 @@ import InputError from '@/Components/InputError.vue';
                     @click="registerUser()">
                                 <p>Submit</p>
                 </PrimaryButton>
-                <Transition enter-from-class="opacity-0 float-right" leave-to-class="opacity-0" class="transition ease-in-out">
-                    <p v-if="userForm.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
-                </Transition>
             </div>
         </Modal>
 
